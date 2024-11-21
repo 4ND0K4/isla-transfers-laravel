@@ -45,13 +45,13 @@ class Booking extends Model
     // Relación con la tabla de hoteles
     public function hotel()
     {
-        return $this->belongsTo(Hotel::class, 'id_hotel');
+        return $this->belongsTo(Hotel::class, 'id_hotel', 'id_hotel');
     }
 
     // Relación con la tabla de vehículos
     public function vehicle()
     {
-        return $this->belongsTo(Vehicle::class, 'id_vehiculo');
+        return $this->belongsTo(Vehicle::class, 'id_vehiculo', 'id_vehiculo');
     }
 
     // Relación con la tabla de usuarios/travelers

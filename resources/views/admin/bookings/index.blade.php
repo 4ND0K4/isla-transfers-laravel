@@ -73,9 +73,11 @@
                                     class="btn btn-warning"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editBookingModal"
-                                    onclick="setEditBooking(@json($booking))">
+                                    data-booking='@json($booking)'
+                                    onclick="setEditBooking(this)">
                                     Editar
                                 </button>
+
 
                             <form action="{{ route('admin.bookings.destroy', $booking->id_reserva) }}" method="POST" style="display: inline;">
                                 @csrf
@@ -236,8 +238,11 @@ function setEditBooking(booking) {
 ////////NUEVO//////////////////
 
 // Función para abrir el modal de edición y llenar los campos
-function setEditBooking(booking) {
-    // Configurar los campos comunes
+function setEditBooking(button) {
+    const booking = JSON.parse(button.getAttribute('data-booking'));
+    console.log("Reserva seleccionada:", booking);
+
+    // Configurar los campos del modal
     document.getElementById('editIdReserva').value = booking.id_reserva || '';
     document.getElementById('editLocalizador').value = booking.localizador || '';
     document.getElementById('editIdTipoReserva').value = booking.id_tipo_reserva || '';
@@ -245,24 +250,25 @@ function setEditBooking(booking) {
     document.getElementById('editNumViajeros').value = booking.num_viajeros || '';
     document.getElementById('editIdDestino').value = booking.id_destino || '';
 
-    // Mostrar los campos específicos según el tipo de reserva
+    // Mostrar campos específicos
     mostrarCampos('edit');
 
-    // Configurar los campos específicos
-    if (booking.id_tipo_reserva == 1) { // Aeropuerto -> Hotel
+    if (booking.id_tipo_reserva == 1) {
         document.getElementById('editFechaEntrada').value = booking.fecha_entrada || '';
         document.getElementById('editHoraEntrada').value = booking.hora_entrada || '';
         document.getElementById('editNumeroVueloEntrada').value = booking.numero_vuelo_entrada || '';
         document.getElementById('editOrigenVueloEntrada').value = booking.origen_vuelo_entrada || '';
-    } else if (booking.id_tipo_reserva == 2) { // Hotel -> Aeropuerto
+    } else if (booking.id_tipo_reserva == 2) {
         document.getElementById('editFechaVueloSalida').value = booking.fecha_vuelo_salida || '';
         document.getElementById('editHoraVueloSalida').value = booking.hora_vuelo_salida || '';
     }
 
-    // Mostrar el modal de actualización
+    // Mostrar el modal
     const modal = new bootstrap.Modal(document.getElementById('editBookingModal'));
     modal.show();
 }
+
+
 
 </script>
 

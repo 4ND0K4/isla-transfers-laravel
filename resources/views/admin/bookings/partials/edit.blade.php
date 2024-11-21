@@ -10,7 +10,7 @@
                     @csrf
                     @method('PUT')
                     <div class="container mt-4">
-
+                    <input type="hidden" id="editIdReserva" name="id_reserva">
                         <div class="form-floating mb-3">
                             <select class="form-select" name="id_tipo_reserva" id="editIdTipoReserva" onchange="mostrarCampos('edit')">
                                 <option value="1">Aeropuerto - Hotel</option>
@@ -43,10 +43,10 @@
                                 <option value="" disabled selected>Selecciona un Id de Destino</option>
                                 <option value="1">Paraíso Escondido Retreat</option>
                                 <option value="2">Corazón Isleño Inn</option>
-                                <option value="3">Recorrido por la Ciudad</option>
-                                <option value="4">Aventura en la Selva</option>
-                                <option value="5">Tour Cultural</option>
-                                <option value="6">Paseo en Barco</option>
+                                <option value="3">Oasis Resort</option>
+                                <option value="4">El faro Suites</option>
+                                <option value="5">Costa Salvaje Eco Lodge</option>
+                                <option value="6">Arenas Doradas Resort</option>
                             </select>
                             <label for="editIdDestino">Id de destino</label>
                         </div>

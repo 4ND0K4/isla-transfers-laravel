@@ -189,13 +189,15 @@ public function update(Request $request, $id)
             'id_destino' => 'required|exists:transfer_hotel,id_hotel',
             'email_cliente' => 'required|email|exists:transfer_viajeros,email',
             'num_viajeros' => 'required|integer|min:1',
-            'fecha_entrada' => 'nullable|date|sometimes|required_if:id_tipo_reserva,1',
-            'hora_entrada' => 'nullable|sometimes|required_if:id_tipo_reserva,1',
-            'fecha_vuelo_salida' => 'nullable|date|sometimes|required_if:id_tipo_reserva,2',
-            'hora_vuelo_salida' => 'nullable|sometimes|required_if:id_tipo_reserva,2',
-            'numero_vuelo_entrada' => 'nullable|string|max:255|required_if:id_tipo_reserva,1',
-            'origen_vuelo_entrada' => 'nullable|string|max:255|required_if:id_tipo_reserva,1',
+            'fecha_entrada' => 'nullable|date|required_if:id_tipo_reserva,1',
+            'hora_entrada' => 'nullable|required_if:id_tipo_reserva,1',
+            'fecha_vuelo_salida' => 'nullable|date|required_if:id_tipo_reserva,2',
+            'hora_vuelo_salida' => 'nullable|required_if:id_tipo_reserva,2',
+            'numero_vuelo_entrada' => 'nullable|string|max:255',
+            'origen_vuelo_entrada' => 'nullable|string|max:255',
         ]);
+
+
 
         Log::info('Datos validados correctamente:', $validated);
 
@@ -219,13 +221,15 @@ public function update(Request $request, $id)
             'email_cliente' => $validated['email_cliente'],
             'num_viajeros' => $validated['num_viajeros'],
             'fecha_modificacion' => now(),
-            'fecha_entrada' => $validated['fecha_entrada'] ?? null,
-            'hora_entrada' => $validated['hora_entrada'] ?? null,
-            'fecha_vuelo_salida' => $validated['fecha_vuelo_salida'] ?? null,
-            'hora_vuelo_salida' => $validated['hora_vuelo_salida'] ?? null,
+            'fecha_entrada' => $validated['fecha_entrada'] ?? '1970-01-01', // Valor por defecto
+            'hora_entrada' => $validated['hora_entrada'] ?? '00:00:00', // Valor por defecto
+            'fecha_vuelo_salida' => $validated['fecha_vuelo_salida'] ?? '1970-01-01', // Valor por defecto
+            'hora_vuelo_salida' => $validated['hora_vuelo_salida'] ?? '00:00:00', // Valor por defecto
             'numero_vuelo_entrada' => $validated['numero_vuelo_entrada'] ?? null,
             'origen_vuelo_entrada' => $validated['origen_vuelo_entrada'] ?? null,
         ]);
+
+
 
         Log::info("Reserva actualizada correctamente. ID: {$id}");
 
