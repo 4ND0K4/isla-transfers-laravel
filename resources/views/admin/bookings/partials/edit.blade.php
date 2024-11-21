@@ -1,0 +1,93 @@
+<div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary-subtle">
+                <h2 class="modal-title">Actualice la reserva</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editBookingForm" method="POST" action="{{ route('admin.bookings.update', $booking->id_reserva) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="container mt-4">
+
+                        <div class="form-floating mb-3">
+                            <select class="form-select" name="id_tipo_reserva" id="editIdTipoReserva" onchange="mostrarCampos('edit')">
+                                <option value="1">Aeropuerto - Hotel</option>
+                                <option value="2">Hotel - Aeropuerto</option>
+                            </select>
+                            <label for="editIdTipoReserva">Tipo de reserva</label>
+                        </div>
+
+                        <!-- Localizador -->
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="localizador" id="editLocalizador" placeholder="Localizador" readonly>
+                            <label for="editLocalizador">Localizador</label>
+                        </div>
+
+                        <!-- Número de Viajeros -->
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" name="num_viajeros" id="editNumViajeros" placeholder="Número de viajeros">
+                            <label for="editNumViajeros">Número de viajeros</label>
+                        </div>
+
+                        <!-- Email Cliente -->
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" name="email_cliente" id="editEmailCliente" placeholder="Email del cliente" required>
+                            <label for="editEmailCliente">Email del cliente</label>
+                        </div>
+
+                        <!-- Id Destino -->
+                        <div class="form-floating mb-3">
+                            <select name="id_destino" class="form-select" id="editIdDestino" required>
+                                <option value="" disabled selected>Selecciona un Id de Destino</option>
+                                <option value="1">Paraíso Escondido Retreat</option>
+                                <option value="2">Corazón Isleño Inn</option>
+                                <option value="3">Recorrido por la Ciudad</option>
+                                <option value="4">Aventura en la Selva</option>
+                                <option value="5">Tour Cultural</option>
+                                <option value="6">Paseo en Barco</option>
+                            </select>
+                            <label for="editIdDestino">Id de destino</label>
+                        </div>
+
+                        <!-- Campos específicos para Aeropuerto - Hotel -->
+                        <div id="aeropuerto-hotel-fields-edit" style="display: none;">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" name="fecha_entrada" id="editFechaEntrada" placeholder="Fecha de entrada">
+                                <label for="editFechaEntrada">Fecha Llegada</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="time" class="form-control" name="hora_entrada" id="editHoraEntrada" placeholder="Hora de entrada">
+                                <label for="editHoraEntrada">Hora Llegada</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="numero_vuelo_entrada" id="editNumeroVueloEntrada" placeholder="Número de vuelo de entrada">
+                                <label for="editNumeroVueloEntrada">Número Vuelo Llegada</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="origen_vuelo_entrada" id="editOrigenVueloEntrada" placeholder="Origen del vuelo de entrada">
+                                <label for="editOrigenVueloEntrada">Origen Vuelo</label>
+                            </div>
+                        </div>
+
+                        <!-- Campos específicos para Hotel - Aeropuerto -->
+                        <div id="hotel-aeropuerto-fields-edit" style="display: none;">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" name="fecha_vuelo_salida" id="editFechaVueloSalida" placeholder="Fecha del vuelo de salida">
+                                <label for="editFechaVueloSalida">Fecha Vuelo Salida</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="time" class="form-control" name="hora_vuelo_salida" id="editHoraVueloSalida" placeholder="Hora del vuelo de salida">
+                                <label for="editHoraVueloSalida">Hora Vuelo Salida</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-secondary fw-bold text-white">Modificar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
