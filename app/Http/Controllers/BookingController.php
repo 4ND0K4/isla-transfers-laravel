@@ -98,11 +98,12 @@ class BookingController extends Controller
         'fecha_reserva' => now(),
         'fecha_modificacion' => now(),
         'tipo_creador_reserva' => $tipoCreadorReserva,
-        // Valores predeterminados
-        'fecha_vuelo_salida' => $validated['fecha_vuelo_salida'] ?? '1970-01-01 00:00:00', // Fecha válida
-        'hora_vuelo_salida' => $validated['hora_vuelo_salida'] ?? '00:00:00',
-        'fecha_entrada' => $validated['fecha_entrada'] ?? '1970-01-01 00:00:00', // Fecha válida
+        'fecha_entrada' => $validated['fecha_entrada'] ?? '1970-01-01',
         'hora_entrada' => $validated['hora_entrada'] ?? '00:00:00',
+        'fecha_vuelo_salida' => $validated['fecha_vuelo_salida'] ?? '1970-01-01',
+        'hora_vuelo_salida' => $validated['hora_vuelo_salida'] ?? '00:00:00',
+        'numero_vuelo_entrada' => $validated['numero_vuelo_entrada'] ?? '',
+        'origen_vuelo_entrada' => $validated['origen_vuelo_entrada'] ?? ''
     ]);
     Log::info('Datos base para la reserva después de procesar valores predeterminados:', $baseData);
 
@@ -112,28 +113,52 @@ class BookingController extends Controller
             Log::info('Creando reservas de tipo ida y vuelta.');
 
             // Reserva 1: Aeropuerto -> Hotel
-            $firstBooking = Booking::create(array_merge($baseData, [
+            $firstBookingData = array_merge($baseData, [
                 'id_tipo_reserva' => 1,
-            ]));
+                'fecha_vuelo_salida' => '1970-01-01', // Fecha vacía para este tipo de reserva
+                'hora_vuelo_salida' => '00:00:00',    // Hora vacía para este tipo de reserva
+            ]);
+            $firstBooking = Booking::create($firstBookingData);
             Log::info('Primera reserva creada con éxito:', $firstBooking->toArray());
             //$this->sendEmailWithLocator($firstBooking);
 
             // Reserva 2: Hotel -> Aeropuerto
-            $secondBooking = Booking::create(array_merge($baseData, [
+            $secondBookingData = array_merge($baseData, [
                 'id_tipo_reserva' => 2,
-            ]));
+                'fecha_entrada' => '1970-01-01', // Fecha vacía para este tipo de reserva
+                'hora_entrada' => '00:00:00',    // Hora vacía para este tipo de reserva
+                'numero_vuelo_entrada' => '',   // Número de vuelo vacío para este tipo de reserva
+                'origen_vuelo_entrada' => '',   // Origen de vuelo vacío para este tipo de reserva
+            ]);
+            $secondBooking = Booking::create($secondBookingData);
             Log::info('Segunda reserva creada con éxito:', $secondBooking->toArray());
             //$this->sendEmailWithLocator($secondBooking);
+
         } else {
             Log::info('Creando una reserva única.');
+
+            // Ajustar datos según el tipo de reserva
+            if ($validated['id_tipo_reserva'] == 1) {
+                $baseData['fecha_vuelo_salida'] = '1970-01-01';
+                $baseData['hora_vuelo_salida'] = '00:00:00';
+            } elseif ($validated['id_tipo_reserva'] == 2) {
+                $baseData['fecha_entrada'] = '1970-01-01';
+                $baseData['hora_entrada'] = '00:00:00';
+                $baseData['numero_vuelo_entrada'] = '';
+                $baseData['origen_vuelo_entrada'] = '';
+            }
+
             $booking = Booking::create($baseData);
             Log::info('Reserva única creada con éxito:', $booking->toArray());
-           //$this->sendEmailWithLocator($booking);
+            //$this->sendEmailWithLocator($booking);
         }
+
+        return redirect()->route('admin.bookings.index')->with('success', 'Reserva creada correctamente.');
     } catch (\Exception $e) {
         Log::error('Error al crear la reserva:', ['message' => $e->getMessage()]);
         return redirect()->back()->withErrors(['error' => 'Hubo un error al crear la reserva.']);
     }
+
 
     Log::info('Reserva(s) creada(s) correctamente. Redirigiendo al índice de reservas.');
     if ($tipoCreadorReserva === 1) { // Admin

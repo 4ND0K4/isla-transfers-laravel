@@ -80,7 +80,7 @@ class Booking extends Model
      * Métodos personalizados
      */
 
-    // Generar localizador único al crear una reserva
+    // Boot para establecer valores predeterminados
     protected static function boot()
     {
         parent::boot();
@@ -89,21 +89,41 @@ class Booking extends Model
             $model->localizador = strtoupper(substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 10));
             $model->id_vehiculo = $model->id_vehiculo ?? 1;
 
-                // Valores por defecto para campos no aplicables
-            /*if ($model->id_tipo_reserva === 1) { // Aeropuerto -> Hotel
-                $model->fecha_vuelo_salida = $model->fecha_vuelo_salida ?? '1970-01-01 00:00:00';
-                $model->hora_vuelo_salida = $model->hora_vuelo_salida ?? '00:00:00';
+            if ($model->id_tipo_reserva === 1) { // Aeropuerto -> Hotel
+                $model->fecha_vuelo_salida = '1970-01-01';
+                $model->hora_vuelo_salida = '00:00:00';
             } elseif ($model->id_tipo_reserva === 2) { // Hotel -> Aeropuerto
-                $model->fecha_entrada = $model->fecha_entrada ?? '1970-01-01 00:00:00';
-                $model->hora_entrada = $model->hora_entrada ?? '00:00:00';
-            }*/
+                $model->fecha_entrada = '1970-01-01';
+                $model->hora_entrada = '00:00:00';
+                $model->numero_vuelo_entrada = $model->numero_vuelo_entrada ?? '';
+                $model->origen_vuelo_entrada = $model->origen_vuelo_entrada ?? '';
 
-             // Asignar valores predeterminados a numero_vuelo_entrada y origen_vuelo_entrada
-            $model->numero_vuelo_entrada = $model->numero_vuelo_entrada ?? ''; // Deja vacío estos campos si la reserva es id_tipo_reserva = 1
-            $model->origen_vuelo_entrada = $model->origen_vuelo_entrada ?? ''; // Valor predeterminado
+            }
 
         });
     }
+
+    // Getters personalizados para manejar valores predeterminados como "vacíos"
+    public function getFechaEntradaAttribute($value)
+    {
+        return $value === '1970-01-01' ? null : $value;
+    }
+
+    public function getHoraEntradaAttribute($value)
+    {
+        return $value === '00:00:00' ? null : $value;
+    }
+
+    public function getFechaVueloSalidaAttribute($value)
+    {
+        return $value === '1970-01-01' ? null : $value;
+    }
+
+    public function getHoraVueloSalidaAttribute($value)
+    {
+        return $value === '00:00:00' ? null : $value;
+    }
+
 
     // Obtener todas las reservas con sus relaciones
     public static function getAllBookings()
