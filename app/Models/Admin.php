@@ -18,4 +18,14 @@ class Admin extends Authenticatable
         'password',
         'remember_token',
     ];
+
+
+    public function isAdmin()
+{
+    return true; // Puedes personalizar esta lógica si tienes más roles en el futuro
+}
+
+
+
+
 }

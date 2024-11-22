@@ -111,3 +111,10 @@ Route::middleware(['auth:hotels'])->group(function () {
     Route::get('/dashboard', [HotelController::class, 'dashboard'])->name('hotel.dashboard')->middleware('auth:hotels');
 
 });
+
+
+
+
+Route::get('/admin/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('admin.calendar.events');
+
+

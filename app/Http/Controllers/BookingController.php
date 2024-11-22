@@ -297,4 +297,60 @@ public function update(Request $request, $id)
             return redirect()->back()->withErrors(['error' => 'Error al eliminar la reserva.']);
         }
     }
+
+    public function getCalendarEvents(Request $request)
+    {
+        try {
+            Log::info('Intentando obtener el usuario administrador...');
+            $user = auth()->guard('admins')->user();
+
+            if (!$user) {
+                Log::warning('Usuario no autenticado o no válido.');
+                return response()->json(['error' => 'Usuario no autenticado'], 401);
+            }
+
+            Log::info('Usuario autenticado:', ['user' => $user]);
+
+            // Si el usuario es admin, obtener todas las reservas
+            $bookings = $user->isAdmin() ? Booking::all() : Booking::where('email_cliente', $user->email)->get();
+
+            Log::info('Reservas obtenidas:', ['bookings' => $bookings]);
+
+            $events = $bookings->map(function ($booking) {
+                $startDate = $booking->id_tipo_reserva == 1 ? $booking->fecha_entrada : $booking->fecha_vuelo_salida;
+                $startTime = $booking->id_tipo_reserva == 1 ? $booking->hora_entrada : $booking->hora_vuelo_salida;
+                $start = $startDate && $startTime ? "$startDate $startTime" : $startDate;
+
+                return [
+                    'id' => $booking->id_reserva,
+                    'title' => 'Hotel ' . $booking->id_hotel,
+                    'start' => $start,
+                    'extendedProps' => [
+                        'id_hotel' => $booking->id_hotel,
+                        'localizador' => $booking->localizador,
+                        'id_tipo_reserva' => $booking->id_tipo_reserva,
+                        'email_cliente' => $booking->email_cliente,
+                        'fecha_reserva' => $booking->fecha_reserva,
+                        'fecha_modificacion' => $booking->fecha_modificacion,
+                        'hora_entrada' => $booking->hora_entrada,
+                        'numero_vuelo_entrada' => $booking->numero_vuelo_entrada,
+                        'origen_vuelo_entrada' => $booking->origen_vuelo_entrada,
+                        'hora_vuelo_salida' => $booking->hora_vuelo_salida,
+                        'num_viajeros' => $booking->num_viajeros,
+                        'id_vehiculo' => $booking->id_vehiculo,
+                        'tipo_creador_reserva' => $booking->tipo_creador_reserva,
+                    ],
+                ];
+            });
+
+            Log::info('Eventos generados correctamente para el calendario.');
+
+            return response()->json($events);
+        } catch (\Exception $e) {
+            Log::error('Error al cargar eventos para el calendario:', ['exception' => $e->getMessage()]);
+            return response()->json(['error' => 'No se pudieron cargar los eventos'], 500);
+        }
+    }
+
+
 }
