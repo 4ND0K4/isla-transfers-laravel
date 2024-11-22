@@ -10,31 +10,15 @@
                     @csrf
                     @method('PUT')
                     <div class="container mt-4">
-                    <input type="hidden" id="editIdReserva" name="id_reserva">
-                        <div class="form-floating mb-3">
-                            <select class="form-select" name="id_tipo_reserva" id="editIdTipoReserva" onchange="mostrarCampos('edit')">
-                                <option value="1">Aeropuerto - Hotel</option>
-                                <option value="2">Hotel - Aeropuerto</option>
-                            </select>
-                            <label for="editIdTipoReserva">Tipo de reserva</label>
-                        </div>
-
-                        <!-- Localizador -->
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="localizador" id="editLocalizador" placeholder="Localizador" readonly>
-                            <label for="editLocalizador">Localizador</label>
-                        </div>
+                        <input type="hidden" id="editIdReserva" name="id_reserva">
+                        <input type="hidden" id="editIdTipoReserva" name="id_tipo_reserva">
+                        <input type="hidden" id="editLocalizador" name="localizador">
+                        <input type="hidden" id="editEmailCliente" name="email_cliente">
 
                         <!-- Número de Viajeros -->
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" name="num_viajeros" id="editNumViajeros" placeholder="Número de viajeros">
                             <label for="editNumViajeros">Número de viajeros</label>
-                        </div>
-
-                        <!-- Email Cliente -->
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="email_cliente" id="editEmailCliente" placeholder="Email del cliente" required>
-                            <label for="editEmailCliente">Email del cliente</label>
                         </div>
 
                         <!-- Id Destino -->

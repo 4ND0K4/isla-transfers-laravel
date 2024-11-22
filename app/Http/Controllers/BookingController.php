@@ -200,9 +200,8 @@ private function sendEmailWithLocator(Booking $booking)
 
 public function update(Request $request, $id)
 {
-    // Intentar realizar la actualización
     try {
-        Log::info("Intentando actualizar la reserva con ID: {$id}");
+        Log::info("Intentando actualizar la reserva con ID recibido: {$id}");
 
         // Buscar la reserva a actualizar
         $booking = Booking::findOrFail($id);
@@ -218,44 +217,33 @@ public function update(Request $request, $id)
             'hora_entrada' => 'nullable|required_if:id_tipo_reserva,1',
             'fecha_vuelo_salida' => 'nullable|date|required_if:id_tipo_reserva,2',
             'hora_vuelo_salida' => 'nullable|required_if:id_tipo_reserva,2',
-            'numero_vuelo_entrada' => 'nullable|string|max:255',
-            'origen_vuelo_entrada' => 'nullable|string|max:255',
+            'numero_vuelo_entrada' => 'nullable|string',
+            'origen_vuelo_entrada' => 'nullable|string',
         ]);
-
-
 
         Log::info('Datos validados correctamente:', $validated);
 
-        // Restricción de 48 horas para travelers
-        if (Auth::guard('travelers')->check()) {
-            $fechaMinima = Carbon::now()->addDays(2);
+        // Preparar datos para la actualización
+        $updateData = $validated;
 
-            if (
-                ($validated['id_tipo_reserva'] == 1 && isset($validated['fecha_entrada']) && Carbon::parse($validated['fecha_entrada'])->lt($fechaMinima)) ||
-                ($validated['id_tipo_reserva'] == 2 && isset($validated['fecha_vuelo_salida']) && Carbon::parse($validated['fecha_vuelo_salida'])->lt($fechaMinima))
-            ) {
-                Log::warning("Intento fallido de modificación por traveler. Restricción de 48 horas violada para reserva ID: {$id}");
-                return redirect()->back()->withErrors(['error' => 'No puede modificar reservas con menos de 48 horas de antelación.']);
-            }
+        // Limpiar campos irrelevantes según el tipo de reserva
+        if ($validated['id_tipo_reserva'] == 1) {
+            $updateData['fecha_vuelo_salida'] = '1970-01-01'; // Vaciar
+            $updateData['hora_vuelo_salida'] = '00:00:00'; // Vaciar
+        } elseif ($validated['id_tipo_reserva'] == 2) {
+            $updateData['fecha_entrada'] = '1970-01-01'; // Vaciar
+            $updateData['hora_entrada'] = '00:00:00'; // Vaciar
         }
 
-        // Actualizar los datos de la reserva
-        $booking->update([
-            'id_tipo_reserva' => $validated['id_tipo_reserva'],
-            'id_destino' => $validated['id_destino'],
-            'email_cliente' => $validated['email_cliente'],
-            'num_viajeros' => $validated['num_viajeros'],
-            'fecha_modificacion' => now(),
-            'fecha_entrada' => $validated['fecha_entrada'] ?? '1970-01-01', // Valor por defecto
-            'hora_entrada' => $validated['hora_entrada'] ?? '00:00:00', // Valor por defecto
-            'fecha_vuelo_salida' => $validated['fecha_vuelo_salida'] ?? '1970-01-01', // Valor por defecto
-            'hora_vuelo_salida' => $validated['hora_vuelo_salida'] ?? '00:00:00', // Valor por defecto
-            'numero_vuelo_entrada' => $validated['numero_vuelo_entrada'] ?? null,
-            'origen_vuelo_entrada' => $validated['origen_vuelo_entrada'] ?? null,
-        ]);
+        // Valores predeterminados para campos que no pueden ser NULL
+        $updateData['numero_vuelo_entrada'] = $validated['numero_vuelo_entrada'] ?? '';
+        $updateData['origen_vuelo_entrada'] = $validated['origen_vuelo_entrada'] ?? '';
 
+        // Registrar modificación
+        $updateData['fecha_modificacion'] = now();
 
-
+        // Actualizar la reserva
+        $booking->update($updateData);
         Log::info("Reserva actualizada correctamente. ID: {$id}");
 
         // Redirigir según el rol del usuario
@@ -280,6 +268,9 @@ public function update(Request $request, $id)
         return redirect()->back()->withErrors(['error' => 'Hubo un error al intentar actualizar la reserva.']);
     }
 }
+
+
+
 
     public function destroy($id)
     {

@@ -242,6 +242,10 @@ function setEditBooking(button) {
     const booking = JSON.parse(button.getAttribute('data-booking'));
     console.log("Reserva seleccionada:", booking);
 
+    // Actualizar la acción del formulario
+    const form = document.getElementById('editBookingForm');
+    form.action = `/admin/bookings/${booking.id_reserva}`; // Actualiza la ruta con el id_reserva correcto
+
     // Configurar los campos del modal
     document.getElementById('editIdReserva').value = booking.id_reserva || '';
     document.getElementById('editLocalizador').value = booking.localizador || '';
@@ -267,6 +271,7 @@ function setEditBooking(button) {
     const modal = new bootstrap.Modal(document.getElementById('editBookingModal'));
     modal.show();
 }
+
 
 
 
