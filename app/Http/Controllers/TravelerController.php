@@ -34,7 +34,7 @@ class TravelerController extends Controller
             'apellido1' => $request->apellido1,
             'apellido2' => $request->apellido2 ?? '', // Valor predeterminado vacío
             'direccion' => $request->direccion ?? '',
-            'codigopostal' => $request->codigopostal ?? '',
+            'codigoPostal' => $request->codigoPostal ?? '',
             'ciudad' => $request->ciudad ?? '',
             'pais' => $request->pais ?? '',
             'email' => $request->email,
@@ -89,14 +89,28 @@ class TravelerController extends Controller
         $request->validate([
             'nombre' => 'nullable|string|max:255',
             'apellido1' => 'nullable|string|max:255',
-            'email' => "nullable|email|unique:transfer_viajeros,email,$id,id_viajero", // Campos en minúscula
+            'apellido2' => 'nullable|string|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'codigoPostal' => 'nullable|string|max:20',
+            'ciudad' => 'nullable|string|max:255',
+            'pais' => 'nullable|string|max:255',
+            'email' => "nullable|email|unique:transfer_viajeros,email,$id,id_viajero",
             'password' => 'nullable|min:6|confirmed',
         ]);
 
         $traveler = Traveler::findOrFail($id);
 
-        // Actualizar datos excepto contraseña si no es proporcionada
-        $data = $request->only(['nombre', 'apellido1', 'email']); // Campos en minúscula
+        $data = $request->only([
+            'nombre',
+            'apellido1',
+            'apellido2',
+            'direccion',
+            'codigoPostal',
+            'ciudad',
+            'pais',
+            'email'
+        ]);
+
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
@@ -106,9 +120,11 @@ class TravelerController extends Controller
         return back()->with('success', 'Perfil actualizado correctamente.');
     }
 
+
     public function dashboard()
     {
-        return view('travelers.dashboard'); // Cambia esta ruta según la ubicación de tu vista.
+        $traveler = Auth::user(); // Obtiene el usuario autenticado
+        return view('travelers.dashboard', compact('traveler'));
     }
 
     /**

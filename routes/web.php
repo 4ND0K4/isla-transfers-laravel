@@ -115,6 +115,18 @@ Route::middleware(['auth:hotels'])->group(function () {
 
 
 
-Route::get('/admin/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('admin.calendar.events');
+Route::middleware('auth:admins')->group(function () {
+    Route::get('/admin/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('admin.calendar.events');
+});
 
 
+Route::middleware('auth:travelers')->group(function () {
+    Route::get('/traveler/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('traveler.calendar.events');
+});
+
+Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+Route::post('/travelers/bookings', [BookingController::class, 'store'])->name('traveler.bookings.store');
+Route::get('/bookings/{id}', [BookingController::class, 'getBooking'])->name('bookings.get');
+Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('admin.bookings.update');
+
+Route::put('/travelers/{id}', [TravelerController::class, 'update'])->name('travelers.update');

@@ -4,14 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - Administración</title>
+    <meta name="author" content="PHPOWER" />
+    <meta name="description" content="La página de inicio del panel de administración de Isla Transfer
+    es accesible cuando el administrador se identifica con sus credenciales. Desde aquí se puede acceder
+    a la gestión de todas las acciones disponibles en la aplicación web" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FullCalendar -->
+    <!-- Icons Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Enlaces Hojas Estilo -->
+    @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- SweetAlert2 -->
+    <!-- FullCalendar -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-
-    <!-- Scripts necesarios -->
+    <!-- Implantación del calendario -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -136,19 +148,48 @@
         });
     </script>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('admin.dashboard') }}">Panel Admin</a>
-            <button class="btn btn-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar Sesión</button>
+<body id="admin">
+    <!-- Sidebar -->
+    <div class="d-flex">
+        <div class="vh-100 d-flex flex-column align-items-center pb-3" id="sidebar">
+            <!-- Logo -->
+            <a class="navbar-brand" href="{{ route('admin.dashboard') }}" title="Inicio">
+                <img src="{{ asset('images/icons/logo_admin.png') }}" alt="Ícono" width="100" height="75">
+            </a>
+            <!-- Menú -->
+            <hr class="text-white w-100">
+            <!-- Dashboard -->
+            <a  href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Dashboard">
+                <i class="bi bi-x-diamond"></i>
+            </a>
+            <!-- Reservas -->
+            <a href="{{ route('admin.bookings.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Reservas">
+                <i class="bi bi-calendar-week"></i>
+            </a>
+            <!-- Excursiones -->
+            <a href="{{ route('admin.tours.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Excursiones">
+                <i class="bi bi-backpack2"></i>
+            </a>
+            <!-- Vehículos -->
+            <a href="{{ route('admin.vehicles.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Vehículos">
+                <i class="bi bi-taxi-front"></i>
+            </a>
+            <!-- Hoteles -->
+            <a href="{{ route('admin.hotels.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Hoteles">
+                <i class="bi bi-houses"></i>
+            </a>
+
+        <div class="mt-auto">
+            <button class="btn btn-transparent text-danger fs-6" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bi bi-person-circle"></i> Cerrar Sesión</button>
             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
         </div>
-    </nav>
-    <main class="py-4">
+    </div>
+    <main>
         @yield('content')
     </main>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -4,17 +4,17 @@
 
 @section('content')
     <div class="container">
-        <!-- Calendario -->
-        <h1 class="text-center py-5">CALENDARIO DE RESERVAS</h1>
-        <div id="calendar"></div>
-    </div>
-    <div class="container">
-        <!-- Enlaces a las funcionalidades -->
-        <div class="d-flex justify-content-center mt-5">
-            <a href="{{ route('admin.bookings.index') }}" class="btn btn-outline-primary mx-2">Gestión de Reservas</a>
-            <a href="{{ route('admin.hotels.index') }}" class="btn btn-outline-success mx-2">Gestión de Hoteles</a>
-            <a href="{{ route('admin.vehicles.index') }}" class="btn btn-outline-warning mx-2">Gestión de Vehículos</a>
-            <a href="{{ route('admin.tours.index') }}" class="btn btn-outline-info mx-2">Gestión de Excursiones</a>
+        <div class="row">
+            <h1 class="text-center fw-bold text-secondary py-4">Panel de Administración</h1>
+            <!-- Calendario -->
+            <div class="col-8 bg-white border rounded-2 p-3 m-3" id="calendar"></div>
+            <!-- Contenedores -->
+            <div class="col-3 bg-light">
+                <!-- Container 1 -->
+                <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100 h-50">Contenedor 1</div>
+                <!-- Container 2 -->
+                <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100 h-50">Contenedor 2</div>
+            </div>
         </div>
     </div>
 @endsection

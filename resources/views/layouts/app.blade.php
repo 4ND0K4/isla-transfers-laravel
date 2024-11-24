@@ -6,6 +6,7 @@
     <title>@yield('title', 'Isla Transfers')</title>
     <!-- Agregar CSS de Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    @vite(['resources/css/app.scss', 'resources/js/app.js'])
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">

@@ -20,7 +20,7 @@ class Traveler extends Authenticatable
         'apellido1',
         'apellido2',
         'direccion',
-        'codigopostal',
+        'codigoPostal',
         'ciudad',
         'pais',
         'email',
@@ -50,4 +50,28 @@ class Traveler extends Authenticatable
     {
         return $this->password; // Campo en minúscula
     }
+
+    protected static function boot()
+{
+    parent::boot();
+
+    // Establecer valores predeterminados al crear un nuevo Traveler
+    static::creating(function ($model) {
+        $model->apellido2 = $model->apellido2 ?? ''; // Valor predeterminado para apellido2
+        $model->direccion = $model->direccion ?? 'Sin especificar'; // Valor predeterminado para dirección
+        $model->codigoPostal = $model->codigoPostal ?? '00000'; // Valor predeterminado para código postal
+        $model->ciudad = $model->ciudad ?? 'Desconocida'; // Valor predeterminado para ciudad
+        $model->pais = $model->pais ?? 'Sin especificar'; // Valor predeterminado para país
+    });
+
+    // Establecer valores predeterminados al actualizar un Traveler
+    static::updating(function ($model) {
+        $model->apellido2 = $model->apellido2 ?? ''; // Valor predeterminado para apellido2
+        $model->direccion = $model->direccion ?? 'Sin especificar'; // Valor predeterminado para dirección
+        $model->codigoPostal = $model->codigoPostal ?? '00000'; // Valor predeterminado para código postal
+        $model->ciudad = $model->ciudad ?? 'Desconocida'; // Valor predeterminado para ciudad
+        $model->pais = $model->pais ?? 'Sin especificar'; // Valor predeterminado para país
+    });
+}
+
 }

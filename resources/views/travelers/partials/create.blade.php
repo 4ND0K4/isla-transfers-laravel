@@ -9,6 +9,7 @@
                 <form action="{{ route('traveler.bookings.store') }}" method="POST">
                     @csrf
                     <div class="container mt-4">
+                        <input type="hidden" name="email_cliente" value="{{ Auth::user()->email }}">
                         <!-- Selección del tipo de reserva -->
                         <div class="pb-2">
                             <select name="id_tipo_reserva" id="addIdTipoReserva" class="form-select form-select-lg" aria-label="multiple select" onchange="mostrarCampos('add')">
@@ -57,20 +58,16 @@
                                     <option value="" disabled selected>Selecciona un Id de Destino</option>
                                     <option value="1">Paraíso Escondido Retreat</option>
                                     <option value="2">Corazón Isleño Inn</option>
-                                    <option value="3">Recorrido por la Ciudad</option>
-                                    <option value="4">Aventura en la Selva</option>
-                                    <option value="5">Tour Cultural</option>
-                                    <option value="6">Paseo en Barco</option>
+                                    <option value="3">Oasis Resort</option>
+                                    <option value="4">El faro Suites</option>
+                                    <option value="5">Costa Salvaje Eco Lodge</option>
+                                    <option value="6">Arenas Doradas Resort</option>
                                 </select>
                                 <label for="addIdDestino">Id de destino</label>
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="number" class="form-control" name="num_viajeros" id="addNumViajeros" placeholder="Número de viajeros">
                                 <label for="addNumViajeros">Número de viajeros</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" name="email_cliente" id="addEmailCliente" placeholder="Email del cliente" required>
-                                <label for="addEmailCliente">Email del cliente</label>
                             </div>
                         </div>
                     </div>
@@ -89,3 +86,4 @@
         </div>
     </div>
 </div>
+

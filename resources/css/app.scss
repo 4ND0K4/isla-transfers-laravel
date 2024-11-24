@@ -1,0 +1,44 @@
+// Importa las funciones y variables de Bootstrap
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/bootstrap";
+
+
+// Reescribe los colores de bootstrap
+
+// Importa Bootstrap completo
+@import "~bootstrap/scss/bootstrap";
+
+// Tus estilos personalizados
+body {
+    font-family: 'Arial', sans-serif;
+  }
+
+#sidebar {
+    background: linear-gradient(
+        to top right,
+        $blue-800,
+        $cyan-100
+    );
+}
+
+#admin {
+    font-family: 'Roboto Flex', serif;
+    background-color: $light;
+}
+
+#traveler {
+    font-family: "Baloo Paaji 2", sans-serif;
+    background-color: $yellow-100;
+}
+
+// Estilo de la tabla con hover personalizado
+.table-light {
+    background-color: $light !important; // Fondo claro
+  }
+
+  .table-hover {
+    tbody tr:hover {
+      background-color: $info !important; // Hover en color info
+    }
+  }

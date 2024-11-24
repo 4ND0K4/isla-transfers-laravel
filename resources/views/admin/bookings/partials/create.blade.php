@@ -1,7 +1,7 @@
 <div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-secondary-subtle">
+            <div class="modal-header bg-info-subtle">
                 <h2 class="modal-title text-center">Añade una nueva reserva</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

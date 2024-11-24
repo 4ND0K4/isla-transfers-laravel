@@ -3,40 +3,59 @@
 @section('title', 'Gestión de Hoteles')
 
 @section('content')
-<div class="container">
-    <h1 class="text-center">Gestión de Hoteles</h1>
-
-    <button class="btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#createHotelModal">Nuevo Hotel</button>
-
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Hotel</th>
-                <th>Zona</th>
-                <th>Comisión</th>
-                <th>Usuario</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($hotels as $hotel)
-                <tr>
-                    <td>{{ $hotel->id_hotel }}</td>
-                    <td>{{ $hotel->id_zona }}</td>
-                    <td>{{ $hotel->comision }}</td>
-                    <td>{{ $hotel->usuario }}</td>
-                    <td>
-                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editHotelModal" onclick="setEditHotel({{ $hotel }})">Editar</button>
-                        <form action="{{ route('admin.hotels.destroy', $hotel) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<div class="d-flex flex-column vh-100">
+    <header class="text-secondary text-center text-info p-4">
+        <h1>Gestión de Hoteles</h1>
+    </header>
+    <div class="col text-start pb-2 px-4">
+        <button class="btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#createHotelModal">Nuevo Hotel</button>
+    </div>
+    <!-- Tabla -->
+    <div class="flex-grow-1 overflow-auto ms-2">
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Hotel</th>
+                        <th>Zona</th>
+                        <th>Comisión</th>
+                        <th>Usuario</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($hotels as $hotel)
+                        <tr>
+                            <td>{{ $hotel->id_hotel }}</td>
+                            <td>{{ $hotel->id_zona }}</td>
+                            <td>{{ $hotel->comision }}</td>
+                            <td>{{ $hotel->usuario }}</td>
+                            <td>
+                                <button
+                                class="btn btn-sm btn-outline-warning m-1"
+                                title="Editar hotel"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editHotelModal"
+                                onclick="setEditHotel({{ $hotel }})">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                                <form action="{{ route('admin.hotels.destroy', $hotel) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button
+                                    type="submit"
+                                    class="btn btn-sm btn-outline-danger m-1"
+                                    title="Eliminar hotel">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 @include('admin.hotels.partials.create')
