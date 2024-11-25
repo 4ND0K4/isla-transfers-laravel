@@ -42,3 +42,24 @@ body {
       background-color: $info !important; // Hover en color info
     }
   }
+
+  //Para icono
+  // Efecto hover para el color del ícono
+.hover-icon {
+    transition: color 0.3s ease, transform 0.3s ease; // Suaviza la animación
+
+    &:hover {
+      color: $warning; // Usa la variable de Bootstrap para color amarillo
+      transform: scale(1.2); // Amplía ligeramente el ícono
+    }
+  }
+
+  // Fondo en hover para el enlace
+  .hover-bg {
+    transition: background-color 0.3s ease; // Suaviza el cambio de fondo
+
+    &:hover {
+      background-color: rgba(255, 193, 7, 0.1); // Fondo amarillo transparente
+      border-radius: 50%; // Hace el fondo circular
+    }
+  }

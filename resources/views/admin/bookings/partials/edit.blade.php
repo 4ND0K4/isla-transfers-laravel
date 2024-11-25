@@ -35,6 +35,12 @@
                             <label for="editIdDestino">Id de destino</label>
                         </div>
 
+                         <!-- Id Vehículo -->
+                         <div class="form-floating mb-3">
+                            <input type="number" class="form-control" name="id_vehiculo" id="editIdVehiculo" placeholder="Número de vehiculo">
+                            <label for="editIdVehiculo">Vehiculo</label>
+                        </div>
+
                         <!-- Campos específicos para Aeropuerto - Hotel -->
                         <div id="aeropuerto-hotel-fields-edit" style="display: none;">
                             <div class="form-floating mb-3">

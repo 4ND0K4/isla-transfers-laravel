@@ -24,43 +24,54 @@
     <!-- FullCalendar -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <!-- Implantación del calendario -->
+    <style>
+        .fc-col-header-cell a {
+            text-decoration: none !important; /* Elimina el subrayado de los encabezados de los días: lunes, martes... */
+    }
+    </style>
     <script>
+        // Evento DOMContentLoaded asegura que el DOM esté completamente cargado antes de ejecutar el script
         document.addEventListener('DOMContentLoaded', function() {
+            // Seleccionamos el elemento donde se renderizará el calendario
             var calendarEl = document.getElementById('calendar');
+            // Inicializamos el calendario FullCalendar
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: "es", //idioma
-                firstDay: 1, //Inicia en lunes
-                //Colocación de los elementos del header
+                // Configuración del calendario
+                initialView: 'dayGridMonth', // Vista inicial del calendario
+                locale: "es", // Idioma en español
+                firstDay: 1, // Primer día de la semana (Lunes)
+                // Configuración de los botones del header del calendario
                 headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    left: 'prev,next today', // Botones a la izquierda
+                    center: 'title',         // Título centrado
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay' // Botones a la derecha
                 },
-                //Cambio de nombres del header
+                // Traducción de los textos de los botones
                 buttonText: {
                     today: 'Hoy',
                     month: 'Mes',
                     week: 'Semana',
                     day: 'Día'
                 },
+                // Ruta para obtener los eventos desde el controlador
                 events: "{{ route('admin.calendar.events') }}",
-                //Estilos del today
+                // Personalización del encabezado de los días
                 dayHeaderContent: function(arg) {
                     let span = document.createElement('span');
                     span.innerText = arg.text;
-                    span.style.color = '#343a40';
-                    span.style.padding = '5px';
-                    span.style.display = 'block';
+                    span.style.color = '#343a40'; // Color del texto
+                    span.style.padding = '5px';  // Espaciado interno
+                    span.style.display = 'block'; // Bloque para estilos consistentes
                     return { domNodes: [span] };
                 },
-                //Estilos de la celda today en el calendario
+                // Personalización de las celdas del calendario (e.g., hoy)
                 dayCellDidMount: function(info) {
                     if (info.isToday) {
-                        info.el.style.backgroundColor = '#e2e3e5';
-                        info.el.style.color = '#343a40';
-                        info.el.style.fontWeight = 'bold';
+                        info.el.style.backgroundColor = '#d1ecf1'; // Fondo para el día actual
+                        info.el.style.color = '#343a40'; // Color de texto
+                        info.el.style.fontWeight = 'bold'; // Negrita
                     }
+                    // Personalización del número de los días
                     let dayNumberElement = info.el.querySelector('.fc-daygrid-day-number');
                     if (dayNumberElement) {
                         dayNumberElement.style.color = '#343a40';
@@ -68,28 +79,29 @@
                         dayNumberElement.style.textDecoration = 'none';
                     }
                 },
-                //Estilo para las reservas insertadas en las celdas
+                // Personalización de los eventos según su tipo
                 eventDidMount: function(info) {
                     if (info.event.extendedProps.id_tipo_reserva == 1) {
-                        info.el.style.backgroundColor = '#0d6efd';
-                        info.el.style.color = '#ffffff'; // Color del texto a blanco
+                        info.el.style.backgroundColor = '#0d6efd'; // Color azul para tipo 1
+                        info.el.style.color = '#ffffff'; // Texto blanco
                     } else if (info.event.extendedProps.id_tipo_reserva == 2) {
-                        info.el.style.backgroundColor = '#dc3545';
-                        info.el.style.color = '#ffffff'; // Color del texto a blanco
+                        info.el.style.backgroundColor = '#dc3545'; // Color rojo para tipo 2
+                        info.el.style.color = '#ffffff'; // Texto blanco
                     }
                 },
-                //Estilo de las cards (con sweetAlert2)
+                // Configuración al hacer clic en un evento (detalles)
                 eventClick: function(info) {
                     Swal.fire({
+                        // Título del modal con SweetAlert2
                         title: '<strong style="color: #343a40; font-size: 1em; font-weight: bold;">Detalles de la Reserva</strong>',
                         html: `
                         <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
-                            <strong>Ruta:</strong> <!--Tipo de Reserva-->${info.event.extendedProps.id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto'} -
-                            <strong>Origen/Destino:</strong> <!--Hotel-->${info.event.title}
+                            <strong>Ruta:</strong> ${info.event.extendedProps.id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto'} -
+                            <strong>Origen/Destino:</strong> ${info.event.title}
                         </p>
                         <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
-                            <strong>Día:</strong> <!--Día recogida entrada/salida-->${info.event.start.toLocaleDateString()}
-                            <strong>Hora:</strong> <!--Hora recogida entrada/salida-->${info.event.start.toLocaleTimeString()}
+                            <strong>Día:</strong> ${info.event.start.toLocaleDateString()} -
+                            <strong>Hora:</strong> ${info.event.start.toLocaleTimeString()}
                         </p>
                         <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
                             <strong>Nº vuelo:</strong> ${info.event.extendedProps.numero_vuelo_entrada} -
@@ -102,51 +114,44 @@
                         <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
                             <strong>Cliente:</strong> ${info.event.extendedProps.email_cliente}<br>
                         </p>
-                            <hr>
+                        <hr>
                         <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
                             <strong>ID:</strong> ${info.event.id} -
                             <strong>Localizador:</strong> ${info.event.extendedProps.localizador}
                         </p>`,
-                        icon: 'info',
+                        icon: 'info', // Ícono de información
                         confirmButtonText: '<span style="color: white; font-weight: bold;">Cerrar</span>',
                         customClass: {
                             popup: 'swal-wide' // Clase personalizada para ajustar el ancho
                         },
                         didOpen: () => {
-                            //Estilo botón Cerrar
+                            // Personalización del botón de confirmación
                             const confirmButton = Swal.getConfirmButton();
-                            confirmButton.style.backgroundColor = '#6c757d'; // Color fondo
-                            confirmButton.style.color = 'white'; // Color texto
-                            confirmButton.style.fontSize = '16px'; // Tamaño de fuente
-                            confirmButton.style.fontWeight = 'bold'; // Negrita
-                            confirmButton.style.fontFamily = 'Arial, sans-serif'; // Fuente
-                            confirmButton.style.padding = '10px 20px'; // Padding
-                            confirmButton.style.borderRadius = '8px'; // Bordes redondeados
-                            confirmButton.style.border = '2px solid #6c757d'; // Color borde
-                            confirmButton.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)'; // Sombra
-                            confirmButton.style.transition = 'all 0.3s ease'; // Transición
-                            confirmButton.style.margin = '10px'; // Espacio externo
-
+                            confirmButton.style.backgroundColor = '#6c757d';
+                            confirmButton.style.color = 'white';
+                            confirmButton.style.fontSize = '16px';
+                            confirmButton.style.fontWeight = 'bold';
+                            confirmButton.style.borderRadius = '8px';
+                            confirmButton.style.transition = 'all 0.3s ease';
                             // Efecto hover
                             confirmButton.onmouseover = () => {
-                                confirmButton.style.backgroundColor = '#e2e3e5'; // Cambio de color en hover
-                                confirmButton.style.transform = 'scale(1.05)'; // Efecto de aumento
+                                confirmButton.style.backgroundColor = '#e2e3e5';
+                                confirmButton.style.transform = 'scale(1.05)';
                             };
                             confirmButton.onmouseout = () => {
                                 confirmButton.style.backgroundColor = '#6c757d';
                                 confirmButton.style.transform = 'scale(1)';
                             };
-                            //Estilo icono superior decorativo
-                            const iconElement = Swal.getIcon();
-                            iconElement.style.color = '#e2e3e5'; // Color del ícono
-                            iconElement.style.borderColor = '#e2e3e5'; // Color del círculo
                         }
                     });
                 }
             });
+
+            // Renderizamos el calendario
             calendar.render();
         });
     </script>
+
 </head>
 <body id="admin">
     <!-- Sidebar -->
@@ -159,36 +164,37 @@
             <!-- Menú -->
             <hr class="text-white w-100">
             <!-- Dashboard -->
-            <a  href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Dashboard">
-                <i class="bi bi-x-diamond"></i>
+            <a  href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Dashboard">
+                <i class="bi bi-x-diamond-fill"></i>
             </a>
             <!-- Reservas -->
-            <a href="{{ route('admin.bookings.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Reservas">
-                <i class="bi bi-calendar-week"></i>
+            <a href="{{ route('admin.bookings.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Reservas">
+                <i class="bi bi-calendar-week-fill"></i>
             </a>
             <!-- Excursiones -->
-            <a href="{{ route('admin.tours.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Excursiones">
-                <i class="bi bi-backpack2"></i>
+            <a href="{{ route('admin.tours.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Excursiones">
+                <i class="bi bi-backpack2-fill"></i>
             </a>
             <!-- Vehículos -->
-            <a href="{{ route('admin.vehicles.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Vehículos">
-                <i class="bi bi-taxi-front"></i>
+            <a href="{{ route('admin.vehicles.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Vehículos">
+                <i class="bi bi-taxi-front-fill"></i>
             </a>
             <!-- Hoteles -->
-            <a href="{{ route('admin.hotels.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2" title="Hoteles">
-                <i class="bi bi-houses"></i>
+            <a href="{{ route('admin.hotels.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Hoteles">
+                <i class="bi bi-houses-fill"></i>
             </a>
 
         <div class="mt-auto">
-            <button class="btn btn-transparent text-danger fs-6" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bi bi-person-circle"></i> Cerrar Sesión</button>
+            <button class="btn btn-transparent text-danger fs-6" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bi bi-box-arrow-left"></i> {{ htmlspecialchars($_SESSION['adminUsuario'] ?? Auth::user()->usuario) }}</button>
             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
         </div>
     </div>
-    <main>
+    <main class="container-fluid px-0">
         @yield('content')
     </main>
+
 </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

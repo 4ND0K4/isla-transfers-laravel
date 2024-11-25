@@ -4,11 +4,11 @@
 
 @section('content')
 <div class="d-flex flex-column vh-100">
-    <header class="text-secondary text-center text-info p-4">
-        <h1>Gestión de Hoteles</h1>
+    <header class="text-secondary text-center p-4 fs-1">
+        <h1 class="shadow-sm">Gestión de Hoteles</h1>
     </header>
     <div class="col text-start pb-2 px-4">
-        <button class="btn btn-success my-3" data-bs-toggle="modal" data-bs-target="#createHotelModal">Nuevo Hotel</button>
+        <button class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#createHotelModal"><i class="bi bi-plus-circle"></i> Nuevo Hotel</button>
     </div>
     <!-- Tabla -->
     <div class="flex-grow-1 overflow-auto ms-2">

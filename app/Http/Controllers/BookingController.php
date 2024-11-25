@@ -26,12 +26,12 @@ class BookingController extends Controller
         return view('admin.bookings.index', compact('bookings', 'id_tipo_reserva'));
     }
 
+
     public function getBooking($id)
     {
         $booking = Booking::with(['hotel', 'vehicle', 'traveler'])->findOrFail($id);
         return response()->json($booking);
     }
-
 
 
     public function store(Request $request)
@@ -219,6 +219,7 @@ public function update(Request $request, $id)
             'hora_vuelo_salida' => 'nullable|required_if:id_tipo_reserva,2',
             'numero_vuelo_entrada' => 'nullable|string',
             'origen_vuelo_entrada' => 'nullable|string',
+            'id_vehiculo' => 'nullable|integer|exists:transfer_vehiculo,id_vehiculo',
         ]);
 
         Log::info('Datos validados correctamente:', $validated);
@@ -268,8 +269,6 @@ public function update(Request $request, $id)
         return redirect()->back()->withErrors(['error' => 'Hubo un error al intentar actualizar la reserva.']);
     }
 }
-
-
 
 
     public function destroy($id)

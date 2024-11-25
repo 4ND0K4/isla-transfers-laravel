@@ -5,14 +5,14 @@
 @section('content')
 <div class="d-flex flex-column vh-100">
     <!-- Título -->
-    <header class="text-secondary text-center b text-info p-4">
-        <h1 class="shadow">Gestión de Reservas</h1>
+    <header class="text-secondary text-center p-4 fs-1">
+        <h1 class="shadow-sm">Gestión de Reservas</h1>
     </header>
 
     <!-- Botón creación de reservas -->
     <div class="row">
         <div class="col text-start pb-2 px-4">
-            <button type="button" class="btn btn-outline-info fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">Nueva reserva</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal"><i class="bi bi-plus-circle"></i> Nueva reserva</button>
         </div>
 
         <!-- Filtro por tipo de reserva -->
@@ -37,17 +37,15 @@
                     <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Localizador</th>
+                            <th scope="col">Recogida</th>
                             <th scope="col">Hotel</th>
-                            <th scope="col">Tipo</th>
                             <th scope="col">Email Cliente</th>
-                            <th scope="col">Fecha de Reserva</th>
-                            <th scope="col">Nº Pasajeros</th>
-                            <th scope="col">Fecha Llegada</th>
-                            <th scope="col">Hora Llegada</th>
-                            <th scope="col">Número Vuelo</th>
-                            <th scope="col">Origen Vuelo</th>
-                            <th scope="col">Hora Salida</th>
-                            <th scope="col">Fecha Salida</th>
+                            <th scope="col">Pasajeros</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Hora</th>
+                            <th scope="col">Número</th>
+                            <th scope="col">Origen</th>
+                            <th scope="col">Vehículo</th>
                             <th scope="col"><!--Botones--></th>
                         </tr>
                     </thead>
@@ -56,17 +54,30 @@
                             <tr>
                                 <td>{{ $booking->id_reserva }}</td>
                                 <td>{{ $booking->localizador }}</td>
-                                <td>{{ $booking->id_hotel }}</td>
-                                <td>{{ $booking->id_tipo_reserva == 1 ? 'Aeropuerto - Hotel' : 'Hotel - Aeropuerto' }}</td>
+                                <td>{{ $booking->id_tipo_reserva == 1 ? 'Aeropuerto' : 'Hotel' }}</td>
+                                <td>
+                                    {{
+                                        $booking->id_hotel == 1 ? 'Paraíso Escondido Retreat' :
+                                        ($booking->id_hotel == 2 ? 'Corazón Isleño Inn' :
+                                        ($booking->id_hotel == 3 ? 'Oasis Resort' :
+                                        ($booking->id_hotel == 4 ? 'El Faro Suites' :
+                                        ($booking->id_hotel == 5 ? 'Costa Salvaje Eco Lodge' :
+                                        ($booking->id_hotel == 6 ? 'Arenas Doradas Resort' : 'Hotel desconocido')))))
+                                    }}
+                                </td>
                                 <td>{{ $booking->email_cliente }}</td>
-                                <td>{{ $booking->fecha_reserva }}</td>
                                 <td>{{ $booking->num_viajeros }}</td>
-                                <td>{{ $booking->fecha_entrada ?? '-' }}</td>
-                                <td>{{ $booking->hora_entrada ?? '-' }}</td>
+                                <!-- Mostrar fecha dinámica -->
+                                <td>
+                                    {{ $booking->id_tipo_reserva == 1 ? ($booking->fecha_entrada ?? '-') : ($booking->fecha_vuelo_salida ?? '-') }}
+                                </td>
+                                <!-- Mostrar hora dinámica -->
+                                <td>
+                                    {{ $booking->id_tipo_reserva == 1 ? ($booking->hora_entrada ?? '-') : ($booking->hora_vuelo_salida ?? '-') }}
+                                </td>
                                 <td>{{ $booking->numero_vuelo_entrada ?? '-' }}</td>
                                 <td>{{ $booking->origen_vuelo_entrada ?? '-' }}</td>
-                                <td>{{ $booking->hora_vuelo_salida ?? '-' }}</td>
-                                <td>{{ $booking->fecha_vuelo_salida ?? '-' }}</td>
+                                <td>{{ $booking->id_vehiculo ?? '-' }}</td>
                                 <td>
                                 <button
                                     class="btn btn-sm btn-outline-warning m-1"
@@ -167,6 +178,7 @@ function setEditBooking(button) {
     document.getElementById('editEmailCliente').value = booking.email_cliente || '';
     document.getElementById('editNumViajeros').value = booking.num_viajeros || '';
     document.getElementById('editIdDestino').value = booking.id_destino || '';
+    document.getElementById('editIdVehiculo').value = booking.id_vehiculo || '';
 
     // Mostrar campos específicos
     mostrarCampos('edit');

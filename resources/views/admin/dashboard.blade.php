@@ -5,7 +5,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <h1 class="text-center fw-bold text-secondary py-4">Panel de Administración</h1>
+            <h1 class="text-center fw-bold text-secondary py-4 fs-1">Panel de Administración</h1>
             <!-- Calendario -->
             <div class="col-8 bg-white border rounded-2 p-3 m-3" id="calendar"></div>
             <!-- Contenedores -->

@@ -27,7 +27,7 @@ class HotelController extends Controller
 
         // Generar un usuario único
         do {
-            $usuario = 'ht' . Str::random(6);
+            $usuario = 'h' . substr(str_shuffle('0123456789'), 0, 8);
         } while (Hotel::where('usuario', $usuario)->exists());
 
         // Crear el hotel

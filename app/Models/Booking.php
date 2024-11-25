@@ -39,7 +39,7 @@ class Booking extends Model
     ];
 
     /**
-     * Relaciones
+     * Relaciones con otras tablas
      */
 
     // Relación con la tabla de hoteles
@@ -54,7 +54,7 @@ class Booking extends Model
         return $this->belongsTo(Vehicle::class, 'id_vehiculo', 'id_vehiculo');
     }
 
-    // Relación con la tabla de usuarios/travelers
+    // Relación con la tabla de travelers
     public function traveler()
     {
         return $this->belongsTo(Traveler::class, 'email_cliente', 'email');
@@ -73,7 +73,7 @@ class Booking extends Model
     // Ordenar por reservas recientes
     public function scopeRecent($query)
     {
-        return $query->orderBy('fecha_reserva', 'desc');
+        return $query->orderBy('id_hotel', 'desc');
     }
 
     /**

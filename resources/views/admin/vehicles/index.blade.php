@@ -3,18 +3,16 @@
 @section('title', 'Gestión de Vehículos')
 
 @section('content')
+
 <div class="d-flex flex-column vh-100">
     <!-- Título -->
-    <header class="text-secondary text-center b text-info p-4">
-        <h1 class="shadow">Gestión de  Vehículos</h1>
+    <header class="text-secondary text-center fs-1 p-4">
+        <h1 class="shadow-sm">Gestión de  Vehículos</h1>
     </header>
     <!-- Botón para crear un nuevo vehículo -->
-    <div class="col text-start pb-2 px-4">
-        <button class="btn btn-info my-3" data-bs-toggle="modal" data-bs-target="#createVehicleModal">Nuevo Vehículo</button>
+    <div class="col text-start py-2 px-4">
+        <button class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#createVehicleModal"><i class="bi bi-plus-circle"></i> Nuevo Vehículo</button>
     </div>
-
-
-
     <!-- Tabla de vehículos -->
     <div class="flex-grow-1 overflow-auto ms-2">
         <div class="table-responsive">
@@ -34,6 +32,7 @@
                             <td>{{ $vehicle->descripcion }}</td>
                             <td>{{ $vehicle->email_conductor }}</td>
                             <td>
+                                <!-- Botón editar -->
                                 <button
                                 class="btn btn-sm btn-outline-warning m-1"
                                         title="Editar vehículo"
@@ -41,7 +40,8 @@
                                 data-bs-target="#editVehicleModal"
                                 onclick="setEditVehicle({{ $vehicle }})">
                                 <i class="bi bi-pencil-square"></i>
-                            </button>
+                                </button>
+                                <!-- Botón eliminar -->
                                 <form action="{{ route('admin.vehicles.destroy', $vehicle) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
@@ -50,7 +50,7 @@
                                     class="btn btn-sm btn-outline-danger m-1"
                                     title="Eliminar excursión">
                                     <i class="bi bi-trash-fill"></i>
-                                </button>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -62,13 +62,14 @@
 </div>
 
 @include('admin.vehicles.partials.create')
+
 @include('admin.vehicles.partials.edit')
 
 <script>
     function setEditVehicle(vehicle) {
         document.getElementById('editDescripcion').value = vehicle.descripcion;
         document.getElementById('editEmailConductor').value = vehicle.email_conductor;
-        document.getElementById('editPassword').value = ''; // Asegura que el campo de contraseña esté vacío al abrir el modal
+        document.getElementById('editPassword').value = '';
         document.getElementById('editVehicleForm').action = '/admin/vehicles/' + vehicle.id_vehiculo;
     }
 </script>

@@ -42,7 +42,4 @@
     </select>
     <label for="idHotelInput">Id de destino</label>
 </div>
-<div class="form-floating mb-3">
-    <input type="number" name="id_vehiculo" class="form-control" id="{{ $action }}Vehiculo">
-    <label for="{{ $action }}Vehiculo">Vehículo (Opcional)</label>
-</div>
+

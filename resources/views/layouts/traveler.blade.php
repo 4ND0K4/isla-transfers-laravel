@@ -265,10 +265,10 @@
 </script>
 </head>
 <body  id="traveler">
-    <nav class="navbar navbar-expand-xl bg-transparent">
+    <nav class="navbar navbar-expand-xl bg-white">
         <div class="container-fluid">
             <a class="navbar-brand ps-5" href="#">
-                <img src="{{ asset('images/icons/logo.png') }}" alt="Ícono" width="100" height="75">
+                <img src="{{ asset('images/icons/logo_traveler.png') }}" alt="Ícono" width="200" height="75">
             </a>
 
             <!-- Navegación y botones -->
@@ -301,7 +301,7 @@
             </ul>
         </div>
     </nav>
-    <main>
+    <main class="container-fluid px-0">
         @yield('content') <!-- Aquí se inyectará el contenido de las vistas -->
     </main>
     <script>
