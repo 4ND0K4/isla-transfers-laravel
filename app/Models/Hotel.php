@@ -23,5 +23,12 @@ class Hotel extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
+
+    public function getAuthIdentifierName()
+{
+    return 'usuario';
+}
+
 }

@@ -74,6 +74,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 // *** RUTAS PARA HOTELES ***
+// Rutas públicas de login para hoteles
+Route::get('/hotel/login', [HotelController::class, 'showLoginForm'])->name('hotel.login'); // Para mostrar el formulario de login
+Route::post('/hotel/login', [HotelController::class, 'login'])->name('hotel.login.post'); // Para procesar el login
+
+// Rutas protegidas para hoteles (requieren autenticación)
 Route::prefix('hotel')->name('hotel.')->middleware('auth:hotels')->group(function () {
     Route::get('/dashboard', [HotelController::class, 'dashboard'])->name('dashboard');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str; //para el metodo de usuario unico
 
@@ -40,6 +41,38 @@ class HotelController extends Controller
 
         return redirect()->route('admin.hotels.index')->with('success', 'Hotel creado correctamente.');
     }
+
+     /**
+     * Manejar login de hotel.
+     */
+
+     public function showLoginForm()
+{
+    return view('hotels.login'); // Asegúrate de que esta vista exista
+}
+    public function login(Request $request)
+{
+    $request->validate([
+        'usuario' => 'required|string',
+        'password' => 'required',
+    ]);
+
+    $hotel = Hotel::where('usuario', $request->usuario)->first();
+
+    if ($hotel && Hash::check($request->password, $hotel->password)) {
+        Auth::guard('hotels')->login($hotel);
+        return redirect()->route('hotel.dashboard')->with('success', 'Inicio de sesión exitoso.');
+    }
+
+    return back()->withErrors(['usuario' => 'Credenciales incorrectas.']);
+}
+
+
+    public function dashboard()
+{
+    return view('hotels.dashboard');
+}
+
 
 
     public function update(Request $request, Hotel $hotel)
