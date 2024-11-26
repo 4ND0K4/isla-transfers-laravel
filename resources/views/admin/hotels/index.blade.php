@@ -21,6 +21,7 @@
                         <th>Comisión</th>
                         <th>Usuario</th>
                         <th>Acciones</th>
+                        <th>accion nueva</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,6 +50,14 @@
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
                                 </form>
+                            </td>
+                            <td>
+                                <!-- Botón para ver comisiones -->
+                                <a href="{{ route('admin.hotels.comisiones', $hotel->id_hotel) }}"
+                                class="btn btn-sm btn-outline-primary m-1"
+                                title="Ver comisiones">
+                                <i class="bi bi-bar-chart-line"></i>
+                                </a>
                             </td>
                         </tr>
                     @endforeach

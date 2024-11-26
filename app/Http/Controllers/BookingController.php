@@ -106,7 +106,9 @@ class BookingController extends Controller
             'origen_vuelo_entrada' => $validated['origen_vuelo_entrada'] ?? ''
         ]);
         Log::info('Datos base para la reserva después de procesar valores predeterminados:', $baseData);
-
+        // Asignar el valor de id_destino a id_hotel
+        $baseData['id_hotel'] = $validated['id_destino'];
+        Log::info('Asignando id_destino a id_hotel:', ['id_hotel' => $baseData['id_hotel']]);
         // Crear las reservas
         try {
             if ($validated['id_tipo_reserva'] === 'idayvuelta') {
@@ -148,6 +150,7 @@ class BookingController extends Controller
                     $baseData['origen_vuelo_entrada'] = '';
                 }
 
+                $baseData['id_hotel'] = $validated['id_destino'];
                 $booking = Booking::create($baseData);
                 Log::info('Reserva única creada con éxito:', $booking->toArray());
                 //$this->sendEmailWithLocator($booking);
@@ -226,6 +229,10 @@ public function update(Request $request, $id)
 
         // Preparar datos para la actualización
         $updateData = $validated;
+
+        // Asignar id_destino al campo id_hotel
+        $updateData['id_hotel'] = $validated['id_destino'];
+        Log::info('Asignando id_destino a id_hotel:', ['id_hotel' => $updateData['id_hotel']]);
 
         // Limpiar campos irrelevantes según el tipo de reserva
         if ($validated['id_tipo_reserva'] == 1) {

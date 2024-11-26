@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Enlaces Hojas Estilo -->
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    <!-- Apex charts (para gráficos) -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -151,6 +153,42 @@
             calendar.render();
         });
     </script>
+<!-- Gráfico de Comisiones -->
+
+   <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const options = {
+                series: [
+                    @isset($data)
+                        @foreach($data as $hotel => $comisiones)
+                            {
+                                name: "{{ $hotel }}",
+                                data: @json($comisiones)
+                            },
+                        @endforeach
+                    @else
+                        {
+                            name: "Sin datos",
+                            data: []
+                        }
+                    @endisset
+                ],
+                chart: {
+                    type: 'line',
+                    height: 350
+                },
+                xaxis: {
+                    categories: @json($labels ?? []) // Etiquetas
+                },
+                title: {
+                    text: 'Comisiones por Hoteles y Mes'
+                }
+            };
+
+            const chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        });
+    </script>
 
 </head>
 <body id="admin">
@@ -164,24 +202,28 @@
             <!-- Menú -->
             <hr class="text-white w-100">
             <!-- Dashboard -->
-            <a  href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Dashboard">
-                <i class="bi bi-x-diamond-fill"></i>
+            <a  href="{{ route('admin.dashboard') }}" class="text-white text-decoration-none mx-2 mt-3 mb-5 fs-2 hover-icon hover-bg" title="Dashboard">
+                <i class="bi bi-grid-3x3-gap"></i>
             </a>
             <!-- Reservas -->
-            <a href="{{ route('admin.bookings.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Reservas">
+            <a href="{{ route('admin.bookings.index') }}" class="text-white text-decoration-none mx-2 my-3 fs-2 hover-icon hover-bg" title="Reservas">
                 <i class="bi bi-calendar-week-fill"></i>
             </a>
             <!-- Excursiones -->
-            <a href="{{ route('admin.tours.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Excursiones">
+            <a href="{{ route('admin.tours.index') }}" class="text-white text-decoration-none mx-2 my-3 fs-2 hover-icon hover-bg" title="Excursiones">
                 <i class="bi bi-backpack2-fill"></i>
             </a>
             <!-- Vehículos -->
-            <a href="{{ route('admin.vehicles.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Vehículos">
+            <a href="{{ route('admin.vehicles.index') }}" class="text-white text-decoration-none mx-2 my-3 fs-2 hover-icon hover-bg" title="Vehículos">
                 <i class="bi bi-taxi-front-fill"></i>
             </a>
             <!-- Hoteles -->
-            <a href="{{ route('admin.hotels.index') }}" class="text-white text-decoration-none mx-2 my-4 fs-2 hover-icon hover-bg" title="Hoteles">
+            <a href="{{ route('admin.hotels.index') }}" class="text-white text-decoration-none mx-2 my-3 fs-2 hover-icon hover-bg" title="Hoteles">
                 <i class="bi bi-houses-fill"></i>
+            </a>
+             <!-- Tarifas -->
+             <a href="{{ route('admin.prices.index') }}" class="text-white text-decoration-none mx-2 my-3 fs-2 hover-icon hover-bg" title="Tarifas">
+                <i class="bi bi-wallet-fill"></i>
             </a>
 
         <div class="mt-auto">
@@ -196,6 +238,7 @@
     </main>
 
 </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

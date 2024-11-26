@@ -31,4 +31,16 @@ class Hotel extends Authenticatable
     return 'usuario';
 }
 
+  // Relación con las reservas
+  public function bookings()
+  {
+      return $this->hasMany(Booking::class, 'id_hotel');
+  }
+
+  // Relación con los precios
+  public function precios()
+  {
+      return $this->hasMany(TransferPrecio::class, 'id_hotel');
+  }
+
 }

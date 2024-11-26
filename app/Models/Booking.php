@@ -76,6 +76,12 @@ class Booking extends Model
         return $query->orderBy('id_hotel', 'desc');
     }
 
+    public function scopeForHotel($query, $hotelId)
+{
+    return $query->where('id_hotel', $hotelId);
+}
+
+
     /**
      * Métodos personalizados
      */
@@ -150,4 +156,18 @@ class Booking extends Model
     {
         return self::destroy($idReserva);
     }
+
+    //relacion con precio
+    public function precios()
+{
+    return $this->hasMany(TransferPrecio::class, 'id_hotel', 'id_hotel')
+                ->whereColumn('id_vehiculo', 'id_vehiculo');
+}
+
+public function precio()
+{
+    return $this->hasOne(Precio::class, 'id_vehiculo', 'id_vehiculo')
+                ->whereColumn('id_hotel', 'id_hotel');
+}
+
 }

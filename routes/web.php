@@ -7,6 +7,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\TourController;
+use App\Http\Controllers\PriceController;
 
 // Ruta principal
 Route::get('/', function () {
@@ -85,5 +86,34 @@ Route::prefix('hotel')->name('hotel.')->middleware('auth:hotels')->group(functio
 });
 
 
+Route::middleware(['auth:hotels'])->group(function () {
+    Route::get('/hotel/bookings', [BookingController::class, 'index'])->name('hotel.bookings.index');
+    Route::post('/hotel/bookings', [BookingController::class, 'store'])->name('hotel.bookings.store');
+});
 
+
+// Ruta para el dashboard del hotel
+Route::middleware(['auth:hotels'])->group(function () {
+    Route::get('/hotel/dashboard', [HotelController::class, 'dashboard'])->name('hotel.dashboard');
+});
+
+// Ruta para obtener el precio basado en hotel y vehículo
+
+
+Route::get('/precio/{id_hotel}/{id_vehiculo}', [PriceController::class, 'obtenerPrecio'])->name('precio.obtener');
+
+//funcionan
+Route::get('/admin/hotels/comisiones', [HotelController::class, 'comisionesPorHoteles'])->name('admin.hotels.comisiones');
+Route::get('/admin/hotels/{id}/comisiones', [HotelController::class, 'comisionesMensuales'])->name('admin.hotels.comisiones');
+
+Route::prefix('admin')->name('admin.')->middleware(['auth:admins'])->group(function () {
+    Route::get('/prices', [PriceController::class, 'index'])->name('prices.index');
+    Route::post('/prices', [PriceController::class, 'store'])->name('prices.store');
+    Route::delete('/prices/{price}', [PriceController::class, 'destroy'])->name('prices.destroy');
+});
+
+
+//Vista de graficos
+Route::get('/hotels/{hotelId}/comparar-meses', [HotelController::class, 'compararMesActualAnterior'])
+    ->name('hotels.compararMeses');
 

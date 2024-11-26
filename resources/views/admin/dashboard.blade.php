@@ -11,9 +11,15 @@
             <!-- Contenedores -->
             <div class="col-3 bg-light">
                 <!-- Container 1 -->
-                <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100 h-50">Contenedor 1</div>
+                <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100 h-50">
+                    <div class="container">
+                        <div id="chart"></div>
+                    </div>
+                </div>
                 <!-- Container 2 -->
-                <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100 h-50">Contenedor 2</div>
+                <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100 h-50">
+                    Contenedor 2
+                </div>
             </div>
         </div>
     </div>
