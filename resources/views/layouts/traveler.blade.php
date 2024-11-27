@@ -268,7 +268,7 @@
     <nav class="navbar navbar-expand-xl bg-white">
         <div class="container-fluid">
             <a class="navbar-brand ps-5" href="#">
-                <img src="{{ asset('images/icons/logo_traveler.png') }}" alt="Ícono" width="200" height="75">
+                <img src="{{ asset('images/icons/logo_traveler.png') }}" alt="Ícono" width="150" height="50">
             </a>
 
             <!-- Navegación y botones -->

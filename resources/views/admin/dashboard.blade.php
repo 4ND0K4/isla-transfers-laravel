@@ -12,21 +12,18 @@
             <div class="col-3 bg-light">
                 <!-- Container 1 -->
                 <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100">
-                    <p class="text-center">Reservas por Hotel (Mes Actual)</p>
-                    <div>
-                        <div>{!! $chartHotels->container() !!}</div>
-                    </div>
+                    <p class="text-center">Reservas por Zona</p>
+                    <div>{!! $chartZonas->container() !!}</div>
                 </div>
                 <!-- Container 2 -->
                 <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100">
-                    <p class="text-center">Reservas por Zona</p>
-                <div>{!! $chartZonas->container() !!}</div>
+                    dibujo isla
                 </div>
             </div>
         </div>
     </div>
     <!-- Cargar los scripts necesarios -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    {{ $chartHotels->script() }}
-{{ $chartZonas->script() }}
+    {{ $chartZonas->script() }}
+
 @endsection

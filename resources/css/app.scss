@@ -25,6 +25,18 @@ body {
 #admin {
     font-family: 'Roboto Flex', serif;
     background-color: $light;
+
+}
+
+  @mixin gradient-radial($inner-color: $gray-700, $outer-color: $gray-800) {
+    background-image: radial-gradient(circle, $inner-color, $outer-color);
+  }
+
+#admin-login {
+
+    @include gradient-radial($orange-100, $blue-600);
+    width: 100vw; /* 100% del ancho de la ventana */
+    height: 100vh; /* 100% de la altura de la ventana */
 }
 
 #traveler {

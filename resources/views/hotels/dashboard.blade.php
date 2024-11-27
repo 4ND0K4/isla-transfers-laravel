@@ -3,84 +3,61 @@
 @section('title', 'Panel de Hotel')
 
 @section('content')
-<div class="container">
-    <div class="col text-start pb-2 px-4">
-        <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal"><i class="bi bi-plus-circle"></i> Nueva reserva</button>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-light table-striped table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Localizador</th>
-                    <th scope="col">Recogida</th>
-                    <th scope="col">Hotel</th>
-                    <th scope="col">Email Cliente</th>
-                    <th scope="col">Pasajeros</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Hora</th>
-                    <th scope="col">Número</th>
-                    <th scope="col">Origen</th>
-                    <th scope="col">Vehículo</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($bookings as $booking)
-                    <tr>
-                        <td>{{ $booking->id_reserva }}</td>
-                        <td>{{ $booking->localizador }}</td>
-                        <td>{{ $booking->id_tipo_reserva == 1 ? 'Aeropuerto' : 'Hotel' }}</td>
-                        <td>{{ $booking->hotel->nombre ?? 'Hotel desconocido' }}</td>
-                        <td>{{ $booking->email_cliente }}</td>
-                        <td>{{ $booking->num_viajeros }}</td>
-                        <td>{{ $booking->id_tipo_reserva == 1 ? $booking->fecha_entrada : $booking->fecha_vuelo_salida }}</td>
-                        <td>{{ $booking->id_tipo_reserva == 1 ? $booking->hora_entrada : $booking->hora_vuelo_salida }}</td>
-                        <td>{{ $booking->numero_vuelo_entrada ?? '-' }}</td>
-                        <td>{{ $booking->origen_vuelo_entrada ?? '-' }}</td>
-                        <td>{{ $booking->id_vehiculo ?? '-' }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="11" class="text-center">No se encontraron reservas.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
 
-
-</div>
 <div class="container my-4">
-    <h1>Bienvenido, {{ $hotel->usuario }}</h1>
-    <h2>Comisiones Mensuales</h2>
+    <div class="row">
+        <h1 class="text-center mb-4">Bienvenido, {{ $hotel->usuario }}</h1>
+    </div>
 
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Año</th>
-                <th>Mes</th>
-                <th>Comisión Total (€)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($comisiones as $comision)
-                <tr>
-                    <td>{{ $comision->year }}</td>
-                    <td>{{ \Carbon\Carbon::create()->month($comision->month)->format('F') }}</td>
-                    <td>{{ number_format($comision->total_comision, 2) }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="3" class="text-center">No hay datos de comisiones disponibles.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+    <div class="row">
+        <!-- Gráfico -->
+        <div class="col-md-6 col-lg-6 mb-4">
+            <div class="bg-white border rounded-2 p-3 shadow" style="height: 100%; max-height: 100vh;">
+                <h2 class="text-center">Comparación de Comisiones</h2>
+                <div style="height: 400px; max-height: 100%; overflow: hidden;">
+                    {!! $chart->container() !!}
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Comisiones -->
+        <div class="col-md-6 col-lg-6 mb-4">
+            <div class="bg-white border rounded-2 p-3 shadow">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="mb-0">Comisiones Mensuales</h2>
+                    <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                        <i class="bi bi-plus-circle"></i> Nueva reserva
+                    </button>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Año</th>
+                            <th>Mes</th>
+                            <th>Comisión Total (€)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($comisiones as $comision)
+                            <tr>
+                                <td>{{ $comision->year }}</td>
+                                <td>{{ $comision->month }}</td>
+                                <td>{{ number_format($comision->total_comision, 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="text-center">No hay comisiones disponibles</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="container mt-5">
-    <h1>Gráfico de {{ $hotel->id_hotel }}</h1>
-    <div id="chart"></div>
-</div>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ $chart->script() }}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // Configuración del formulario de creación de reservas

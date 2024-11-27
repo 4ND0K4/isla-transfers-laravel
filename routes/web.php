@@ -79,16 +79,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::get('/hotel/login', [HotelController::class, 'showLoginForm'])->name('hotel.login'); // Para mostrar el formulario de login
 Route::post('/hotel/login', [HotelController::class, 'login'])->name('hotel.login.post'); // Para procesar el login
 
-// Rutas protegidas para hoteles (requieren autenticación)
-Route::prefix('hotel')->name('hotel.')->middleware('auth:hotels')->group(function () {
-    Route::get('/dashboard', [HotelController::class, 'dashboard'])->name('dashboard');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
-});
 
 
-Route::middleware(['auth:hotels'])->group(function () {
-    Route::get('/hotel/bookings', [BookingController::class, 'index'])->name('hotel.bookings.index');
-    Route::post('/hotel/bookings', [BookingController::class, 'store'])->name('hotel.bookings.store');
+
+Route::prefix('hotel')->middleware('auth:hotels')->group(function () {
+    Route::get('/dashboard', [BookingController::class, 'hotelDashboard'])->name('hotel.dashboard');
+    Route::post('/bookings', [BookingController::class, 'store'])->name('hotel.bookings.store');
+    Route::get('/bookings', [BookingController::class, 'index'])->name('hotel.bookings.index');
 });
 
 

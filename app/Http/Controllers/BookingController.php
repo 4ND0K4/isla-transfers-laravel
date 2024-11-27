@@ -39,39 +39,28 @@ class BookingController extends Controller
     $currentMonth = Carbon::now()->month;
     $currentYear = Carbon::now()->year;
 
-    // Reservas por hotel
-    $bookings = Booking::selectRaw('id_hotel, COUNT(*) as total_reservas')
-        ->whereYear('fecha_reserva', $currentYear)
-        ->whereMonth('fecha_reserva', $currentMonth)
-        ->groupBy('id_hotel')
-        ->with('hotel:id_hotel')
-        ->get();
-
-    $labelsHotels = $bookings->pluck('hotel.id_hotel')->toArray();
-    $valuesHotels = $bookings->pluck('total_reservas')->toArray();
-
-    $chartHotels = new Chart();
-    $chartHotels->labels($labelsHotels);
-    $chartHotels->dataset('Reservas por Hotel', 'pie', $valuesHotels)
-                ->backgroundColor(['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']);
-
-    // Reservas por zona
+    // Consultar el número de reservas por zona
     $reservasPorZona = Booking::selectRaw('transfer_hotel.id_zona, COUNT(*) as total_reservas')
         ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
+        ->whereYear('fecha_reserva', $currentYear)
+        ->whereMonth('fecha_reserva', $currentMonth)
         ->groupBy('transfer_hotel.id_zona')
         ->get();
 
+    // Preparar etiquetas y valores para el gráfico
     $labelsZonas = $reservasPorZona->map(function ($item) {
         return $item->id_zona == 1 ? 'Norte' : ($item->id_zona == 2 ? 'Sur' : 'Metropolitana');
     })->toArray();
     $valuesZonas = $reservasPorZona->pluck('total_reservas')->toArray();
 
+    // Crear el gráfico tipo pie
     $chartZonas = new Chart();
     $chartZonas->labels($labelsZonas);
-    $chartZonas->dataset('Reservas por Zona', 'bar', $valuesZonas)
+    $chartZonas->dataset('Reservas por Zona', 'pie', $valuesZonas)
                ->backgroundColor(['#FF6384', '#36A2EB', '#FFCE56']);
 
-    return view('admin.dashboard', compact('chartHotels', 'chartZonas'));
+    // Retornar el gráfico de zonas a la vista
+    return view('admin.dashboard', compact('chartZonas'));
 }
 
 

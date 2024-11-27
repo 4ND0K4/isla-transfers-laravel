@@ -76,10 +76,10 @@ class Booking extends Model
         return $query->orderBy('id_hotel', 'desc');
     }
 
-    public function scopeForHotel($query, $hotelId)
-{
-    return $query->where('id_hotel', $hotelId);
-}
+    public function scopeHotelBookings($query, $hotelId)
+    {
+        return $query->where('id_hotel', $hotelId);
+    }
 
 
     /**

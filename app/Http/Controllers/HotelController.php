@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Hotel;
 use App\Models\Booking;
+use App\Models\Price;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str; //para el metodo de usuario unico
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 
@@ -73,8 +75,66 @@ class HotelController extends Controller
             return back()->withErrors(['usuario' => 'Credenciales incorrectas.']);
         }
 
+        public function dashboard()
+        {
+            $hotel = Auth::guard('hotels')->user(); // Obtener el hotel autenticado
 
-public function dashboard()
+            $currentMonth = Carbon::now()->month;
+            $currentYear = Carbon::now()->year;
+            $previousMonth = Carbon::now()->subMonth()->month;
+            $previousMonthYear = Carbon::now()->subMonth()->year;
+
+            // Comisiones del mes actual
+            $currentMonthCommissions = Booking::join('transfer_precios', function ($join) {
+                $join->on('transfer_reservas.id_hotel', '=', 'transfer_precios.id_hotel')
+                     ->on('transfer_reservas.id_vehiculo', '=', 'transfer_precios.id_vehiculo');
+            })
+            ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel') // Agregar el join con transfer_hotel
+            ->where('transfer_reservas.id_hotel', $hotel->id_hotel)
+            ->whereYear('fecha_reserva', $currentYear)
+            ->whereMonth('fecha_reserva', $currentMonth)
+            ->sum(DB::raw('transfer_precios.precio * (transfer_hotel.comision / 100)'));
+
+            // Comisiones del mes anterior
+            $previousMonthCommissions = Booking::join('transfer_precios', function ($join) {
+                    $join->on('transfer_reservas.id_hotel', '=', 'transfer_precios.id_hotel')
+                         ->on('transfer_reservas.id_vehiculo', '=', 'transfer_precios.id_vehiculo');
+                })
+                ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel') // Agregar el join con transfer_hotel
+                ->where('transfer_reservas.id_hotel', $hotel->id_hotel)
+                ->whereYear('fecha_reserva', $previousMonthYear)
+                ->whereMonth('fecha_reserva', $previousMonth)
+                ->sum(DB::raw('transfer_precios.precio * (transfer_hotel.comision / 100)'));
+
+            // Comisiones agrupadas por mes y año
+            $comisiones = Booking::join('transfer_precios', function ($join) {
+                $join->on('transfer_reservas.id_hotel', '=', 'transfer_precios.id_hotel')
+                     ->on('transfer_reservas.id_vehiculo', '=', 'transfer_precios.id_vehiculo');
+            })
+            ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
+            ->where('transfer_reservas.id_hotel', $hotel->id_hotel)
+            ->selectRaw("
+                YEAR(fecha_reserva) as year,
+                MONTH(fecha_reserva) as month,
+                SUM(transfer_precios.precio * (transfer_hotel.comision / 100)) as total_comision
+            ")
+            ->groupBy('year', 'month')
+            ->orderByDesc('year')
+            ->orderByDesc('month')
+            ->get();
+
+            // Crear el gráfico
+            $chart = new \ConsoleTVs\Charts\Classes\Chartjs\Chart();
+            $chart->labels(['Mes Anterior', 'Mes Actual']);
+            $chart->dataset('Comparación de Comisiones', 'bar', [$previousMonthCommissions, $currentMonthCommissions])
+                  ->backgroundColor(['#FF6384', '#36A2EB']);
+
+            return view('hotels.dashboard', compact('chart', 'hotel', 'comisiones'));
+        }
+
+
+
+/*public function dashboard()
 {
     // Recuperar el hotel autenticado
     $hotel = Auth::guard('hotels')->user();
@@ -106,7 +166,7 @@ public function dashboard()
     // Retornar la vista del dashboard con las comisiones
     return view('hotels.dashboard', compact('comisiones', 'hotel'));
 }
-
+*/
 
     public function update(Request $request, Hotel $hotel)
     {
