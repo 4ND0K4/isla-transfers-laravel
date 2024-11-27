@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
@@ -32,6 +33,47 @@ class BookingController extends Controller
         $booking = Booking::with(['hotel', 'vehicle', 'traveler'])->findOrFail($id);
         return response()->json($booking);
     }
+
+    public function dashboard()
+{
+    $currentMonth = Carbon::now()->month;
+    $currentYear = Carbon::now()->year;
+
+    // Reservas por hotel
+    $bookings = Booking::selectRaw('id_hotel, COUNT(*) as total_reservas')
+        ->whereYear('fecha_reserva', $currentYear)
+        ->whereMonth('fecha_reserva', $currentMonth)
+        ->groupBy('id_hotel')
+        ->with('hotel:id_hotel')
+        ->get();
+
+    $labelsHotels = $bookings->pluck('hotel.id_hotel')->toArray();
+    $valuesHotels = $bookings->pluck('total_reservas')->toArray();
+
+    $chartHotels = new Chart();
+    $chartHotels->labels($labelsHotels);
+    $chartHotels->dataset('Reservas por Hotel', 'pie', $valuesHotels)
+                ->backgroundColor(['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']);
+
+    // Reservas por zona
+    $reservasPorZona = Booking::selectRaw('transfer_hotel.id_zona, COUNT(*) as total_reservas')
+        ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
+        ->groupBy('transfer_hotel.id_zona')
+        ->get();
+
+    $labelsZonas = $reservasPorZona->map(function ($item) {
+        return $item->id_zona == 1 ? 'Norte' : ($item->id_zona == 2 ? 'Sur' : 'Metropolitana');
+    })->toArray();
+    $valuesZonas = $reservasPorZona->pluck('total_reservas')->toArray();
+
+    $chartZonas = new Chart();
+    $chartZonas->labels($labelsZonas);
+    $chartZonas->dataset('Reservas por Zona', 'bar', $valuesZonas)
+               ->backgroundColor(['#FF6384', '#36A2EB', '#FFCE56']);
+
+    return view('admin.dashboard', compact('chartHotels', 'chartZonas'));
+}
+
 
 
     public function store(Request $request)
@@ -364,5 +406,30 @@ public function update(Request $request, $id)
         return response()->json(['error' => 'No se pudieron cargar los eventos'], 500);
     }
 }
+
+public function reservasPorZona()
+{
+    // Total de reservas
+    $totalReservas = Booking::count();
+
+    // Agrupar reservas por zona
+    $reservasPorZona = Booking::selectRaw('transfer_hotel.id_zona, COUNT(*) as total_reservas')
+        ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
+        ->groupBy('transfer_hotel.id_zona')
+        ->get();
+
+    // Calcular el porcentaje y preparar el JSON
+    $data = $reservasPorZona->map(function ($item) use ($totalReservas) {
+        return [
+            'zona' => $item->id_zona == 1 ? 'Norte' : ($item->id_zona == 2 ? 'Sur' : 'Metropolitana'),
+            'numero_traslados' => $item->total_reservas,
+            'porcentaje' => $totalReservas > 0 ? round(($item->total_reservas / $totalReservas) * 100, 2) : 0,
+        ];
+    });
+
+    // Retornar datos en JSON
+    return response()->json($data);
+}
+
 
 }

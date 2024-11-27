@@ -53,11 +53,14 @@
                             </td>
                             <td>
                                 <!-- Botón para ver comisiones -->
-                                <a href="{{ route('admin.hotels.comisiones', $hotel->id_hotel) }}"
-                                class="btn btn-sm btn-outline-primary m-1"
-                                title="Ver comisiones">
-                                <i class="bi bi-bar-chart-line"></i>
-                                </a>
+                                <button
+                                    class="btn btn-sm btn-outline-primary m-1"
+                                    title="Ver comisiones"
+                                    onclick="loadComisiones({{ $hotel->id_hotel }})"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#comisionesModal">
+                                    <i class="bi bi-bar-chart-line"></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -69,6 +72,7 @@
 
 @include('admin.hotels.partials.create')
 @include('admin.hotels.partials.edit')
+@include('admin.hotels.partials.comisionesModal')
 
 <script>
     function setEditHotel(hotel) {
@@ -77,5 +81,40 @@
         document.getElementById('editUsuario').value = hotel.usuario;
         document.getElementById('editHotelForm').action = '/admin/hotels/' + hotel.id_hotel;
     }
+
+    function loadComisiones(hotelId) {
+    const tableBody = document.getElementById('comisionesTableBody');
+    tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Cargando...</td></tr>'; // Indicador de carga
+
+    fetch(`/admin/hotels/${hotelId}/comisiones`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.length > 0) {
+                tableBody.innerHTML = ''; // Limpia el contenido previo
+                data.forEach(comision => {
+                    const row = `
+                        <tr>
+                            <td>${comision.year}</td>
+                            <td>${comision.month}</td>
+                            <td>${parseFloat(comision.total_comision).toFixed(2)}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center">No hay comisiones disponibles.</td></tr>';
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar las comisiones:', error);
+            tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Error al cargar las comisiones.</td></tr>';
+        });
+}
+
 </script>
 @endsection

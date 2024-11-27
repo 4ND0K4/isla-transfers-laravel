@@ -3,31 +3,25 @@
 @section('title', 'Comisiones de Hoteles')
 
 @section('content')
-<div class="container my-4">
-    <h1 class="mb-4">Comisiones de Hoteles</h1>
+<div class="container">
+    <h1>Comisiones del Hotel: {{ $hotel->nombre ?? 'Hotel no encontrado' }}</h1>
 
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Hotel</th>
                 <th>Año</th>
                 <th>Mes</th>
-                <th>Comisión Total (€)</th>
+                <th>Total Comisión</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($comisiones as $comision)
+            @foreach ($comisiones as $comision)
                 <tr>
-                    <td>{{ $comision->hotel_nombre }}</td>
                     <td>{{ $comision->year }}</td>
-                    <td>{{ \Carbon\Carbon::create()->month($comision->month)->format('F') }}</td>
+                    <td>{{ $comision->month }}</td>
                     <td>{{ number_format($comision->total_comision, 2) }}</td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="4" class="text-center">No hay datos de comisiones disponibles.</td>
-                </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 </div>

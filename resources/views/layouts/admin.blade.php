@@ -18,8 +18,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Enlaces Hojas Estilo -->
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
-    <!-- Apex charts (para gráficos) -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -153,43 +151,6 @@
             calendar.render();
         });
     </script>
-<!-- Gráfico de Comisiones -->
-
-   <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const options = {
-                series: [
-                    @isset($data)
-                        @foreach($data as $hotel => $comisiones)
-                            {
-                                name: "{{ $hotel }}",
-                                data: @json($comisiones)
-                            },
-                        @endforeach
-                    @else
-                        {
-                            name: "Sin datos",
-                            data: []
-                        }
-                    @endisset
-                ],
-                chart: {
-                    type: 'line',
-                    height: 350
-                },
-                xaxis: {
-                    categories: @json($labels ?? []) // Etiquetas
-                },
-                title: {
-                    text: 'Comisiones por Hoteles y Mes'
-                }
-            };
-
-            const chart = new ApexCharts(document.querySelector("#chart"), options);
-            chart.render();
-        });
-    </script>
-
 </head>
 <body id="admin">
     <!-- Sidebar -->
@@ -227,7 +188,10 @@
             </a>
 
         <div class="mt-auto">
-            <button class="btn btn-transparent text-danger fs-6" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bi bi-box-arrow-left"></i> {{ htmlspecialchars($_SESSION['adminUsuario'] ?? Auth::user()->usuario) }}</button>
+            <button class="btn btn-transparent text-danger fs-6" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="bi bi-box-arrow-left"></i>
+                {{ Auth::guard('admins')->user()->nombre ?? 'Admin' }}
+            </button>
             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>

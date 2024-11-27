@@ -39,13 +39,19 @@ class AdminController extends Controller
     // Logout
     public function logout(Request $request)
     {
+        // Cierra la sesión del guardia 'admins'
         Auth::guard('admins')->logout();
 
+        // Invalida la sesión actual
         $request->session()->invalidate();
+
+        // Genera un nuevo token CSRF para proteger futuras solicitudes
         $request->session()->regenerateToken();
 
+        // Redirige al login de administradores
         return redirect()->route('admin.login');
     }
+
 
     // Dashboard
     public function dashboard()

@@ -92,6 +92,7 @@ Route::middleware(['auth:hotels'])->group(function () {
 });
 
 
+
 // Ruta para el dashboard del hotel
 Route::middleware(['auth:hotels'])->group(function () {
     Route::get('/hotel/dashboard', [HotelController::class, 'dashboard'])->name('hotel.dashboard');
@@ -104,7 +105,19 @@ Route::get('/precio/{id_hotel}/{id_vehiculo}', [PriceController::class, 'obtener
 
 //funcionan
 Route::get('/admin/hotels/comisiones', [HotelController::class, 'comisionesPorHoteles'])->name('admin.hotels.comisiones');
-Route::get('/admin/hotels/{id}/comisiones', [HotelController::class, 'comisionesMensuales'])->name('admin.hotels.comisiones');
+Route::get('/admin/hotels/{hotelId}/comisiones', [HotelController::class, 'comisionesMensuales'])->name('admin.hotels.comisiones');
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/hotels/{hotelId}/comisiones', [HotelController::class, 'comisionesMensuales'])->name('admin.hotels.comisiones');
+    // Otras rutas exclusivas de admin...
+});
+Route::middleware(['auth:admins'])->group(function () {
+    Route::get('/admin/hotels/{hotelId}/comisiones', [HotelController::class, 'comisionesMensuales'])->name('admin.hotels.comisiones');
+    Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+});
+Route::get('/admin/dashboard', [BookingController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('/reservas/zonas', [BookingController::class, 'reservasPorZona']);
+
+
 
 Route::prefix('admin')->name('admin.')->middleware(['auth:admins'])->group(function () {
     Route::get('/prices', [PriceController::class, 'index'])->name('prices.index');
@@ -113,7 +126,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admins'])->group(funct
 });
 
 
-//Vista de graficos
-Route::get('/hotels/{hotelId}/comparar-meses', [HotelController::class, 'compararMesActualAnterior'])
-    ->name('hotels.compararMeses');
+
+
 
