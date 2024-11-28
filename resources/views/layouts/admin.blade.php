@@ -152,6 +152,7 @@
         });
     </script>
 </head>
+<!-- ///////////////////////////////////////////////// body //////////////////////////////////////////////// -->
 <body id="admin">
     <!-- Sidebar -->
     <div class="d-flex">
@@ -190,7 +191,7 @@
         <div class="mt-auto">
             <button class="btn btn-transparent text-danger fs-6" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="bi bi-box-arrow-left"></i>
-                {{ Auth::guard('admins')->user()->nombre ?? 'Admin' }}
+                {{ Auth::guard('admins')->user()->usuario ?? 'No identificado' }}
             </button>
             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                 @csrf
@@ -200,9 +201,7 @@
     <main class="container-fluid px-0">
         @yield('content')
     </main>
-
-</div>
-
+    <!-- Abrir modales en Bootstrap 5 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

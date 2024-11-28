@@ -1,77 +1,64 @@
-<div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="editBookingModal" tabindex="-1" role="dialog" aria-labelledby="editBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-secondary-subtle">
-                <h2 class="modal-title">Actualice la reserva</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editBookingForm" method="POST" action="">
-                    @csrf
-                    @method('PUT')
-                    <div class="container mt-4">
-                        <input type="hidden" id="editIdReserva" name="id_reserva">
-                        <input type="hidden" id="editIdTipoReserva" name="id_tipo_reserva">
-                        <input type="hidden" id="editLocalizador" name="localizador">
-                        <input type="hidden" id="editEmailCliente" name="email_cliente">
-
-                        <!-- Número de Viajeros -->
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="num_viajeros" id="editNumViajeros" placeholder="Número de viajeros">
-                            <label for="editNumViajeros">Número de viajeros</label>
-                        </div>
-
-                        <!-- Id Destino -->
-                        <div class="form-floating mb-3">
-                            <select name="id_destino" class="form-select" id="editIdDestino" required>
-                                <option value="" disabled selected>Selecciona un Id de Destino</option>
-                                <option value="1">Paraíso Escondido Retreat</option>
-                                <option value="2">Corazón Isleño Inn</option>
-                                <option value="3">Oasis Resort</option>
-                                <option value="4">El faro Suites</option>
-                                <option value="5">Costa Salvaje Eco Lodge</option>
-                                <option value="6">Arenas Doradas Resort</option>
-                            </select>
-                            <label for="editIdDestino">Id de destino</label>
-                        </div>
-
-                        <!-- Campos específicos para Aeropuerto - Hotel -->
-                        <div id="aeropuerto-hotel-fields-edit" style="display: none;">
-                            <div class="form-floating mb-3">
-                                <input type="date" class="form-control" name="fecha_entrada" id="editFechaEntrada" placeholder="Fecha de entrada">
-                                <label for="editFechaEntrada">Fecha Llegada</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="time" class="form-control" name="hora_entrada" id="editHoraEntrada" placeholder="Hora de entrada">
-                                <label for="editHoraEntrada">Hora Llegada</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="numero_vuelo_entrada" id="editNumeroVueloEntrada" placeholder="Número de vuelo de entrada">
-                                <label for="editNumeroVueloEntrada">Número Vuelo Llegada</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="origen_vuelo_entrada" id="editOrigenVueloEntrada" placeholder="Origen del vuelo de entrada">
-                                <label for="editOrigenVueloEntrada">Origen Vuelo</label>
-                            </div>
-                        </div>
-
-                        <!-- Campos específicos para Hotel - Aeropuerto -->
-                        <div id="hotel-aeropuerto-fields-edit" style="display: none;">
-                            <div class="form-floating mb-3">
-                                <input type="date" class="form-control" name="fecha_vuelo_salida" id="editFechaVueloSalida" placeholder="Fecha del vuelo de salida">
-                                <label for="editFechaVueloSalida">Fecha Vuelo Salida</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="time" class="form-control" name="hora_vuelo_salida" id="editHoraVueloSalida" placeholder="Hora del vuelo de salida">
-                                <label for="editHoraVueloSalida">Hora Vuelo Salida</label>
-                            </div>
-                        </div>
+            <form id="editBookingForm" action="" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBookingModalLabel">Editar Reserva</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="id_destino">Destino</label>
+                        <input type="text" class="form-control" id="id_destino" name="id_destino" required>
                     </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-secondary fw-bold text-white">Modificar</button>
+                    <div class="form-group">
+                        <label for="fecha_entrada">Fecha de Entrada</label>
+                        <input type="date" class="form-control" id="fecha_entrada" name="fecha_entrada">
                     </div>
-                </form>
-            </div>
+                    <div class="form-group">
+                        <label for="hora_entrada">Hora de Entrada</label>
+                        <input type="time" class="form-control" id="hora_entrada" name="hora_entrada">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_vuelo_salida">Fecha de Vuelo de Salida</label>
+                        <input type="date" class="form-control" id="fecha_vuelo_salida" name="fecha_vuelo_salida">
+                    </div>
+                    <div class="form-group">
+                        <label for="hora_vuelo_salida">Hora de Vuelo de Salida</label>
+                        <input type="time" class="form-control" id="hora_vuelo_salida" name="hora_vuelo_salida">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    $('#editBookingModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        var destino = button.data('destino');
+        var fechaEntrada = button.data('fecha-entrada');
+        var horaEntrada = button.data('hora-entrada');
+        var fechaVueloSalida = button.data('fecha-vuelo-salida');
+        var horaVueloSalida = button.data('hora-vuelo-salida');
+
+        var modal = $(this);
+        modal.find('#id_destino').val(destino);
+        modal.find('#fecha_entrada').val(fechaEntrada);
+        modal.find('#hora_entrada').val(horaEntrada);
+        modal.find('#fecha_vuelo_salida').val(fechaVueloSalida);
+        modal.find('#hora_vuelo_salida').val(horaVueloSalida);
+
+        var form = modal.find('#editBookingForm');
+        form.attr('action', '/traveler/bookings/' + id);
+    });
+</script>

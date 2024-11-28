@@ -30,17 +30,16 @@ Route::prefix('traveler')->name('traveler.')->group(function () {
         Route::post('/profile/{id}', [TravelerController::class, 'update']);
 
         // Reservas
-        Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
-        Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
-        Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
-        Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+        Route::get('/bookings', [TravelerController::class, 'index'])->name('bookings.index');
+        Route::post('/bookings', [TravelerController::class, 'storeBooking'])->name('bookings.store');
+        Route::put('/bookings/{id}', [TravelerController::class, 'updateBooking'])->name('bookings.update');
+        Route::delete('/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('bookings.destroy');
 
         // Calendario
-        Route::get('/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('calendar.events');
+        Route::get('/calendar/events', [TravelerController::class, 'getCalendarEvents'])->name('calendar.events');
     });
 });
 Route::resource('travelers', TravelerController::class);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // *** RUTAS PARA ADMINISTRADORES ***
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -71,6 +70,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Tours
         Route::resource('tours', TourController::class)->except(['show', 'create', 'edit']);
 
+        // Dashboard
+        Route::get('/dashboard', [BookingController::class, 'dashboard'])->name('dashboard');
     });
 });
 
@@ -114,6 +115,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admins'])->group(funct
     Route::get('/prices', [PriceController::class, 'index'])->name('prices.index');
     Route::post('/prices', [PriceController::class, 'store'])->name('prices.store');
     Route::delete('/prices/{price}', [PriceController::class, 'destroy'])->name('prices.destroy');
+});
+
+Route::middleware(['auth:travelers'])->group(function () {
+    Route::get('/traveler/bookings', [TravelerController::class, 'index'])->name('traveler.bookings.index');
+    Route::post('/traveler/bookings', [TravelerController::class, 'storeBooking'])->name('traveler.bookings.store');
+    Route::put('/traveler/bookings/{id}', [TravelerController::class, 'updateBooking'])->name('traveler.bookings.update');
+    Route::delete('/traveler/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('traveler.bookings.delete');
+    Route::get('/traveler/calendar-events', [TravelerController::class, 'getCalendarEvents'])->name('traveler.calendar.events');
 });
 
 

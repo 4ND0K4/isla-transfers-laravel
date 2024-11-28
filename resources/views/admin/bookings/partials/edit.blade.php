@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editBookingForm" method="POST" action="{{ route('admin.bookings.update', $booking->id_reserva) }}">
+                <form id="editBookingForm" method="POST" action="">
                     @csrf
                     @method('PUT')
                     <div class="container mt-4">
@@ -42,7 +42,7 @@
                         </div>
 
                         <!-- Campos específicos para Aeropuerto - Hotel -->
-                        <div id="aeropuerto-hotel-fields-edit" style="display: none;">
+                        <div id="aeropuerto-hotel-fields-edit">
                             <div class="form-floating mb-3">
                                 <input type="date" class="form-control" name="fecha_entrada" id="editFechaEntrada" placeholder="Fecha de entrada">
                                 <label for="editFechaEntrada">Fecha Llegada</label>
@@ -62,7 +62,7 @@
                         </div>
 
                         <!-- Campos específicos para Hotel - Aeropuerto -->
-                        <div id="hotel-aeropuerto-fields-edit" style="display: none;">
+                        <div id="hotel-aeropuerto-fields-edit">
                             <div class="form-floating mb-3">
                                 <input type="date" class="form-control" name="fecha_vuelo_salida" id="editFechaVueloSalida" placeholder="Fecha del vuelo de salida">
                                 <label for="editFechaVueloSalida">Fecha Vuelo Salida</label>
@@ -81,3 +81,4 @@
         </div>
     </div>
 </div>
+

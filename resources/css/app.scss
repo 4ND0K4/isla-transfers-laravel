@@ -14,6 +14,29 @@ body {
     font-family: 'Arial', sans-serif;
   }
 
+  //Para los container del modal de iniciar sesión
+  .custom-container {
+    width: 250px; /* Ancho fijo */
+    height: 150px; /* Alto fijo */
+    display: flex;
+    justify-content: center; /* Centrar texto horizontalmente */
+    align-items: center; /* Centrar texto verticalmente */
+    border-radius: 10px; /* Bordes redondeados (opcional) */
+    text-decoration: none; /* Quitar subrayado de enlaces */
+}
+
+.custom-container a {
+    font-size: 18px;
+    font-weight: bold;
+    color: inherit; /* Hereda el color de fondo */
+    text-decoration: none; /* Sin subrayado */
+}
+
+.custom-container a:hover {
+    text-decoration: underline; /* Subrayado al pasar el mouse */
+}
+
+//sidebar de admin
 #sidebar {
     background: linear-gradient(
         to top right,

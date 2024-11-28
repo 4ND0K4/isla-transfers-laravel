@@ -273,30 +273,32 @@
 
             <!-- Navegación y botones -->
             <ul class="nav nav-pills justify-content-end">
+                <!-- Botón abrir modal perfil -->
                 <li class="nav-item text-center">
-                    <!-- Botón de perfil -->
-<!-- Botón para abrir el modal -->
-<button
-    class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-success"
-    onclick="abrirModalActualizar({
-        id_viajero: {{ $traveler->id_viajero }},
-        email: '{{ $traveler->email }}',
-        nombre: '{{ $traveler->nombre }}',
-        apellido1: '{{ $traveler->apellido1 }}',
-        apellido2: '{{ $traveler->apellido2 }}',
-        direccion: '{{ $traveler->direccion }}',
-        codigopostal: '{{ $traveler->codigopostal }}',
-        ciudad: '{{ $traveler->ciudad }}',
-        pais: '{{ $traveler->pais }}'
-    })">
-    <i class="bi bi-person-gear px-2 text-success"></i>Perfil
-</button>
+                    <button
+                        class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-success"
+                        onclick="abrirModalActualizar({
+                            id_viajero: {{ $traveler->id_viajero }},
+                            email: '{{ $traveler->email }}',
+                            nombre: '{{ $traveler->nombre }}',
+                            apellido1: '{{ $traveler->apellido1 }}',
+                            apellido2: '{{ $traveler->apellido2 }}',
+                            direccion: '{{ $traveler->direccion }}',
+                            codigopostal: '{{ $traveler->codigopostal }}',
+                            ciudad: '{{ $traveler->ciudad }}',
+                            pais: '{{ $traveler->pais }}'
+                        })">
+                        <i class="bi bi-person-gear px-2 text-success"></i>Perfil
+                    </button>
                 </li>
+                <!-- Botón Cerrar sesión -->
                 <li class="pt-2">
-                    <!-- Cerrar sesión -->
-                    <a href="{{ route('logout') }}" class="fs-5 px-3 text-decoration-none text-danger">
-                        <i class="bi bi-box-arrow-left fs-5"></i> Cerrar sesión
-                    </a>
+                    <form action="{{ route('traveler.logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="fs-5 px-3 text-decoration-none text-danger" style="background: none; border: none;">
+                            <i class="bi bi-box-arrow-left fs-5"></i> Cerrar sesión
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>

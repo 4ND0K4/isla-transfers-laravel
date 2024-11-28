@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
-use App\Models\Traveler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -28,63 +27,11 @@ class BookingController extends Controller
     }
 
 
-    public function getBooking($id)
-    {
-        $booking = Booking::with(['hotel', 'vehicle', 'traveler'])->findOrFail($id);
-        return response()->json($booking);
-    }
-
-    public function dashboard()
-{
-    $currentMonth = Carbon::now()->month;
-    $currentYear = Carbon::now()->year;
-
-    // Consultar el número de reservas por zona
-    $reservasPorZona = Booking::selectRaw('transfer_hotel.id_zona, COUNT(*) as total_reservas')
-        ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
-        ->whereYear('fecha_reserva', $currentYear)
-        ->whereMonth('fecha_reserva', $currentMonth)
-        ->groupBy('transfer_hotel.id_zona')
-        ->get();
-
-    // Preparar etiquetas y valores para el gráfico
-    $labelsZonas = $reservasPorZona->map(function ($item) {
-        return $item->id_zona == 1 ? 'Norte' : ($item->id_zona == 2 ? 'Sur' : 'Metropolitana');
-    })->toArray();
-    $valuesZonas = $reservasPorZona->pluck('total_reservas')->toArray();
-
-    // Crear el gráfico tipo pie
-    $chartZonas = new Chart();
-    $chartZonas->labels($labelsZonas);
-    $chartZonas->dataset('Reservas por Zona', 'pie', $valuesZonas)
-               ->backgroundColor(['#FF6384', '#36A2EB', '#FFCE56']);
-
-    // Retornar el gráfico de zonas a la vista
-    return view('admin.dashboard', compact('chartZonas'));
-}
-
-
-
     public function store(Request $request)
     {
         Log::info('Inicio del método store para crear una reserva.');
 
-        $tipoCreadorReserva = 0; // Por defecto, no identificado
-        if (Auth::guard('admins')->check()) {
-            $tipoCreadorReserva = 1; // Admin
-        } elseif (Auth::guard('travelers')->check()) {
-            $tipoCreadorReserva = 2; // Traveler
-        } elseif (Auth::guard('hotels')->check()) {
-            $tipoCreadorReserva = 3; // Hotel
-        }
-
-        if ($tipoCreadorReserva === 0) {
-            Log::error('No se pudo determinar el tipo de creador de la reserva. Usuario no autenticado o guard no válido.');
-            return redirect()->back()->withErrors(['error' => 'No se puede procesar la reserva. Inicie sesión nuevamente.']);
-        }
-
-        Log::info("Tipo de creador de la reserva: {$tipoCreadorReserva} (1 = Admin, 2 = Traveler, 3 = Hotel)");
-
+        $tipoCreadorReserva = 1; // Admin
 
         // Validar los datos de entrada
         try {
@@ -106,22 +53,6 @@ class BookingController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Error de validación:', ['errors' => $e->errors()]);
             return redirect()->back()->withErrors($e->errors());
-        }
-
-        // Restricción para viajeros: no pueden crear reservas con menos de 48 horas de antelación
-        if ($tipoCreadorReserva === 2) { // Traveler
-            $fechaMinima = Carbon::now()->addDays(2);
-            Log::info("Restricción de 48 horas: la fecha mínima permitida es {$fechaMinima}");
-
-            if (
-                (isset($validated['fecha_entrada']) && Carbon::parse($validated['fecha_entrada'])->lt($fechaMinima)) ||
-                (isset($validated['fecha_vuelo_salida']) && Carbon::parse($validated['fecha_vuelo_salida'])->lt($fechaMinima))
-            ) {
-                Log::warning('El viajero intentó crear una reserva con menos de 48 horas de antelación.');
-                return redirect()->back()->withErrors([
-                    'error' => 'No puede realizar reservas con menos de 48 horas de antelación.',
-                ]);
-            }
         }
 
         // Preparar datos comunes para las reservas, asignando valores predeterminados
@@ -153,7 +84,6 @@ class BookingController extends Controller
                 ]);
                 $firstBooking = Booking::create($firstBookingData);
                 Log::info('Primera reserva creada con éxito:', $firstBooking->toArray());
-                //$this->sendEmailWithLocator($firstBooking);
 
                 // Reserva 2: Hotel -> Aeropuerto
                 $secondBookingData = array_merge($baseData, [
@@ -165,7 +95,6 @@ class BookingController extends Controller
                 ]);
                 $secondBooking = Booking::create($secondBookingData);
                 Log::info('Segunda reserva creada con éxito:', $secondBooking->toArray());
-                //$this->sendEmailWithLocator($secondBooking);
 
             } else {
                 Log::info('Creando una reserva única.');
@@ -184,7 +113,6 @@ class BookingController extends Controller
                 $baseData['id_hotel'] = $validated['id_destino'];
                 $booking = Booking::create($baseData);
                 Log::info('Reserva única creada con éxito:', $booking->toArray());
-                //$this->sendEmailWithLocator($booking);
             }
 
             return redirect()->route('admin.bookings.index')->with('success', 'Reserva creada correctamente.');
@@ -192,233 +120,204 @@ class BookingController extends Controller
             Log::error('Error al crear la reserva:', ['message' => $e->getMessage()]);
             return redirect()->back()->withErrors(['error' => 'Hubo un error al crear la reserva.']);
         }
-
-
-        Log::info('Reserva(s) creada(s) correctamente. Redirigiendo al índice de reservas.');
-        if ($tipoCreadorReserva === 1) { // Admin
-            return redirect()->route('admin.bookings.index')->with('success', 'Reserva creada correctamente.');
-        } elseif ($tipoCreadorReserva === 2) { // Traveler
-            return redirect()->route('traveler.dashboard')->with('success', 'Reserva creada correctamente.');
-        } elseif ($tipoCreadorReserva === 3) { // Hotel
-            return redirect()->route('hotel.dashboard')->with('success', 'Reserva creada correctamente.');
-        } else {
-            return redirect()->back()->withErrors(['error' => 'Hubo un problema al redirigir tras la creación de la reserva.']);
-        }
-
     }
 
-/**
- * Enviar un correo electrónico con el localizador de la reserva.
- */
-private function sendEmailWithLocator(Booking $booking)
-{
-    $emailData = [
-        'localizador' => $booking->localizador,
-        'tipo_reserva' => $booking->id_tipo_reserva === 1 ? 'Aeropuerto - Hotel' : 'Hotel - Aeropuerto',
-        'fecha' => $booking->id_tipo_reserva === 1 ? $booking->fecha_entrada : $booking->fecha_vuelo_salida,
-        'hora' => $booking->id_tipo_reserva === 1 ? $booking->hora_entrada : $booking->hora_vuelo_salida,
-        'hotel' => $booking->id_hotel,
-        'origen_vuelo' => $booking->origen_vuelo_entrada,
-        'numero_vuelo' => $booking->numero_vuelo_entrada,
-        'num_viajeros' => $booking->num_viajeros,
-    ];
 
-    Mail::send('admin.email.booking_confirmation', $emailData, function ($message) use ($booking) {
-        $message->to($booking->email_cliente)
-            ->subject('Confirmación de Reserva')
-            ->from('reservas@islatransfer.com', 'Isla Transfer');
-    });
+    public function update(Request $request, $id)
+    {
+        try {
+            Log::info("Intentando actualizar la reserva con ID recibido: {$id}");
 
-    Log::info('Correo electrónico enviado con éxito al cliente:', ['email' => $booking->email_cliente]);
-}
+            // Buscar la reserva a actualizar
+            $booking = Booking::findOrFail($id);
+            Log::info('Reserva encontrada:', $booking->toArray());
 
-public function update(Request $request, $id)
-{
-    try {
-        Log::info("Intentando actualizar la reserva con ID recibido: {$id}");
+            // Validar los datos recibidos
+            $validated = $request->validate([
+                'id_tipo_reserva' => 'required|in:1,2',
+                'id_destino' => 'required|exists:transfer_hotel,id_hotel',
+                'email_cliente' => 'required|email|exists:transfer_viajeros,email',
+                'num_viajeros' => 'required|integer|min:1',
+                'fecha_entrada' => 'nullable|date|required_if:id_tipo_reserva,1',
+                'hora_entrada' => 'nullable|required_if:id_tipo_reserva,1',
+                'fecha_vuelo_salida' => 'nullable|date|required_if:id_tipo_reserva,2',
+                'hora_vuelo_salida' => 'nullable|required_if:id_tipo_reserva,2',
+                'numero_vuelo_entrada' => 'nullable|string',
+                'origen_vuelo_entrada' => 'nullable|string',
+                'id_vehiculo' => 'nullable|integer|exists:transfer_vehiculo,id_vehiculo',
+            ]);
 
-        // Buscar la reserva a actualizar
-        $booking = Booking::findOrFail($id);
-        Log::info('Reserva encontrada:', $booking->toArray());
+            Log::info('Datos validados correctamente:', $validated);
 
-        // Validar los datos recibidos
-        $validated = $request->validate([
-            'id_tipo_reserva' => 'required|in:1,2',
-            'id_destino' => 'required|exists:transfer_hotel,id_hotel',
-            'email_cliente' => 'required|email|exists:transfer_viajeros,email',
-            'num_viajeros' => 'required|integer|min:1',
-            'fecha_entrada' => 'nullable|date|required_if:id_tipo_reserva,1',
-            'hora_entrada' => 'nullable|required_if:id_tipo_reserva,1',
-            'fecha_vuelo_salida' => 'nullable|date|required_if:id_tipo_reserva,2',
-            'hora_vuelo_salida' => 'nullable|required_if:id_tipo_reserva,2',
-            'numero_vuelo_entrada' => 'nullable|string',
-            'origen_vuelo_entrada' => 'nullable|string',
-            'id_vehiculo' => 'nullable|integer|exists:transfer_vehiculo,id_vehiculo',
-        ]);
+            // Preparar datos para la actualización
+            $updateData = $validated;
 
-        Log::info('Datos validados correctamente:', $validated);
+            // Asignar id_destino al campo id_hotel
+            $updateData['id_hotel'] = $validated['id_destino'];
+            Log::info('Asignando id_destino a id_hotel:', ['id_hotel' => $updateData['id_hotel']]);
 
-        // Preparar datos para la actualización
-        $updateData = $validated;
+            // Limpiar campos irrelevantes según el tipo de reserva
+            if ($validated['id_tipo_reserva'] == 1) {
+                $updateData['fecha_vuelo_salida'] = '1970-01-01'; // Vaciar
+                $updateData['hora_vuelo_salida'] = '00:00:00'; // Vaciar
+            } elseif ($validated['id_tipo_reserva'] == 2) {
+                $updateData['fecha_entrada'] = '1970-01-01'; // Vaciar
+                $updateData['hora_entrada'] = '00:00:00'; // Vaciar
+            }
 
-        // Asignar id_destino al campo id_hotel
-        $updateData['id_hotel'] = $validated['id_destino'];
-        Log::info('Asignando id_destino a id_hotel:', ['id_hotel' => $updateData['id_hotel']]);
+            // Valores predeterminados para campos que no pueden ser NULL
+            $updateData['numero_vuelo_entrada'] = $validated['numero_vuelo_entrada'] ?? '';
+            $updateData['origen_vuelo_entrada'] = $validated['origen_vuelo_entrada'] ?? '';
 
-        // Limpiar campos irrelevantes según el tipo de reserva
-        if ($validated['id_tipo_reserva'] == 1) {
-            $updateData['fecha_vuelo_salida'] = '1970-01-01'; // Vaciar
-            $updateData['hora_vuelo_salida'] = '00:00:00'; // Vaciar
-        } elseif ($validated['id_tipo_reserva'] == 2) {
-            $updateData['fecha_entrada'] = '1970-01-01'; // Vaciar
-            $updateData['hora_entrada'] = '00:00:00'; // Vaciar
+            // Registrar modificación
+            $updateData['fecha_modificacion'] = now();
+
+            // Actualizar la reserva
+            $booking->update($updateData);
+            Log::info("Reserva actualizada correctamente. ID: {$id}");
+
+            return redirect()->route(Auth::guard('admins')->check() ? 'admin.bookings.index' : 'traveler.bookings.index')->with('success', 'Reserva actualizada correctamente.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Error de validación al actualizar la reserva:', $e->errors());
+            return redirect()->back()->withErrors($e->errors());
+        } catch (\Exception $e) {
+            Log::error("Error al actualizar la reserva con ID: {$id}. Mensaje: " . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->withErrors(['error' => 'Hubo un error al intentar actualizar la reserva.']);
         }
-
-        // Valores predeterminados para campos que no pueden ser NULL
-        $updateData['numero_vuelo_entrada'] = $validated['numero_vuelo_entrada'] ?? '';
-        $updateData['origen_vuelo_entrada'] = $validated['origen_vuelo_entrada'] ?? '';
-
-        // Registrar modificación
-        $updateData['fecha_modificacion'] = now();
-
-        // Actualizar la reserva
-        $booking->update($updateData);
-        Log::info("Reserva actualizada correctamente. ID: {$id}");
-
-        // Redirigir según el rol del usuario
-        if (Auth::guard('admins')->check()) {
-            return redirect()->route('admin.bookings.index')->with('success', 'Reserva actualizada correctamente.');
-        } elseif (Auth::guard('travelers')->check()) {
-            return redirect()->route('traveler.dashboard')->with('success', 'Reserva actualizada correctamente.');
-        } elseif (Auth::guard('hotels')->check()) {
-            return redirect()->route('hotel.dashboard')->with('success', 'Reserva actualizada correctamente.');
-        }
-
-        Log::warning('No se pudo determinar el rol del usuario.');
-        return redirect()->back()->withErrors(['error' => 'No se pudo determinar el rol del usuario.']);
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        Log::error('Error de validación al actualizar la reserva:', $e->errors());
-        return redirect()->back()->withErrors($e->errors());
-    } catch (\Exception $e) {
-        Log::error("Error al actualizar la reserva con ID: {$id}. Mensaje: " . $e->getMessage(), [
-            'trace' => $e->getTraceAsString()
-        ]);
-        return redirect()->back()->withErrors(['error' => 'Hubo un error al intentar actualizar la reserva.']);
     }
-}
 
 
     public function destroy($id)
     {
-        // Buscar la reserva por ID
-        $booking = Booking::findOrFail($id);
+        try {
+            // Buscar la reserva por ID
+            $booking = Booking::findOrFail($id);
 
-        // Si el usuario es de tipo traveler, aplicar la restricción de 48 horas
-        if (Auth::user()->role === 'traveler') {
-            $fechaMinima = now()->addDays(2);
+            // Intentar eliminar la reserva
+            $booking->delete();
+            Log::info("Reserva eliminada correctamente. ID: {$id}");
 
-            // Validar si la reserva está dentro del período restringido de 48 horas
-            if (
-                ($booking->id_tipo_reserva == 1 && $booking->fecha_entrada < $fechaMinima) ||
-                ($booking->id_tipo_reserva == 2 && $booking->fecha_vuelo_salida < $fechaMinima)
-            ) {
-                return redirect()->back()->withErrors(['error' => 'No puede eliminar reservas con menos de 48 horas de antelación.']);
-            }
-        }
-
-        // Intentar eliminar la reserva
-        if ($booking->delete()) {
             return redirect()->route('admin.bookings.index')->with('success', 'Reserva eliminada correctamente.');
-        } else {
-            return redirect()->back()->withErrors(['error' => 'Error al eliminar la reserva.']);
+        } catch (\Exception $e) {
+            Log::error("Error al eliminar la reserva con ID: {$id}. Mensaje: " . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->withErrors(['error' => 'Hubo un error al intentar eliminar la reserva.']);
         }
     }
 
+
     public function getCalendarEvents(Request $request)
-{
-    try {
-        // Detectar el usuario autenticado
-        $adminUser = auth()->guard('admins')->user();
-        $travelerUser = auth()->guard('travelers')->user();
+    {
+        try {
+            $adminUser = auth()->guard('admins')->user();
 
-        if ($adminUser) {
-            Log::info('Usuario autenticado como admin:', ['email' => $adminUser->email]);
-            // Si es admin, obtener todas las reservas
-            $bookings = Booking::all();
-        } elseif ($travelerUser) {
-            Log::info('Usuario autenticado como traveler:', ['email' => $travelerUser->email]);
-            // Si es traveler, obtener solo las reservas asociadas al email del traveler
-            $bookings = Booking::where('email_cliente', $travelerUser->email)->get();
-        } else {
-            Log::warning('Usuario no autenticado o no válido.');
-            // Si no hay usuario autenticado, devolver error
-            return response()->json(['error' => 'Usuario no autenticado'], 401);
+            if ($adminUser) {
+                Log::info('Usuario autenticado como admin:', ['email' => $adminUser->email]);
+                // Si es admin, obtener todas las reservas
+                $bookings = Booking::all();
+            } else {
+                Log::warning('Usuario no autenticado o no válido.');
+                // Si no hay usuario autenticado, devolver error
+                return response()->json(['error' => 'Usuario no autenticado'], 401);
+            }
+
+            // Log para verificar las reservas obtenidas
+            Log::info('Reservas obtenidas:', ['bookings' => $bookings]);
+
+            // Formatear los eventos para FullCalendar
+            $events = $bookings->map(function ($booking) {
+                $startDate = $booking->id_tipo_reserva == 1 ? $booking->fecha_entrada : $booking->fecha_vuelo_salida;
+                $startTime = $booking->id_tipo_reserva == 1 ? $booking->hora_entrada : $booking->hora_vuelo_salida;
+                $start = $startDate && $startTime ? "$startDate $startTime" : $startDate;
+
+                return [
+                    'id' => $booking->id_reserva,
+                    'title' => 'Hotel ' . $booking->id_hotel,
+                    'start' => $start,
+                    'extendedProps' => [
+                        'id_hotel' => $booking->id_hotel,
+                        'localizador' => $booking->localizador,
+                        'id_tipo_reserva' => $booking->id_tipo_reserva,
+                        'email_cliente' => $booking->email_cliente,
+                        'fecha_reserva' => $booking->fecha_reserva,
+                        'fecha_modificacion' => $booking->fecha_modificacion,
+                        'hora_entrada' => $booking->hora_entrada,
+                        'numero_vuelo_entrada' => $booking->numero_vuelo_entrada,
+                        'origen_vuelo_entrada' => $booking->origen_vuelo_entrada,
+                        'hora_vuelo_salida' => $booking->hora_vuelo_salida,
+                        'num_viajeros' => $booking->num_viajeros,
+                        'id_vehiculo' => $booking->id_vehiculo,
+                        'tipo_creador_reserva' => $booking->tipo_creador_reserva,
+                    ],
+                ];
+            });
+
+            Log::info('Eventos generados correctamente para el calendario.');
+
+            return response()->json($events);
+        } catch (\Exception $e) {
+            Log::error('Error al cargar eventos para el calendario:', ['exception' => $e->getMessage()]);
+            return response()->json(['error' => 'No se pudieron cargar los eventos'], 500);
         }
+    }
 
-        // Log para verificar las reservas obtenidas
-        Log::info('Reservas obtenidas:', ['bookings' => $bookings]);
+    // Implementa el servicio de recoger rl total de reservas por zona
+    public function reservasPorZona()
+    {
+        // Total de reservas
+        $totalReservas = Booking::count();
 
-        // Formatear los eventos para FullCalendar
-        $events = $bookings->map(function ($booking) {
-            $startDate = $booking->id_tipo_reserva == 1 ? $booking->fecha_entrada : $booking->fecha_vuelo_salida;
-            $startTime = $booking->id_tipo_reserva == 1 ? $booking->hora_entrada : $booking->hora_vuelo_salida;
-            $start = $startDate && $startTime ? "$startDate $startTime" : $startDate;
+        // Agrupar reservas por zona
+        $reservasPorZona = Booking::selectRaw('transfer_hotel.id_zona, COUNT(*) as total_reservas')
+            ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
+            ->groupBy('transfer_hotel.id_zona')
+            ->get();
 
+        // Calcular el porcentaje y preparar el JSON
+        $data = $reservasPorZona->map(function ($item) use ($totalReservas) {
             return [
-                'id' => $booking->id_reserva,
-                'title' => 'Hotel ' . $booking->id_hotel,
-                'start' => $start,
-                'extendedProps' => [
-                    'id_hotel' => $booking->id_hotel,
-                    'localizador' => $booking->localizador,
-                    'id_tipo_reserva' => $booking->id_tipo_reserva,
-                    'email_cliente' => $booking->email_cliente,
-                    'fecha_reserva' => $booking->fecha_reserva,
-                    'fecha_modificacion' => $booking->fecha_modificacion,
-                    'hora_entrada' => $booking->hora_entrada,
-                    'numero_vuelo_entrada' => $booking->numero_vuelo_entrada,
-                    'origen_vuelo_entrada' => $booking->origen_vuelo_entrada,
-                    'hora_vuelo_salida' => $booking->hora_vuelo_salida,
-                    'num_viajeros' => $booking->num_viajeros,
-                    'id_vehiculo' => $booking->id_vehiculo,
-                    'tipo_creador_reserva' => $booking->tipo_creador_reserva,
-                ],
+                'zona' => $item->id_zona == 1 ? 'Norte' : ($item->id_zona == 2 ? 'Sur' : 'Metropolitana'),
+                'numero_traslados' => $item->total_reservas,
+                'porcentaje' => $totalReservas > 0 ? round(($item->total_reservas / $totalReservas) * 100, 2) : 0,
             ];
         });
 
-        Log::info('Eventos generados correctamente para el calendario.');
-
-        return response()->json($events);
-    } catch (\Exception $e) {
-        Log::error('Error al cargar eventos para el calendario:', ['exception' => $e->getMessage()]);
-        return response()->json(['error' => 'No se pudieron cargar los eventos'], 500);
+        // Retornar datos en JSON
+        return response()->json($data);
     }
-}
 
-public function reservasPorZona()
-{
-    // Total de reservas
-    $totalReservas = Booking::count();
+    // Gráfico basado en la función reservasPorZona en el mes en curso
+    public function dashboard()
+    {
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
 
-    // Agrupar reservas por zona
-    $reservasPorZona = Booking::selectRaw('transfer_hotel.id_zona, COUNT(*) as total_reservas')
-        ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
-        ->groupBy('transfer_hotel.id_zona')
-        ->get();
+        // Consultar el número de reservas por zona
+        $reservasPorZona = Booking::selectRaw('transfer_hotel.id_zona, COUNT(*) as total_reservas')
+            ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
+            ->whereYear('fecha_reserva', $currentYear)
+            ->whereMonth('fecha_reserva', $currentMonth)
+            ->groupBy('transfer_hotel.id_zona')
+            ->get();
 
-    // Calcular el porcentaje y preparar el JSON
-    $data = $reservasPorZona->map(function ($item) use ($totalReservas) {
-        return [
-            'zona' => $item->id_zona == 1 ? 'Norte' : ($item->id_zona == 2 ? 'Sur' : 'Metropolitana'),
-            'numero_traslados' => $item->total_reservas,
-            'porcentaje' => $totalReservas > 0 ? round(($item->total_reservas / $totalReservas) * 100, 2) : 0,
-        ];
-    });
+        // Preparar etiquetas y valores para el gráfico
+        $labelsZonas = $reservasPorZona->map(function ($item) {
+            return $item->id_zona == 1 ? 'Norte' : ($item->id_zona == 2 ? 'Sur' : 'Metropolitana');
+        })->toArray();
+        $valuesZonas = $reservasPorZona->pluck('total_reservas')->toArray();
 
-    // Retornar datos en JSON
-    return response()->json($data);
-}
+        // Crear el gráfico tipo pie
+        $chartZonas = new Chart();
+        $chartZonas->labels($labelsZonas);
+        $chartZonas->dataset('Reservas por Zona', 'pie', $valuesZonas)
+                   ->backgroundColor(['#FF6384', '#36A2EB', '#FFCE56']);
+
+        // Retornar el gráfico de zonas a la vista
+        return view('admin.dashboard', compact('chartZonas'));
+    }
 
 
 }
