@@ -6,55 +6,95 @@
 
 <div class="container my-4">
     <div class="row">
-        <h1 class="text-center mb-4">Bienvenido, {{ $hotel->usuario }}</h1>
-    </div>
-
-    <div class="row">
         <!-- Gráfico -->
-        <div class="col-md-6 col-lg-6 mb-4">
+        <div class="col-xl-4 mb-4">
             <div class="bg-white border rounded-2 p-3 shadow" style="height: 100%; max-height: 100vh;">
-                <h2 class="text-center">Comparación de Comisiones</h2>
+                <h2 class="fs-5">Comparación de Comisiones</h2>
                 <div style="height: 400px; max-height: 100%; overflow: hidden;">
                     {!! $chart->container() !!}
                 </div>
+                <div>
+                    <!-- Tabla de Comisiones -->
+                    <h2 class="fs-5">Último trimestre</h2>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Año</th>
+                                <th>Mes</th>
+                                <th>Comisión Total (€)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($comisiones as $comision)
+                                <tr>
+                                    <td>{{ $comision->year }}</td>
+                                    <td>{{ $comision->month }}</td>
+                                    <td>{{ number_format($comision->total_comision, 2) }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center">No hay comisiones disponibles</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-
-        <!-- Tabla de Comisiones -->
-        <div class="col-md-6 col-lg-6 mb-4">
-            <div class="bg-white border rounded-2 p-3 shadow">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="mb-0">Comisiones Mensuales</h2>
-                    <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                        <i class="bi bi-plus-circle"></i> Nueva reserva
-                    </button>
+        <div class="col-xl-8 mb-4">
+            <!-- Tabla de Reservas -->
+            <div class="">
+                <div class="col-xl-12">
+                    <div class="bg-white border rounded-2 p-3 shadow">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="mb-0 fs-5">Últimas reservas realizadas</h2>
+                            <div>
+                                <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                                    <i class="bi bi-plus-circle"></i> Nueva reserva
+                                </button>
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Localizador</th>
+                                    <th>Tipo de Reserva</th>
+                                    <th>Email del Cliente</th>
+                                    <th>Fecha de Reserva</th>
+                                    <th>Fecha de Entrada</th>
+                                    <th>Hora de Entrada</th>
+                                    <th>Fecha de Vuelo de Salida</th>
+                                    <th>Hora de Vuelo de Salida</th>
+                                    <th>Número de Viajeros</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($bookings as $booking)
+                                    <tr>
+                                        <td>{{ $booking->localizador }}</td>
+                                        <td>{{ $booking->id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto' }}</td>
+                                        <td>{{ $booking->email_cliente }}</td>
+                                        <td>{{ $booking->fecha_reserva }}</td>
+                                        <td>{{ $booking->fecha_entrada }}</td>
+                                        <td>{{ $booking->hora_entrada }}</td>
+                                        <td>{{ $booking->fecha_vuelo_salida }}</td>
+                                        <td>{{ $booking->hora_vuelo_salida }}</td>
+                                        <td>{{ $booking->num_viajeros }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center">No hay reservas disponibles</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Año</th>
-                            <th>Mes</th>
-                            <th>Comisión Total (€)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($comisiones as $comision)
-                            <tr>
-                                <td>{{ $comision->year }}</td>
-                                <td>{{ $comision->month }}</td>
-                                <td>{{ number_format($comision->total_comision, 2) }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="3" class="text-center">No hay comisiones disponibles</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 </div>
+@include('hotels.partials.create')
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {{ $chart->script() }}

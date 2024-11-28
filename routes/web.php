@@ -79,16 +79,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::get('/hotel/login', [HotelController::class, 'showLoginForm'])->name('hotel.login'); // Para mostrar el formulario de login
 Route::post('/hotel/login', [HotelController::class, 'login'])->name('hotel.login.post'); // Para procesar el login
 
-
-
-
 Route::prefix('hotel')->middleware('auth:hotels')->group(function () {
-    Route::get('/dashboard', [BookingController::class, 'hotelDashboard'])->name('hotel.dashboard');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('hotel.bookings.store');
-    Route::get('/bookings', [BookingController::class, 'index'])->name('hotel.bookings.index');
+    Route::get('/dashboard', [HotelController::class, 'dashboard'])->name('hotel.dashboard');
+    Route::post('/bookings', [HotelController::class, 'storeBooking'])->name('hotel.bookings.store');
+    Route::get('/bookings', [HotelController::class, 'listAllBookings'])->name('hotel.bookings.index');
+    Route::get('/commissions', [HotelController::class, 'listCommissions'])->name('hotel.commissions.index');
+    Route::post('/logout', [HotelController::class, 'logout'])->name('hotel.logout');
 });
-
-
 
 // Ruta para el dashboard del hotel
 Route::middleware(['auth:hotels'])->group(function () {
@@ -96,7 +93,6 @@ Route::middleware(['auth:hotels'])->group(function () {
 });
 
 // Ruta para obtener el precio basado en hotel y vehículo
-
 
 Route::get('/precio/{id_hotel}/{id_vehiculo}', [PriceController::class, 'obtenerPrecio'])->name('precio.obtener');
 
@@ -113,8 +109,6 @@ Route::middleware(['auth:admins'])->group(function () {
 });
 Route::get('/admin/dashboard', [BookingController::class, 'dashboard'])->name('admin.dashboard');
 Route::get('/reservas/zonas', [BookingController::class, 'reservasPorZona']);
-
-
 
 Route::prefix('admin')->name('admin.')->middleware(['auth:admins'])->group(function () {
     Route::get('/prices', [PriceController::class, 'index'])->name('prices.index');

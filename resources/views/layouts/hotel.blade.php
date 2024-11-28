@@ -21,12 +21,42 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
+        <div class="container-fluid">
             <a class="navbar-brand" href="#">Isla Transfers</a>
+            <div class="ms-3">
+                <a href="{{ route('hotel.bookings.index') }}" class="btn btn-outline-secondary fw-bold">
+                    Reservas
+                </a>
+                <a href="{{ route('hotel.commissions.index') }}" class="btn btn-outline-secondary fw-bold ms-2">
+                    Comisiones
+                </a>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- ...existing code... -->
+                </ul>
+                <ul class="navbar-nav">
+                    <li>
+                        <span class="text-center fs-5">Bienvenido, {{ $hotel->usuario }}</span>
+                    </li>
+                    <!-- ...existing code... -->
+                    <li class="nav-item">
+                        <form id="logout-form" action="{{ route('hotel.logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                        <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Cerrar sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-        @yield('content') <!-- Aquí se inyectará el contenido de las vistas -->
+    @yield('content') <!-- Aquí se inyectará el contenido de las vistas -->
 
     <!-- Agregar JS de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
