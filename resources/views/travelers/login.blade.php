@@ -3,6 +3,7 @@
 @section('title', 'Login - Isla Transfers')
 
 @section('content')
+<main id="traveler">
  <!-- BLOQUE PRINCIPAL -->
  <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100">
@@ -63,5 +64,6 @@
         </div>
     </div>
 </div>
+</main>
 @endsection
 

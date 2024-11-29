@@ -3,6 +3,7 @@
 @section('title', 'Login Hotel')
 
 @section('content')
+<main id="hotel">
 <!-- BLOQUE PRINCIPAL -->
 <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100">
@@ -52,4 +53,5 @@
         </div>
     </div>
 </div>
+</main>
 @endsection

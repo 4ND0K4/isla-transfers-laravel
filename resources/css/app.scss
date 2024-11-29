@@ -16,8 +16,8 @@ body {
 
   //Para los container del modal de iniciar sesión
   .custom-container {
-    width: 250px; /* Ancho fijo */
-    height: 150px; /* Alto fijo */
+    width: 400px; /* Ancho fijo */
+    height: 250px; /* Alto fijo */
     display: flex;
     justify-content: center; /* Centrar texto horizontalmente */
     align-items: center; /* Centrar texto verticalmente */
@@ -25,15 +25,25 @@ body {
     text-decoration: none; /* Quitar subrayado de enlaces */
 }
 
-.custom-container a {
-    font-size: 18px;
-    font-weight: bold;
-    color: inherit; /* Hereda el color de fondo */
-    text-decoration: none; /* Sin subrayado */
-}
+// Define una clase para el hover
+.custom-hover {
+    color: $secondary; // Color inicial usando la variable Bootstrap
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
 
-.custom-container a:hover {
-    text-decoration: underline; /* Subrayado al pasar el mouse */
+    &:hover {
+      color: $dark; // Cambia a un color de peligro (rojo) al hover
+      text-decoration: none;
+      font-weight: bold;
+    }
+  }
+
+#welcome {
+
+    background: linear-gradient(90deg, $blue-200, $green-200, $yellow-200);
+    font-family: 'Roboto Flex', serif;
+
+
 }
 
 //sidebar de admin
@@ -65,6 +75,11 @@ body {
 #traveler {
     font-family: "Baloo Paaji 2", sans-serif;
     background-color: $yellow-100;
+}
+
+#hotel {
+    font-family: "Baloo Paaji 2", sans-serif;
+    background-color: $green-100;
 }
 
 // Estilo de la tabla con hover personalizado

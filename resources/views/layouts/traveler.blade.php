@@ -218,21 +218,23 @@
         cardsContainer.innerHTML = ''; // Limpiar cards previas
 
         bookings.forEach(booking => {
-            const fecha = booking.extendedProps.fecha_reserva;
+            const fecha = booking.extendedProps.fecha_entrada || booking.extendedProps.fecha_vuelo_salida;
             const hora = booking.extendedProps.hora_entrada || booking.extendedProps.hora_vuelo_salida;
 
             const cardHTML = `
-                <div class="col-md-4 mb-3">
-                    <div class="card shadow-sm border-success">
-                        <div class="card-body">
-                            <h5 class="card-title text-success">Reserva ${booking.id}</h5>
-                            <p class="card-text">
-                                <strong>Hotel:</strong> ${booking.extendedProps.id_hotel}<br>
-                                <strong>Fecha:</strong> ${fecha}<br>
-                                <strong>Hora:</strong> ${hora}<br>
-                                <strong>Cliente:</strong> ${booking.extendedProps.email_cliente}
-                            </p>
-                            <button
+                <div class="col-md-12 mb-3">
+                    <div class="card shadow-sm border-success w-100" style="height: 150px;">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="card-title text-success fs-6">Reserva ${booking.extendedProps.localizador}</p>
+                                <p class="card-text">
+                                    <strong>Hotel:</strong> ${booking.extendedProps.id_hotel}<br>
+                                    <strong>Fecha:</strong> ${fecha}<br>
+                                    <strong>Hora:</strong> ${hora}<br>
+                                </p>
+                            </div>
+                            <div>
+                                <button
                                     class="btn btn-sm btn-outline-warning m-1"
                                     title="Editar reserva"
                                     data-bs-toggle="modal"
@@ -242,20 +244,21 @@
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 
-
-                            <form action="/admin/bookings/${booking.id_reserva}" method="POST" style="display: inline;">
-                            <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button
-                                class="btn btn-sm btn-outline-danger m-1"
-                                title="Eliminar reserva">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        </form>
+                                <form action="/admin/bookings/${booking.id_reserva}" method="POST" class="d-inline">
+                                    <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button
+                                        class="btn btn-sm btn-outline-danger m-1"
+                                        title="Eliminar reserva">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
+
 
             cardsContainer.insertAdjacentHTML('beforeend', cardHTML);
         });

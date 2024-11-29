@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,9 +33,12 @@
             </a>
         </div>
         <ul class="nav nav-pills justify-content-end">
-            <!-- Enlace para abrir el modal -->
-            <a href="#" id="openModal">Iniciar sesión</a>
-
+            <li>
+                <!-- Enlace para abrir el modal -->
+                <a href="#" id="openModal" class="text-dark fw-bold text-decoration-none fs-6 pe-3">
+                    Iniciar sesión
+                </a>
+            </li>
         </div>
     </nav>
 
@@ -45,35 +48,32 @@
     <div class="modal fade" id="fullScreenModal" tabindex="-1" aria-labelledby="fullScreenModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="fullScreenModalLabel">Enlige tu tipo de sesión</h5>
-          <button type="button" class="btn-close" id="closeModal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
+        <div class="modal-body" id="welcome">
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-3" id="closeModal" aria-label="Cerrar"></button>
             <div class="container d-flex flex-column align-items-center justify-content-center vh-100">
                 <div class="row p-3">
                     <!-- Primera fila -->
                     <div class="col-xl-6 d-flex justify-content-center">
-                        <div class="bg-warning-subtle p-3 text-center custom-container">
-                            <a href="{{ route('traveler.login') }}">¿Eres cliente particular?</a>
+                        <div class="bg-transparent p-3 text-center custom-container">
+                            <a href="{{ route('traveler.login') }}" class="fs-3 custom-hover">¿Eres cliente particular?</a>
                         </div>
                     </div>
                     <div class="col-xl-6 d-flex justify-content-center">
-                        <div class="bg-success-subtle p-3 text-center custom-container">
-                            <a href="{{ route('hotel.login') }}">¿Eres cliente corporativo?</a>
+                        <div class="bg-transparent p-3 text-center custom-container">
+                            <a href="{{ route('hotel.login') }}" class="fs-3 custom-hover">¿Eres cliente corporativo?</a>
                         </div>
                     </div>
                 </div>
                 <div class="row p-3">
                     <!-- Segunda fila -->
                     <div class="col-xl-6 d-flex justify-content-center">
-                        <div class="bg-info-subtle p-3 text-center custom-container">
-                            <a href="{{ route('admin.login') }}">¿Eres administrador?</a>
+                        <div class="bg-transparent p-3 text-center custom-container">
+                            <a href="{{ route('admin.login') }}" class="fs-3 custom-hover">¿Eres administrador?</a>
                         </div>
                     </div>
                     <div class="col-xl-6 d-flex justify-content-center">
-                        <div class="bg-light p-3 text-center custom-container">
-                            <a href="#">¿Eres rider?</a>
+                        <div class="bg-transparent p-3 text-center custom-container">
+                            <a href="#" class="fs-3 custom-hover">¿Eres rider?</a>
                         </div>
                     </div>
                 </div>

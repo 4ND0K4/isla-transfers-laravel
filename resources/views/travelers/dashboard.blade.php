@@ -5,34 +5,44 @@
     <!-- //////////////////////////////////////////////// BLOQUE PRINCIPAL //////////////////////////////////////////////// -->
     <div class="container">
         <div class="row">
-            <div class="col-3 bg-light border rounded-2">
+            <div class="col-3 bg-light border rounded-2 py-3 me-1 my-3">
                 <!-- Título -->
                 <h1 class="text-center pt-3 fw-light text-success fs-4">¡Hola, {{ htmlspecialchars($_SESSION['travelerName'] ?? Auth::user()->nombre) }}!</h1>
                 <!-- Subtítulo -->
-                <h2 class="text-center text-secondary fw-bold pt-3 fs-6">Gestiona tus reservas.</h2>
+                <h2 class="text-center text-secondary fw-bold pt-3 fs-6">Gestiona tus transfers.</h2>
                 <!-- Botón de crear reserva -->
                 <div class="col text-center fw-bold py-3">
                     <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
                         <i class="bi bi-journal-plus display-5"></i>
                     </button>
                 </div>
-                <!-- Botón de ver reservas -->
-                <div class="col text-center fw-bold py-3">
-                    <a href="{{ route('traveler.bookings.index') }}" class="btn btn-primary">Ver Mis Reservas</a>
-                </div>
                 <!-- Reservas en forma de cards -->
-                <div id="reservationsContainer" class="container my-4">
+                <div id="reservationsContainer" class="container my-2">
                     <div class="row" id="cardsRow">
 
                     </div>
                 </div>
             </div>
             <!-- Calendario -->
-            <div class="col-8 bg-white border rounded-2 p-3 m-3" id="calendar"></div>
+            <div class="col-6 bg-white border rounded-2 py-3 me-1 my-3" id="calendar"></div>
+
+            <!-- Excursiones -->
+            <div class="col-2 bg-light border rounded-2 py-3 my-3">
+                <div>
+                    Reservas de excursiones
+                </div>
+                <div>
+                    Noticias
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Logout Form -->
+    <!-- Botón de ver reservas -->
+    <div class="col text-center fw-bold py-3">
+        <a href="{{ route('traveler.bookings.index') }}" class="btn btn-primary">Ver Mis Reservas</a>
+    </div>
     <form id="logout-form" action="{{ route('traveler.logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
