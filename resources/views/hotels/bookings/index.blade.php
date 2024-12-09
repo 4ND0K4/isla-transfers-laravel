@@ -17,10 +17,8 @@
                         <th>Tipo de Reserva</th>
                         <th>Email del Cliente</th>
                         <th>Fecha de Reserva</th>
-                        <th>Fecha de Entrada</th>
-                        <th>Hora de Entrada</th>
-                        <th>Fecha de Vuelo de Salida</th>
-                        <th>Hora de Vuelo de Salida</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
                         <th>Número de Viajeros</th>
                     </tr>
                 </thead>
@@ -31,10 +29,14 @@
                             <td>{{ $booking->id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto' }}</td>
                             <td>{{ $booking->email_cliente }}</td>
                             <td>{{ $booking->fecha_reserva }}</td>
-                            <td>{{ $booking->fecha_entrada }}</td>
-                            <td>{{ $booking->hora_entrada }}</td>
-                            <td>{{ $booking->fecha_vuelo_salida }}</td>
-                            <td>{{ $booking->hora_vuelo_salida }}</td>
+                           <!-- Mostrar fecha dinámica -->
+                           <td>
+                            {{ $booking->id_tipo_reserva == 1 ? ($booking->fecha_entrada ?? '-') : ($booking->fecha_vuelo_salida ?? '-') }}
+                            </td>
+                            <!-- Mostrar hora dinámica -->
+                            <td>
+                                {{ $booking->id_tipo_reserva == 1 ? ($booking->hora_entrada ?? '-') : ($booking->hora_vuelo_salida ?? '-') }}
+                            </td>
                             <td>{{ $booking->num_viajeros }}</td>
                         </tr>
                     @empty

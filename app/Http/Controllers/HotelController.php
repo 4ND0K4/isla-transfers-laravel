@@ -260,7 +260,7 @@ class HotelController extends Controller
         return view('admin.hotels.comisiones', compact('comisiones'));
     }
 
-    public function storeBooking(Request $request)
+    /*public function storeBooking(Request $request)
     {
         $request->validate([
             'id_tipo_reserva' => 'required|in:1,2,idayvuelta',
@@ -311,7 +311,7 @@ class HotelController extends Controller
         }
 
         return redirect()->route('hotel.dashboard')->with('success', 'Reserva creada correctamente.');
-    }
+    }*/
 
     public function logout(Request $request)
     {

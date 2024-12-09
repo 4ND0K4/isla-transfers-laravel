@@ -25,10 +25,13 @@
             <a class="navbar-brand" href="#">Isla Transfers</a>
             <div class="ms-3">
                 <a href="{{ route('hotel.bookings.index') }}" class="btn btn-outline-secondary fw-bold">
-                    Reservas
+                    Transfers
                 </a>
                 <a href="{{ route('hotel.commissions.index') }}" class="btn btn-outline-secondary fw-bold ms-2">
                     Comisiones
+                </a>
+                <a href="{{ route('hotel.trips.index') }}" class="btn btn-outline-secondary fw-bold ms-2">
+                    Excursiones
                 </a>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,9 +42,11 @@
                     <!-- ...existing code... -->
                 </ul>
                 <ul class="navbar-nav">
-                    <li>
-                        <span class="text-center fs-5">Bienvenido, {{ $hotel->usuario }}</span>
-                    </li>
+                    @if(Auth::guard('hotels')->check())
+                        <li>
+                            <span class="text-center fs-5">Bienvenido, {{ Auth::guard('hotels')->user()->usuario }}</span>
+                        </li>
+                    @endif
                     <!-- ...existing code... -->
                     <li class="nav-item">
                         <form id="logout-form" action="{{ route('hotel.logout') }}" method="POST" class="d-none">

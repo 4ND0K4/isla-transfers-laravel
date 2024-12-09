@@ -60,13 +60,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const calendarEl = document.getElementById('calendar');
-    const cardsContainer = document.getElementById('cardsRow'); // Definimos aquí el contenedor
 
-    if (!cardsContainer) {
-        console.error('El contenedor de las cards no existe en el DOM.');
-        return;
-    }
-    const calendar = new FullCalendar.Calendar(calendarEl, {
+        const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             locale: "es", //idioma
             firstDay: 1, //Inicia en lunes
@@ -84,20 +79,17 @@
                 day: 'Día'
             },
             events: function(fetchInfo, successCallback, failureCallback) {
-            fetch("{{ route('traveler.calendar.events') }}")
-                .then(response => response.json())
-                .then(events => {
-                    // Agregar eventos al calendario
-                    successCallback(events);
-
-                    // Generar las cards
-                    renderReservationCards(events);
-                })
-                .catch(error => {
-                    console.error('Error al cargar eventos:', error);
-                    failureCallback(error);
-                });
-        },
+                fetch("{{ route('traveler.calendar.events') }}")
+                    .then(response => response.json())
+                    .then(events => {
+                        // Agregar eventos al calendario
+                        successCallback(events);
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar eventos:', error);
+                        failureCallback(error);
+                    });
+            },
             //Estilos del today
             dayHeaderContent: function(arg) {
                 let span = document.createElement('span');
@@ -162,6 +154,10 @@
                         <strong>ID:</strong> ${info.event.id} -
                         <strong>Localizador:</strong> ${info.event.extendedProps.localizador}
                     </p>
+                    <div class="mt-3">
+                        <button onclick="editarReserva(${info.event.id})" class="btn btn-warning">Editar</button>
+                        <button onclick="eliminarReserva('${info.event.id}')" class="btn btn-danger">Eliminar</button>
+                    </div>
                         `,
                     icon: 'info',
                     showCloseButton: true,
@@ -207,64 +203,20 @@
                 });
             }
         });
+
         calendar.render();
-    // Función para generar las cards dinámicamente
-    function renderReservationCards(bookings) {
-        if (!cardsContainer) {
-            console.error('El contenedor de las cards no existe.');
-            return;
+    });
+    // Función para abrir el modal de actualización y cerrar SweetAlert2
+    function editarReserva(idReserva) {
+            Swal.close(); // Cierra el modal de SweetAlert2
+            editBookingModal(idReserva); // Abre el modal de Bootstrap para editar la reserva
         }
 
-        cardsContainer.innerHTML = ''; // Limpiar cards previas
-
-        bookings.forEach(booking => {
-            const fecha = booking.extendedProps.fecha_entrada || booking.extendedProps.fecha_vuelo_salida;
-            const hora = booking.extendedProps.hora_entrada || booking.extendedProps.hora_vuelo_salida;
-
-            const cardHTML = `
-                <div class="col-md-12 mb-3">
-                    <div class="card shadow-sm border-success w-100" style="height: 150px;">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="card-title text-success fs-6">Reserva ${booking.extendedProps.localizador}</p>
-                                <p class="card-text">
-                                    <strong>Hotel:</strong> ${booking.extendedProps.id_hotel}<br>
-                                    <strong>Fecha:</strong> ${fecha}<br>
-                                    <strong>Hora:</strong> ${hora}<br>
-                                </p>
-                            </div>
-                            <div>
-                                <button
-                                    class="btn btn-sm btn-outline-warning m-1"
-                                    title="Editar reserva"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editBookingModal"
-                                    data-booking='${JSON.stringify(booking.extendedProps)}'
-                                    onclick="setEditBooking(this)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-
-                                <form action="/admin/bookings/${booking.id_reserva}" method="POST" class="d-inline">
-                                    <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button
-                                        class="btn btn-sm btn-outline-danger m-1"
-                                        title="Eliminar reserva">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-
-            cardsContainer.insertAdjacentHTML('beforeend', cardHTML);
-        });
-    }
-});
-
+        // Función para la confirmación de eliminación y cierre de SweetAlert2
+        function eliminarReserva(idReserva) {
+            Swal.close(); // Cierra el modal de SweetAlert2
+            confirmarEliminacion(`/controllers/bookings/delete.php?id_booking=${idReserva}`);
+        }
 </script>
 </head>
 <body  id="traveler">
@@ -306,107 +258,13 @@
             </ul>
         </div>
     </nav>
-    <main class="container-fluid px-0">
+    <main class="container-fluid px-0"></main>
         @yield('content') <!-- Aquí se inyectará el contenido de las vistas -->
     </main>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          // Configuración del formulario de creación de reservas
-          const addBookingForm = document.querySelector('#addBookingModal form');
-          const createBookingButton = document.getElementById('createBookingButton');
-          const loadingSpinner = document.getElementById('loadingSpinner');
 
-          // Mostrar spinner y desactivar el botón al enviar el formulario
-          addBookingForm.addEventListener('submit', function () {
-              loadingSpinner.style.display = 'block';
-              createBookingButton.disabled = true;
-          });
-
-          // Mostrar campos según el tipo de reserva en el formulario de creación
-          document.getElementById("addIdTipoReserva").addEventListener('change', function () {
-              mostrarCampos('add');
-          });
-
-          // Inicializar el modal de creación con valores predeterminados
-          document.getElementById("addBookingModal").addEventListener('shown.bs.modal', function () {
-              document.getElementById("addIdTipoReserva").value = "idayvuelta";
-              mostrarCampos('add');
-          });
-      });
-
-      // Función para mostrar u ocultar los campos específicos de cada tipo de reserva
-      function mostrarCampos(modalType) {
-          let tipoReserva, aeropuertoHotelFields, hotelAeropuertoFields;
-
-          if (modalType === 'add') {
-              tipoReserva = document.getElementById('addIdTipoReserva').value;
-              aeropuertoHotelFields = document.getElementById('aeropuerto-hotel-fields-add');
-              hotelAeropuertoFields = document.getElementById('hotel-aeropuerto-fields-add');
-          } else if (modalType === 'edit') {
-              tipoReserva = document.getElementById('editIdTipoReserva').value;
-              aeropuertoHotelFields = document.getElementById('aeropuerto-hotel-fields-edit');
-              hotelAeropuertoFields = document.getElementById('hotel-aeropuerto-fields-edit');
-          }
-
-          if (aeropuertoHotelFields && hotelAeropuertoFields) {
-              aeropuertoHotelFields.style.display = (tipoReserva === "1" || tipoReserva === "idayvuelta") ? "block" : "none";
-              hotelAeropuertoFields.style.display = (tipoReserva === "2" || tipoReserva === "idayvuelta") ? "block" : "none";
-          }
-      }
-
-      // Función para abrir el modal de edición y llenar los campos
-      function setEditBooking(button) {
-          const booking = JSON.parse(button.getAttribute('data-booking'));
-          console.log("Reserva seleccionada:", booking);
-
-          // Actualizar la acción del formulario
-          const form = document.getElementById('editBookingForm');
-          form.action = `/admin/bookings/${booking.id_reserva}`; // Actualiza la ruta con el id_reserva correcto
-
-          // Configurar los campos del modal
-          document.getElementById('editIdReserva').value = booking.id_reserva || '';
-          document.getElementById('editLocalizador').value = booking.localizador || '';
-          document.getElementById('editIdTipoReserva').value = booking.id_tipo_reserva || '';
-          document.getElementById('editEmailCliente').value = booking.email_cliente || '';
-          document.getElementById('editNumViajeros').value = booking.num_viajeros || '';
-          document.getElementById('editIdDestino').value = booking.id_destino || '';
-
-          // Mostrar campos específicos
-          mostrarCampos('edit');
-
-          if (booking.id_tipo_reserva == 1) {
-              document.getElementById('editFechaEntrada').value = booking.fecha_entrada || '';
-              document.getElementById('editHoraEntrada').value = booking.hora_entrada || '';
-              document.getElementById('editNumeroVueloEntrada').value = booking.numero_vuelo_entrada || '';
-              document.getElementById('editOrigenVueloEntrada').value = booking.origen_vuelo_entrada || '';
-          } else if (booking.id_tipo_reserva == 2) {
-              document.getElementById('editFechaVueloSalida').value = booking.fecha_vuelo_salida || '';
-              document.getElementById('editHoraVueloSalida').value = booking.hora_vuelo_salida || '';
-          }
-
-          // Mostrar el modal
-          const modal = new bootstrap.Modal(document.getElementById('editBookingModal'));
-          modal.show();
-      }
-
-    function abrirModalActualizar(traveler) {
-    document.querySelector('#updateIdTravelerInput').value = traveler.id_viajero;
-    document.querySelector('#updateEmailInput').value = traveler.email || '';
-    document.querySelector('#updateNameInput').value = traveler.nombre || '';
-    document.querySelector('#updateSurname1Input').value = traveler.apellido1 || '';
-    document.querySelector('#updateSurname2Input').value = traveler.apellido2 || '';
-    document.querySelector('#updateAddressInput').value = traveler.direccion || '';
-    document.querySelector('#updateZipCodeInput').value = traveler.codigopostal || '';
-    document.querySelector('#updateCityInput').value = traveler.ciudad || '';
-    document.querySelector('#updateCountryInput').value = traveler.pais || '';
-
-    var modal = new bootstrap.Modal(document.getElementById('updateTravelerModal'));
-    modal.show();
-}
-
-      </script>
-
+    @include('travelers.partials.edit')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @vite(['resources/css/app.scss', 'resources/js/app.js'])
 </body>
 </html>

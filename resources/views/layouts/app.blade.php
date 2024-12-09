@@ -29,7 +29,7 @@
     <nav class="navbar navbar-expand-xl bg-white">
         <div class="container-fluid">
             <a class="navbar-brand ps-5" href="#">
-                <img src="{{ asset('images/icons/logo_traveler.png') }}" alt="Ícono" width="150" height="50">
+                <img src="{{ asset('images/icons/logo_sn.png') }}" alt="Ícono" width="60" height="50">
             </a>
         </div>
         <ul class="nav nav-pills justify-content-end">
@@ -73,7 +73,7 @@
                     </div>
                     <div class="col-xl-6 d-flex justify-content-center">
                         <div class="bg-transparent p-3 text-center custom-container">
-                            <a href="#" class="fs-3 custom-hover">¿Eres rider?</a>
+                            <a href="#" class="fs-3 custom-hover">¿Organizas tours?</a>
                         </div>
                     </div>
                 </div>

@@ -60,7 +60,7 @@
         </div>
         <!-- Imagen decorativa -->
         <div class="col-xl-6">
-            <img src="{{ asset('images/login-traveler.jpg') }}" alt="Imagen de taxi con equipaje veraniego en una playa paradisiaca" class="logo img-fluid mb-4 mb-md-0 w-75">
+            <img src="{{ asset('images/welcome.png') }}" alt="Imagen de taxi con equipaje veraniego en una playa paradisiaca" class="img-fluid mb-4 mb-md-0">
         </div>
     </div>
 </div>

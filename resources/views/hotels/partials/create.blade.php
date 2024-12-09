@@ -9,6 +9,7 @@
                 <form action="{{ route('hotel.bookings.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="tipo_creador_reserva" value="3">
+
                     <div class="container mt-4">
                         <!-- Selección del tipo de reserva -->
                         <div class="pb-2">

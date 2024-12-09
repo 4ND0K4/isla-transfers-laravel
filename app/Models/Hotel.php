@@ -43,4 +43,9 @@ class Hotel extends Authenticatable
       return $this->hasMany(TransferPrecio::class, 'id_hotel');
   }
 
+  public function tours()
+  {
+      return $this->hasMany(Tour::class, 'id_hotel');
+  }
+
 }

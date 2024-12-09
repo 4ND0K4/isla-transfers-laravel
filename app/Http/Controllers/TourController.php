@@ -8,16 +8,22 @@ use App\Models\Hotel;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class TourController extends Controller
 {
     public function index()
     {
-        $tours = Tour::with('hotel', 'vehicle')->get(); // Relacionamos con hotel y vehículo
-        $hotels = Hotel::all();
-        $vehicles = Vehicle::all();
-
-        return view('admin.tours.index', compact('tours', 'hotels', 'vehicles'));
+        if (Auth::guard('hotels')->check()) {
+            $hotel = Auth::guard('hotels')->user(); // Obtener el hotel autenticado
+            $tours = Tour::with('vehicle')->where('id_hotel', $hotel->id_hotel)->get(); // Obtener tours del hotel
+            return view('hotels.trips.index', compact('tours'));
+        } else {
+            $tours = Tour::with('hotel', 'vehicle')->get(); // Relacionamos con hotel y vehículo
+            $hotels = Hotel::all();
+            $vehicles = Vehicle::all();
+            return view('admin.tours.index', compact('tours', 'hotels', 'vehicles'));
+        }
     }
 
     public function store(Request $request)

@@ -21,7 +21,7 @@
                         <th>Comisión</th>
                         <th>Usuario</th>
                         <th>Acciones</th>
-                        <th>accion nueva</th>
+                        <th>Comisiones</th>
                     </tr>
                 </thead>
                 <tbody>

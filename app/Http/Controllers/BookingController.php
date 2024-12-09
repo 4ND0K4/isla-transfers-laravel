@@ -13,6 +13,37 @@ use Illuminate\Support\Facades\Log;
 class BookingController extends Controller
 {
 
+    private function validateBookingData(Request $request)
+    {
+        return $request->validate([
+            'id_tipo_reserva' => 'required|in:1,2,idayvuelta',
+            'id_destino' => 'required|exists:transfer_hotel,id_hotel',
+            'email_cliente' => 'required|email|exists:transfer_viajeros,email',
+            'num_viajeros' => 'required|integer|min:1',
+            'fecha_entrada' => 'nullable|date|required_if:id_tipo_reserva,1,idayvuelta',
+            'hora_entrada' => 'nullable|required_if:id_tipo_reserva,1,idayvuelta',
+            'fecha_vuelo_salida' => 'nullable|date|required_if:id_tipo_reserva,2,idayvuelta',
+            'hora_vuelo_salida' => 'nullable|required_if:id_tipo_reserva,2,idayvuelta',
+            'numero_vuelo_entrada' => 'nullable|string',
+            'origen_vuelo_entrada' => 'nullable|string',
+            'id_vehiculo' => 'nullable|integer|exists:transfer_vehiculo,id_vehiculo',
+        ]);
+    }
+
+
+    private function getTipoCreadorReserva()
+    {
+        if (Auth::guard('admins')->check()) {
+            return 1; // Admin
+        } elseif (Auth::guard('travelers')->check()) {
+            return 2; // Traveler
+        } elseif (Auth::guard('hotels')->check()) {
+            return 3; // Hotel
+        }
+        return null;
+    }
+
+
     public function index(Request $request)
     {
         // Capturar el filtro por tipo de reserva desde la solicitud
@@ -29,26 +60,31 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Inicio del método store para crear una reserva.');
+        Log::info('Inicio del método storeBooking para crear una reserva.');
 
-        $tipoCreadorReserva = 1; // Admin
+        $tipoCreadorReserva = $this->getTipoCreadorReserva();
+        if (is_null($tipoCreadorReserva)) {
+            return redirect()->back()->withErrors(['error' => 'Usuario no autenticado.']);
+        }
+
+        // Restricción para travelers
+        if ($tipoCreadorReserva == 2) {
+            if ($request->input('id_tipo_reserva') == 1) {
+                $fechaEntrada = Carbon::parse($request->input('fecha_entrada'));
+                if ($fechaEntrada->diffInDays(Carbon::now()) < 2) {
+                    return redirect()->back()->withErrors(['error' => 'Los travelers no pueden crear reservas con menos de 2 días de antelación.']);
+                }
+            } elseif ($request->input('id_tipo_reserva') == 2) {
+                $fechaVueloSalida = Carbon::parse($request->input('fecha_vuelo_salida'));
+                if ($fechaVueloSalida->diffInDays(Carbon::now()) < 2) {
+                    return redirect()->back()->withErrors(['error' => 'Los travelers no pueden crear reservas con menos de 2 días de antelación.']);
+                }
+            }
+        }
 
         // Validar los datos de entrada
         try {
-            $validated = $request->validate([
-                'id_tipo_reserva' => 'required|in:1,2,idayvuelta',
-                'id_destino' => 'required|exists:transfer_hotel,id_hotel',
-                'email_cliente' => 'required|email|exists:transfer_viajeros,email',
-                'num_viajeros' => 'required|integer|min:1',
-                'fecha_entrada' => 'nullable|date|required_if:id_tipo_reserva,1,idayvuelta',
-                'hora_entrada' => 'nullable|required_if:id_tipo_reserva,1,idayvuelta',
-                'fecha_vuelo_salida' => 'nullable|date|required_if:id_tipo_reserva,2,idayvuelta',
-                'hora_vuelo_salida' => 'nullable|required_if:id_tipo_reserva,2,idayvuelta',
-                'numero_vuelo_entrada' => 'nullable|string',
-                'origen_vuelo_entrada' => 'nullable|string',
-                'id_vehiculo' => 'nullable|integer|exists:transfer_vehiculo,id_vehiculo',
-            ]);
-
+            $validated = $this->validateBookingData($request);
             Log::info('Datos validados correctamente:', $validated);
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Error de validación:', ['errors' => $e->errors()]);
@@ -71,6 +107,7 @@ class BookingController extends Controller
         // Asignar el valor de id_destino a id_hotel
         $baseData['id_hotel'] = $validated['id_destino'];
         Log::info('Asignando id_destino a id_hotel:', ['id_hotel' => $baseData['id_hotel']]);
+
         // Crear las reservas
         try {
             if ($validated['id_tipo_reserva'] === 'idayvuelta') {
@@ -115,7 +152,14 @@ class BookingController extends Controller
                 Log::info('Reserva única creada con éxito:', $booking->toArray());
             }
 
-            return redirect()->route('admin.bookings.index')->with('success', 'Reserva creada correctamente.');
+            // Redirigir según el tipo de creador de reserva
+            if ($tipoCreadorReserva == 1) {
+                return redirect()->route('admin.bookings.index')->with('success', 'Reserva creada correctamente.');
+            } elseif ($tipoCreadorReserva == 2) {
+                return redirect()->route('traveler.dashboard')->with('success', 'Reserva creada correctamente.');
+            } else {
+                return redirect()->route('hotel.dashboard')->with('success', 'Reserva creada correctamente.');
+            }
         } catch (\Exception $e) {
             Log::error('Error al crear la reserva:', ['message' => $e->getMessage()]);
             return redirect()->back()->withErrors(['error' => 'Hubo un error al crear la reserva.']);
@@ -149,6 +193,21 @@ class BookingController extends Controller
 
             Log::info('Datos validados correctamente:', $validated);
 
+            // Restricción para travelers
+            if (Auth::guard('travelers')->check()) {
+                if ($validated['id_tipo_reserva'] == 1) {
+                    $fechaEntrada = Carbon::parse($validated['fecha_entrada']);
+                    if ($fechaEntrada->diffInDays(Carbon::now()) < 2) {
+                        return redirect()->back()->withErrors(['error' => 'Los travelers no pueden actualizar reservas con menos de 2 días de antelación.']);
+                    }
+                } elseif ($validated['id_tipo_reserva'] == 2) {
+                    $fechaVueloSalida = Carbon::parse($validated['fecha_vuelo_salida']);
+                    if ($fechaVueloSalida->diffInDays(Carbon::now()) < 2) {
+                        return redirect()->back()->withErrors(['error' => 'Los travelers no pueden actualizar reservas con menos de 2 días de antelación.']);
+                    }
+                }
+            }
+
             // Preparar datos para la actualización
             $updateData = $validated;
 
@@ -176,7 +235,14 @@ class BookingController extends Controller
             $booking->update($updateData);
             Log::info("Reserva actualizada correctamente. ID: {$id}");
 
-            return redirect()->route(Auth::guard('admins')->check() ? 'admin.bookings.index' : 'traveler.bookings.index')->with('success', 'Reserva actualizada correctamente.');
+            // Redirigir según el tipo de creador de reserva
+            if (Auth::guard('admins')->check()) {
+                return redirect()->route('admin.bookings.index')->with('success', 'Reserva actualizada correctamente.');
+            } elseif (Auth::guard('travelers')->check()) {
+                return redirect()->route('traveler.bookings.index')->with('success', 'Reserva actualizada correctamente.');
+            } else {
+                return redirect()->route('hotel.bookings.index')->with('success', 'Reserva actualizada correctamente.');
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Error de validación al actualizar la reserva:', $e->errors());
             return redirect()->back()->withErrors($e->errors());
