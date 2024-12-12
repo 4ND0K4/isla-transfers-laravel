@@ -42,23 +42,13 @@ body {
 
     background: linear-gradient(90deg, $blue-200, $green-200, $yellow-200);
     font-family: 'Roboto Flex', serif;
-
-
 }
 
-//sidebar de admin
-#sidebar {
-    background: linear-gradient(
-        to top right,
-        $blue-800,
-        $cyan-100
-    );
-}
+//ADMINS
 
 #admin {
     font-family: 'Roboto Flex', serif;
     background-color: $light;
-
 }
 
   @mixin gradient-radial($inner-color: $gray-700, $outer-color: $gray-800) {
@@ -72,15 +62,46 @@ body {
     height: 100vh; /* 100% de la altura de la ventana */
 }
 
+//sidebar de admin
+#sidebar {
+    background: linear-gradient(
+        to top right,
+        $blue-800,
+        $cyan-100
+    );
+}
+
+//TRAVELERS
+
 #traveler {
     font-family: "Baloo Paaji 2", sans-serif;
     background-color: $yellow-100;
 }
 
+#traveler-login {
+
+    @include gradient-radial($green-100, $yellow-200);
+    width: 100vw; /* 100% del ancho de la ventana */
+    height: 100vh; /* 100% de la altura de la ventana */
+}
+
+//Hoteles
+
 #hotel {
     font-family: "Baloo Paaji 2", sans-serif;
     background-color: $green-100;
 }
+
+#hotel-login {
+
+    @include gradient-radial($yellow-100, $green-200);
+    width: 100vw; /* 100% del ancho de la ventana */
+    height: 100vh; /* 100% de la altura de la ventana */
+}
+
+
+
+
 
 // Estilo de la tabla con hover personalizado
 .table-light {

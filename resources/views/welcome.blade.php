@@ -59,20 +59,20 @@
           <!-- Columna 1 -->
           <div class="col-md-4">
             <i class="bi bi-emoji-heart-eyes-fill fs-1 mb-3"></i>
-            <h3>Título 1</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <h3>Del aeropuerto al hotel</h3>
+            <p>Un conductor te llevará al hotel de tus vacaciones con tan solo solicitar un trayecto.</p>
           </div>
           <!-- Columna 2 -->
           <div class="col-md-4">
             <i class="bi bi-emoji-heart-eyes-fill fs-1 mb-3"></i>
-            <h3>Título 2</h3>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <h3>Del hotel al aeropuerto</h3>
+            <p>¿Se acabaron las vacaciones? Nosotros hacemos más ameno el trayecto de vuelta dejandote a la hora acordada.</p>
           </div>
           <!-- Columna 3 -->
           <div class="col-md-4">
             <i class="bi bi-emoji-heart-eyes-fill fs-1 mb-3"></i>
-            <h3>Título 3</h3>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <h3>Toma un tour</h3>
+            <p>Y no te preocupes de los desplazamientos. Un conductor te llevará y recogerá a las horas acordadas.</p>
           </div>
         </div>
       </div>

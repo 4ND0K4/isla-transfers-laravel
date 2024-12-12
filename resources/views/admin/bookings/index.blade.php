@@ -9,21 +9,49 @@
         <h1 class="shadow-sm">Gestión de Reservas</h1>
     </header>
 
-    <!-- Botón creación de reservas -->
-    <div class="row">
+   <!-- Botón creación de reservas -->
+    <div class="row align-items-center">
         <div class="col text-start pb-2 px-4">
             <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal"><i class="bi bi-plus-circle"></i> Nueva reserva</button>
         </div>
 
-        <!-- Filtro por tipo de reserva -->
+        <!-- Filtros -->
         <div class="col text-end pb-2 px-4">
-            <form method="GET" action="{{ route('admin.bookings.index') }}">
-                <label for="id_tipo_reserva">Filtrar:</label>
-                <select name="id_tipo_reserva" id="id_tipo_reserva" class="form-select d-inline w-auto">
-                    <option value="">Todos</option>
-                    <option value="1" {{ request('id_tipo_reserva') == 1 ? 'selected' : '' }}>Aeropuerto - Hotel</option>
-                    <option value="2" {{ request('id_tipo_reserva') == 2 ? 'selected' : '' }}>Hotel - Aeropuerto</option>
-                </select>
+            <form method="GET" action="{{ route('admin.bookings.index') }}" class="d-flex justify-content-end">
+                <div class="me-2">
+                    <label for="id_tipo_reserva" class="form-label">Reservas: </label>
+                    <select name="id_tipo_reserva" id="id_tipo_reserva" class="form-select d-inline w-auto">
+                        <option value="">Todos</option>
+                        <option value="1" {{ request('id_tipo_reserva') == 1 ? 'selected' : '' }}>Aeropuerto - Hotel</option>
+                        <option value="2" {{ request('id_tipo_reserva') == 2 ? 'selected' : '' }}>Hotel - Aeropuerto</option>
+                    </select>
+                </div>
+                <div class="me-2">
+                    <label for="year" class="form-label">Año:</label>
+                    <select name="year" id="year" class="form-select d-inline w-auto">
+                        <option value="">Todos</option>
+                        <option value="2024" {{ request('year') == 2024 ? 'selected' : '' }}>2024</option>
+                        <option value="2025" {{ request('year') == 2025 ? 'selected' : '' }}>2025</option>
+                    </select>
+                </div>
+                <div class="me-2">
+                    <label for="month" class="form-label">Mes:</label>
+                    <select name="month" id="month" class="form-select d-inline w-auto">
+                        <option value="">Todos</option>
+                        <option value="1" {{ request('month') == 1 ? 'selected' : '' }}>Enero</option>
+                        <option value="2" {{ request('month') == 2 ? 'selected' : '' }}>Febrero</option>
+                        <option value="3" {{ request('month') == 3 ? 'selected' : '' }}>Marzo</option>
+                        <option value="4" {{ request('month') == 4 ? 'selected' : '' }}>Abril</option>
+                        <option value="5" {{ request('month') == 5 ? 'selected' : '' }}>Mayo</option>
+                        <option value="6" {{ request('month') == 6 ? 'selected' : '' }}>Junio</option>
+                        <option value="7" {{ request('month') == 7 ? 'selected' : '' }}>Julio</option>
+                        <option value="8" {{ request('month') == 8 ? 'selected' : '' }}>Agosto</option>
+                        <option value="9" {{ request('month') == 9 ? 'selected' : '' }}>Septiembre</option>
+                        <option value="10" {{ request('month') == 10 ? 'selected' : '' }}>Octubre</option>
+                        <option value="11" {{ request('month') == 11 ? 'selected' : '' }}>Noviembre</option>
+                        <option value="12" {{ request('month') == 12 ? 'selected' : '' }}>Diciembre</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn btn-outline-secondary">Filtrar</button>
             </form>
         </div>

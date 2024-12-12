@@ -46,15 +46,30 @@ class BookingController extends Controller
 
     public function index(Request $request)
     {
-        // Capturar el filtro por tipo de reserva desde la solicitud
+        // Capturar los filtros desde la solicitud
         $id_tipo_reserva = $request->get('id_tipo_reserva');
+        $year = $request->get('year');
+        $month = $request->get('month');
 
-        // Obtener las reservas filtradas por tipo o todas si no hay filtro
+        // Obtener las reservas filtradas por tipo, año y mes
         $bookings = Booking::when($id_tipo_reserva, function ($query, $id_tipo_reserva) {
-            return $query->where('id_tipo_reserva', $id_tipo_reserva);
-        })->get();
+                return $query->where('id_tipo_reserva', $id_tipo_reserva);
+            })
+            ->when($year, function ($query, $year) {
+                return $query->where(function ($query) use ($year) {
+                    $query->whereYear('fecha_entrada', $year)
+                          ->orWhereYear('fecha_vuelo_salida', $year);
+                });
+            })
+            ->when($month, function ($query, $month) {
+                return $query->where(function ($query) use ($month) {
+                    $query->whereMonth('fecha_entrada', $month)
+                          ->orWhereMonth('fecha_vuelo_salida', $month);
+                });
+            })
+            ->get();
 
-        return view('admin.bookings.index', compact('bookings', 'id_tipo_reserva'));
+        return view('admin.bookings.index', compact('bookings', 'id_tipo_reserva', 'year', 'month'));
     }
 
 
@@ -356,34 +371,85 @@ class BookingController extends Controller
     }
 
     // Gráfico basado en la función reservasPorZona en el mes en curso
-    public function dashboard()
+
+
+    public function dashboard(Request $request)
     {
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
+        $id_tipo_reserva = $request->input('id_tipo_reserva');
 
-        // Consultar el número de reservas por zona
+        // Consultar el número de reservas por zona para el mes y año actuales
         $reservasPorZona = Booking::selectRaw('transfer_hotel.id_zona, COUNT(*) as total_reservas')
             ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
-            ->whereYear('fecha_reserva', $currentYear)
-            ->whereMonth('fecha_reserva', $currentMonth)
+            ->when($id_tipo_reserva, function ($query) use ($currentYear, $currentMonth) {
+                if ($id_tipo_reserva == 1) {
+                    return $query->whereYear('fecha_entrada', $currentYear)
+                                 ->whereMonth('fecha_entrada', $currentMonth);
+                } elseif ($id_tipo_reserva == 2) {
+                    return $query->whereYear('fecha_vuelo_salida', $currentYear)
+                                 ->whereMonth('fecha_vuelo_salida', $currentMonth);
+                } else {
+                    return $query->where(function ($query) use ($currentYear, $currentMonth) {
+                        $query->whereYear('fecha_entrada', $currentYear)
+                              ->whereMonth('fecha_entrada', $currentMonth)
+                              ->orWhereYear('fecha_vuelo_salida', $currentYear)
+                              ->whereMonth('fecha_vuelo_salida', $currentMonth);
+                    });
+                }
+            })
             ->groupBy('transfer_hotel.id_zona')
             ->get();
 
-        // Preparar etiquetas y valores para el gráfico
+        // Consultar el número de reservas por hotel para el mes y año actuales
+        $reservasPorHotel = Booking::selectRaw('transfer_hotel.id_hotel, COUNT(*) as total_reservas')
+            ->join('transfer_hotel', 'transfer_reservas.id_hotel', '=', 'transfer_hotel.id_hotel')
+            ->when($id_tipo_reserva, function ($query) use ($currentYear, $currentMonth) {
+                if ($id_tipo_reserva == 1) {
+                    return $query->whereYear('fecha_entrada', $currentYear)
+                                 ->whereMonth('fecha_entrada', $currentMonth);
+                } elseif ($id_tipo_reserva == 2) {
+                    return $query->whereYear('fecha_vuelo_salida', $currentYear)
+                                 ->whereMonth('fecha_vuelo_salida', $currentMonth);
+                } else {
+                    return $query->where(function ($query) use ($currentYear, $currentMonth) {
+                        $query->whereYear('fecha_reserva', $currentYear)
+                              ->whereMonth('fecha_reserva', $currentMonth);
+                    });
+                }
+            })
+            ->groupBy('transfer_hotel.id_hotel')
+            ->get();
+
+        // Preparar etiquetas y valores para el gráfico de zonas
         $labelsZonas = $reservasPorZona->map(function ($item) {
             return $item->id_zona == 1 ? 'Norte' : ($item->id_zona == 2 ? 'Sur' : 'Metropolitana');
         })->toArray();
         $valuesZonas = $reservasPorZona->pluck('total_reservas')->toArray();
 
-        // Crear el gráfico tipo pie
-        $chartZonas = new Chart();
-        $chartZonas->labels($labelsZonas);
-        $chartZonas->dataset('Reservas por Zona', 'pie', $valuesZonas)
-                   ->backgroundColor(['#FF6384', '#36A2EB', '#FFCE56']);
+        // Preparar etiquetas y valores para el gráfico de hoteles
+        $labelsHoteles = $reservasPorHotel->map(function ($item) {
+            return 'Hotel ' . $item->id_hotel;
+        })->toArray();
+        $valuesHoteles = $reservasPorHotel->pluck('total_reservas')->toArray();
 
-        // Retornar el gráfico de zonas a la vista
-        return view('admin.dashboard', compact('chartZonas'));
+        // Crear el gráfico tipo pie
+        $chartZonasPie = new Chart();
+        $chartZonasPie->labels($labelsZonas);
+        $chartZonasPie->dataset('Reservas por Zona', 'pie', $valuesZonas)
+                      ->backgroundColor(['#FF6384', '#36A2EB', '#FFCE56']);
+
+        // Crear el gráfico tipo bar para hoteles
+        $chartHotelesBar = new Chart();
+        $chartHotelesBar->labels($labelsHoteles);
+        $chartHotelesBar->dataset('Reservas por Hotel', 'bar', $valuesHoteles)
+                        ->backgroundColor('#36A2EB');
+
+        // Retornar los gráficos a la vista
+        return view('admin.dashboard', compact('chartZonasPie', 'chartHotelesBar'));
     }
+
+
 
 
 }

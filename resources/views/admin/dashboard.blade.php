@@ -13,17 +13,21 @@
                 <!-- Container 1 -->
                 <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100">
                     <p class="text-center">Reservas por Zona</p>
-                    <div>{!! $chartZonas->container() !!}</div>
+                    <div>{!! $chartZonasPie->container() !!}</div>
                 </div>
                 <!-- Container 2 -->
+                @isset($chartHotelesBar)
                 <div class="col-3 bg-white border rounded-2 p-3 m-3 w-100">
-                    dibujo isla
+                    <div>{!! $chartHotelesBar->container() !!}</div>
                 </div>
+                @endisset
             </div>
         </div>
     </div>
     <!-- Cargar los scripts necesarios -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    {{ $chartZonas->script() }}
-
+    {!! $chartZonasPie->script() !!}
+    @isset($chartHotelesBar)
+    {!! $chartHotelesBar->script() !!}
+    @endisset
 @endsection
