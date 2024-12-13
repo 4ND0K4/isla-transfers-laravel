@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-info">Crear</button>
+                <button type="submit" class="btn btn-info text-white">Crear</button>
             </div>
         </form>
     </div>

@@ -34,22 +34,22 @@
                             <td>
                                 <!-- Botón editar -->
                                 <button
-                                class="btn btn-sm btn-outline-warning m-1"
-                                        title="Editar vehículo"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editVehicleModal"
-                                onclick="setEditVehicle({{ $vehicle }})">
-                                <i class="bi bi-pencil-square"></i>
+                                    class="btn btn-sm btn-outline-warning m-1"
+                                    title="Editar vehículo"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editVehicleModal"
+                                    onclick="setEditVehicle({{ $vehicle }})">
+                                    <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <!-- Botón eliminar -->
                                 <form action="{{ route('admin.vehicles.destroy', $vehicle) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button
-                                    type="submit"
-                                    class="btn btn-sm btn-outline-danger m-1"
-                                    title="Eliminar excursión">
-                                    <i class="bi bi-trash-fill"></i>
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-danger m-1"
+                                        title="Eliminar vehículo">
+                                        <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>
                             </td>

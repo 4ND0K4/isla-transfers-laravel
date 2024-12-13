@@ -65,11 +65,11 @@ class HotelController extends Controller
                 'password' => 'required',
             ]);
 
-            $hotel = Hotel::where('usuario', $request->usuario)->first();
+            $credentials = $request->only('usuario', 'password');
 
-            if ($hotel && Hash::check($request->password, $hotel->password)) {
-                Auth::guard('hotels')->login($hotel);
-                return redirect()->route('hotel.dashboard')->with('success', 'Inicio de sesión exitoso.');
+            if (Auth::guard('hotels')->attempt($credentials)) {
+                $request->session()->regenerate();
+                return redirect()->intended(route('hotel.dashboard'))->with('success', 'Inicio de sesión exitoso.');
             }
 
             return back()->withErrors(['usuario' => 'Credenciales incorrectas.']);

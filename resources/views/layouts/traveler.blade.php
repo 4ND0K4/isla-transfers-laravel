@@ -80,6 +80,9 @@
                 week: 'Semana',
                 day: 'Día'
             },
+            dateClick: function(info) {
+                console.log('Fecha seleccionada:', info.dateStr);
+            },
             events: function(fetchInfo, successCallback, failureCallback) {
                 fetch("{{ route('traveler.calendar.events') }}")
                     .then(response => response.json())

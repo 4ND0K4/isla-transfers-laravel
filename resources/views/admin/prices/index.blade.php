@@ -4,8 +4,9 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Gestión de Precios</h1>
-
+    <header class="text-secondary text-center p-4 fs-1">
+        <h1 class="shadow-sm">Gestión de Tarifas</h1>
+    </header>
     <!-- Formulario para crear un precio -->
     <div class="mb-4">
         <form action="{{ route('admin.prices.store') }}" method="POST">
