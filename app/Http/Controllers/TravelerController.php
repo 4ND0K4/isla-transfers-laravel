@@ -37,7 +37,7 @@ class TravelerController extends Controller
             'apellido1' => $request->apellido1,
             'apellido2' => $request->apellido2 ?? '', // Valor predeterminado vacío
             'direccion' => $request->direccion ?? '',
-            'codigoPostal' => $request->codigoPostal ?? '',
+            'codigo_postal' => $request->codigo_postal ?? '',
             'ciudad' => $request->ciudad ?? '',
             'pais' => $request->pais ?? '',
             'email' => $request->email,
@@ -94,7 +94,7 @@ class TravelerController extends Controller
             'apellido1' => 'nullable|string|max:255',
             'apellido2' => 'nullable|string|max:255',
             'direccion' => 'nullable|string|max:255',
-            'codigoPostal' => 'nullable|string|max:20',
+            'codigo_postal' => 'nullable|string|max:20',
             'ciudad' => 'nullable|string|max:255',
             'pais' => 'nullable|string|max:255',
             'email' => "nullable|email|unique:transfer_viajeros,email,$id,id_viajero",
@@ -108,7 +108,7 @@ class TravelerController extends Controller
             'apellido1',
             'apellido2',
             'direccion',
-            'codigoPostal',
+            'codigo_postal',
             'ciudad',
             'pais',
             'email'

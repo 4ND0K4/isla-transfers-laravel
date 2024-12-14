@@ -10,8 +10,8 @@
     a la gestión de todas las acciones disponibles en la aplicación web" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Caveat+Brush&family=Roboto+Flex:opsz@8..144&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Icons Bootstrap 5 -->
@@ -24,7 +24,10 @@
 <body id="hotel">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Isla Transfers</a>
+            <a class="navbar-brand caveat-brush-regular text-warning fs-2 ps-5" href="#">
+                <img src="{{ asset('images/icons/logo_app.png') }}" alt="Ícono" width="60" height="60">
+                Isla Transfers
+            </a>
             <div class="ms-3">
                 <a href="{{ route('hotel.bookings.index') }}" class="btn btn-outline-secondary fw-bold">
                     Transfers

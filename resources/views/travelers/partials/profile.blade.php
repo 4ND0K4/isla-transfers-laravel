@@ -51,7 +51,7 @@
                     <!-- Código Postal -->
                     <div class="mb-3">
                         <label class="form-label text-warning" for="updateZipCodeInput">Código Postal</label>
-                        <input class="form-control" type="text" name="codigoPostal" id="updateZipCodeInput" value="{{ $traveler->codigopostal }}" placeholder="Introduce tu código postal">
+                        <input class="form-control" type="text" name="codigo_postal" id="updateZipCodeInput" value="{{ $traveler->codigo_postal }}" placeholder="Introduce tu código postal">
                     </div>
 
                     <!-- Ciudad -->

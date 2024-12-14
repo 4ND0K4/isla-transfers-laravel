@@ -451,5 +451,4 @@ class BookingController extends Controller
 
 
 
-
 }

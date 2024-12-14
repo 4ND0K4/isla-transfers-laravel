@@ -48,6 +48,7 @@
                                     class="btn btn-sm btn-outline-warning m-1"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editTourModal"
+                                    title="Editar excursión"
                                     onclick="setEditTour({
                                         id_excursion: {{ $tour->id_excursion }},
                                         fecha_excursion: '{{ $tour->fecha_excursion }}',

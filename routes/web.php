@@ -32,8 +32,8 @@ Route::prefix('traveler')->name('traveler.')->group(function () {
         // Reservas
         Route::get('/bookings', [TravelerController::class, 'index'])->name('bookings.index');
         Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
-        Route::put('/bookings/{id}', [TravelerController::class, 'updateBooking'])->name('bookings.update');
-        Route::delete('/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('bookings.destroy');
+        Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
+        Route::delete('/bookings/{id}', [BookingController::class, 'deleteBooking'])->name('bookings.destroy');
 
         // Calendario
         Route::get('/calendar/events', [TravelerController::class, 'getCalendarEvents'])->name('calendar.events');
@@ -82,7 +82,7 @@ Route::post('/hotel/login', [HotelController::class, 'login'])->name('hotel.logi
 
 Route::prefix('hotel')->middleware('auth:hotels')->group(function () {
     Route::get('/dashboard', [HotelController::class, 'dashboard'])->name('hotel.dashboard');
-    Route::post('/bookings/store', [BookingController::class, 'store'])->name('hotel.bookings.store'); // Add this line
+    Route::post('/bookings/store', [BookingController::class, 'store'])->name('hotel.bookings.store');
     Route::get('/bookings', [HotelController::class, 'listAllBookings'])->name('hotel.bookings.index');
     Route::get('/commissions', [HotelController::class, 'listCommissions'])->name('hotel.commissions.index');
     Route::get('/trips', [TourController::class, 'index'])->name('hotel.trips.index');

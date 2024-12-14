@@ -1,5 +1,37 @@
 <!-- Estilos CSS FullCalendar -->
 <style>
+    /* CSS Personalizado para la Barra de Herramientas */
+    .fc .fc-prev-button,
+    .fc .fc-next-button,
+    .fc .fc-today-button {
+        background-color: #e2e3e5 !important;
+        color: #000000 !important;
+        border: none !important;
+        font-weight: bold !important;
+    }
+    .fc .fc-prev-button:hover,
+    .fc .fc-next-button:hover,
+    .fc .fc-today-button:hover {
+        background-color: #d1ecf1 !important;
+        color: #000000 !important;
+    }
+    .fc .fc-toolbar-title {
+        color: #85c1e9 !important;
+        font-size: 1.5em !important;
+        font-weight: bold !important;
+        font-family: Arial, sans-serif !important;
+    }
+    .fc .fc-button-group .fc-button {
+        background-color: #e2e3e5 !important;
+        color: #000000 !important;
+        border: none !important;
+    }
+    .fc .fc-button-group .fc-button:hover {
+        background-color: #fff3cd !important;
+        color: #000000 !important;
+    }
+</style>
+<style>
     .fc-col-header-cell a {
         text-decoration: none !important; /* Elimina el subrayado de los encabezados de los días: lunes, martes... */
 }

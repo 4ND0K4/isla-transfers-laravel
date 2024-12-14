@@ -1,9 +1,10 @@
 <div class="d-flex">
-    <div class="vh-100 d-flex flex-column align-items-center py-3 sticky-top" id="sidebar">
+    <div class="vh-100 d-flex flex-column justify-content-center align-items-center py-3 sticky-top" id="sidebar">
         <!-- Logo -->
         <a class="navbar-brand" href="{{ route('admin.dashboard') }}" title="Inicio">
-            <img src="{{ asset('images/icons/logo_admin.png') }}" alt="Ícono" width="60" height="60">
+            <img src="{{ asset('images/icons/logo_duo_admin.png') }}" alt="Logo Isla Transfers duotone azul" width="60" height="60">
         </a>
+        <a href="#" class="text-dark fw-bold fs-6 text-decoration-none">{{ Auth::guard('admins')->user()->usuario ?? 'No identificado' }}</a>
         <!-- Menú -->
         <hr class="text-white w-100">
         <!-- Dashboard -->
@@ -32,9 +33,9 @@
         </a>
 
     <div class="mt-auto">
-        <button class="btn btn-transparent text-danger fs-6" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            <i class="bi bi-box-arrow-left"></i>
-            {{ Auth::guard('admins')->user()->usuario ?? 'No identificado' }}
+        <button class="btn btn-transparent text-white fs-6" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+
+            <i class="bi bi-box-arrow-left fw-bold fs-3"></i>
         </button>
         <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
             @csrf

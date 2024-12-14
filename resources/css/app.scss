@@ -3,16 +3,50 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/bootstrap";
 
-
 // Reescribe los colores de bootstrap
 
 // Importa Bootstrap completo
 @import "~bootstrap/scss/bootstrap";
 
-// Tus estilos personalizados
-body {
-    font-family: 'Arial', sans-serif;
+//Fonts
+
+.caveat-brush-regular {
+    font-family: "Caveat Brush", cursive;
+    font-weight: 400;
+    font-style: normal;
   }
+
+
+.baloo-2-regular {
+    font-family: "Baloo 2", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  // <uniquifier>: Use a unique and descriptive class name
+
+.roboto-flex-regular {
+    font-family: "Roboto Flex", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0,
+      "wdth" 100,
+      "GRAD" 0,
+      "XOPQ" 96,
+      "XTRA" 468,
+      "YOPQ" 79,
+      "YTAS" 750,
+      "YTDE" -203,
+      "YTFI" 738,
+      "YTLC" 514,
+      "YTUC" 712;
+  }
+
+// Tus estilos personalizados
+
 
   //Para los container del modal de iniciar sesión
   .custom-container {
@@ -41,8 +75,10 @@ body {
 #welcome {
 
     background: linear-gradient(90deg, $blue-200, $green-200, $yellow-200);
-    font-family: 'Roboto Flex', serif;
+    font-family: "Baloo 2", sans-serif; // Corrección del nombre de la fuente
 }
+
+
 
 
 //ADMINS
@@ -57,6 +93,7 @@ body {
   }
 
 #admin-login {
+    font-family: 'Roboto Flex', serif;
 
     @include gradient-radial($orange-100, $blue-600);
     width: 100vw; /* 100% del ancho de la ventana */
@@ -65,6 +102,7 @@ body {
 
 //sidebar de admin
 #sidebar {
+    font-family: 'Roboto Flex', serif;
     background: linear-gradient(
         to top right,
         $blue-800,
@@ -75,11 +113,12 @@ body {
 //TRAVELERS
 
 #traveler {
-    font-family: "Baloo Paaji 2", sans-serif;
+    font-family: "Baloo 2", sans-serif; // Corrección del nombre de la fuente
     background-color: $yellow-100;
 }
 
 #traveler-login {
+    font-family: "Baloo 2", sans-serif; // Corrección del nombre de la fuente
 
     @include gradient-radial($green-100, $yellow-200);
     width: 100vw; /* 100% del ancho de la ventana */
@@ -89,11 +128,12 @@ body {
 //Hoteles
 
 #hotel {
-    font-family: "Baloo Paaji 2", sans-serif;
+    font-family: "Baloo 2", sans-serif; // Corrección del nombre de la fuente
     background-color: $green-100;
 }
 
 #hotel-login {
+    font-family: "Baloo 2", sans-serif; // Corrección del nombre de la fuente
 
     @include gradient-radial($yellow-100, $green-200);
     width: 100vw; /* 100% del ancho de la ventana */

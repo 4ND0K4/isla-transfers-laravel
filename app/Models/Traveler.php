@@ -20,7 +20,7 @@ class Traveler extends Authenticatable
         'apellido1',
         'apellido2',
         'direccion',
-        'codigoPostal',
+        'codigo_postal',
         'ciudad',
         'pais',
         'email',
@@ -59,7 +59,7 @@ class Traveler extends Authenticatable
     static::creating(function ($model) {
         $model->apellido2 = $model->apellido2 ?? ''; // Valor predeterminado para apellido2
         $model->direccion = $model->direccion ?? 'Sin especificar'; // Valor predeterminado para dirección
-        $model->codigoPostal = $model->codigoPostal ?? '00000'; // Valor predeterminado para código postal
+        $model->codigo_postal = $model->codigo_postal ?? '00000'; // Valor predeterminado para código postal
         $model->ciudad = $model->ciudad ?? 'Desconocida'; // Valor predeterminado para ciudad
         $model->pais = $model->pais ?? 'Sin especificar'; // Valor predeterminado para país
     });
@@ -68,7 +68,7 @@ class Traveler extends Authenticatable
     static::updating(function ($model) {
         $model->apellido2 = $model->apellido2 ?? ''; // Valor predeterminado para apellido2
         $model->direccion = $model->direccion ?? 'Sin especificar'; // Valor predeterminado para dirección
-        $model->codigoPostal = $model->codigoPostal ?? '00000'; // Valor predeterminado para código postal
+        $model->codigo_postal = $model->codigo_postal ?? '00000'; // Valor predeterminado para código postal
         $model->ciudad = $model->ciudad ?? 'Desconocida'; // Valor predeterminado para ciudad
         $model->pais = $model->pais ?? 'Sin especificar'; // Valor predeterminado para país
     });
