@@ -16,13 +16,13 @@
     <!-- Tabla de vehículos -->
     <div class="flex-grow-1 overflow-auto ms-2">
         <div class="table-responsive">
-            <table class="table table-light table-striped table-hover">
+            <table class="table table-light table-striped table-hover text-center">
                 <thead>
                     <tr>
                         <th>ID Vehículo</th>
                         <th>Descripción</th>
                         <th>Email Conductor</th>
-                        <th>Acciones</th>
+                        <th><i class="bi bi-gear-fill"></i></th>
                     </tr>
                 </thead>
                 <tbody>

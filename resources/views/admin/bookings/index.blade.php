@@ -60,7 +60,7 @@
     <!-- Tabla -->
     <div class="flex-grow-1 overflow-auto ms-2">
         <div class="table-responsive">
-            <table class="table table-light table-striped table-hover">
+            <table class="table table-light table-striped table-hover text-center">
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
@@ -74,7 +74,7 @@
                         <th scope="col">Número</th>
                         <th scope="col">Origen</th>
                         <th scope="col">Vehículo</th>
-                        <th scope="col"><!--Botones--></th>
+                        <th><i class="bi bi-gear-fill"></i></th>
                     </tr>
                 </thead>
                 <tbody>

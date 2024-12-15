@@ -56,7 +56,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-dark">Guardar Cambios</button>
+                <button type="submit" class="btn btn-warning text-white">Guardar Cambios</button>
+                <div id="loadingSpinner" style="display: none;">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             </div>
         </form>
     </div>

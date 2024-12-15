@@ -1,7 +1,7 @@
 <div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-secondary-subtle">
+            <div class="modal-header">
                 <h2 class="modal-title">Actualice la reserva</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -73,8 +73,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-secondary fw-bold text-white">Modificar</button>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-warning text-white">Guardar Cambios</button>
+                        <div id="loadingSpinner" style="display: none;">
+                            <div class="spinner-border text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>

@@ -281,11 +281,13 @@ class BookingController extends Controller
             Log::info("Reserva eliminada correctamente. ID: {$id}");
 
             return redirect()->route('admin.bookings.index')->with('success', 'Reserva eliminada correctamente.');
+            //return response()->json(['success' => true, 'message' => 'Reserva eliminada correctamente.']);
         } catch (\Exception $e) {
             Log::error("Error al eliminar la reserva con ID: {$id}. Mensaje: " . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
             return redirect()->back()->withErrors(['error' => 'Hubo un error al intentar eliminar la reserva.']);
+            //return response()->json(['success' => false, 'message' => 'Hubo un error al intentar eliminar la reserva.']);
         }
     }
 

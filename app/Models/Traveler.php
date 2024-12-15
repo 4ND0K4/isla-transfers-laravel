@@ -9,8 +9,8 @@ class Traveler extends Authenticatable
 {
     use HasFactory;
 
-    protected $table = 'transfer_viajeros'; // Nombre de la tabla en la base de datos
-    protected $primaryKey = 'id_viajero'; // Clave primaria personalizada (en minúsculas)
+    protected $table = 'transfer_viajeros';
+    protected $primaryKey = 'id_viajero';
 
     public $timestamps = false; // Deshabilitar timestamps (created_at y updated_at)
 

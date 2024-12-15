@@ -28,20 +28,20 @@ class TravelerController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido1' => 'required|string|max:255',
-            'email' => 'required|email|unique:transfer_viajeros,email', // Campo en minúscula
+            'email' => 'required|email|unique:transfer_viajeros,email',
             'password' => 'required|min:6|confirmed',
         ]);
 
         Traveler::create([
             'nombre' => $request->nombre,
             'apellido1' => $request->apellido1,
-            'apellido2' => $request->apellido2 ?? '', // Valor predeterminado vacío
+            'apellido2' => $request->apellido2 ?? '',
             'direccion' => $request->direccion ?? '',
             'codigo_postal' => $request->codigo_postal ?? '',
             'ciudad' => $request->ciudad ?? '',
             'pais' => $request->pais ?? '',
             'email' => $request->email,
-            'password' => $request->password, // La contraseña se hashea automáticamente en el modelo
+            'password' => $request->password,
         ]);
 
         return redirect()->route('traveler.login')->with('success', 'Registro exitoso. Por favor, inicia sesión.');

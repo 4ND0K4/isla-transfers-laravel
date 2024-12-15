@@ -54,7 +54,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-dark">Crear</button>
+                <button type="submit" class="btn btn-success text-white">Crear</button>
+                <div id="loadingSpinner" style="display: none;">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             </div>
         </form>
     </div>

@@ -16,7 +16,7 @@
 
     <div class="flex-grow-1 overflow-auto ms-2">
         <div class="table-responsive">
-            <table class="table table-light table-striped table-hover">
+            <table class="table table-light table-striped table-hover text-center">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -28,7 +28,7 @@
                         <th>Email Cliente</th>
                         <th>Hotel</th>
                         <th>Vehículo</th>
-                        <th>Acciones</th>
+                        <th><i class="bi bi-gear-fill"></i></th>
                     </tr>
                 </thead>
                 <tbody>

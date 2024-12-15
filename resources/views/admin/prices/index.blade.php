@@ -33,7 +33,12 @@
                     <input type="number" name="precio" id="precio" class="form-control" step="0.01" required>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Crear Precio</button>
+            <button type="submit" class="btn btn-success mt-3">Crear Precio</button>
+            <div id="loadingSpinner" style="display: none;">
+                <div class="spinner-border text-secondary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
         </form>
     </div>
 
@@ -45,7 +50,7 @@
                     <th>Hotel</th>
                     <th>Vehículo</th>
                     <th>Precio (€)</th>
-                    <th>Acciones</th>
+                    <th><i class="bi bi-gear-fill"></i></th>
                 </tr>
             </thead>
             <tbody>

@@ -21,7 +21,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-info text-white">Crear</button>
+                <button type="submit" class="btn btn-success text-white">Crear</button>
+                <div id="loadingSpinner" style="display: none;">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             </div>
         </form>
     </div>

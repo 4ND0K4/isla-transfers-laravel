@@ -137,6 +137,10 @@
                         <strong>ID:</strong> ${info.event.id} -
                         <strong>Localizador:</strong> ${info.event.extendedProps.localizador}
                     </p>
+                    <div class="mt-3">
+                            <button onclick="editarReserva(${info.event.id})" class="btn btn-warning">Editar</button>
+                            <button onclick="eliminarReserva('${info.event.id}')" class="btn btn-danger">Eliminar</button>
+                        </div>
 
                         `,
                     icon: 'info',
@@ -186,4 +190,35 @@
 
         calendar.render();
     });
+
+
+    function eliminarReserva(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esto",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/bookings/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          Swal.fire('Eliminado', 'La reserva ha sido eliminada.', 'success');
+                          calendar.refetchEvents();
+                      } else {
+                          Swal.fire('Error', data.message, 'error');
+                      }
+                  });
+            }
+        });
+    }
 </script>

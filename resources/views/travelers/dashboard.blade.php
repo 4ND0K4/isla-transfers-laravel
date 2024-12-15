@@ -14,6 +14,27 @@
                     <i class="bi bi-journal-plus display-5"></i>
                 </button>
             </div>
+            <!-- Listado de reservas -->
+            <div class="list-group">
+                @foreach($bookings as $booking)
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Reserva #{{ $booking->id_reserva }}</h5>
+                            <!--<p class="card-text">Destino: {{ $booking->id_destino }}</p>
+                            <p class="card-text">Fecha Entrada: {{ $booking->fecha_entrada }}</p>
+                            <p class="card-text">Hora Entrada: {{ $booking->hora_entrada }}</p>
+                            <p class="card-text">Fecha Vuelo Salida: {{ $booking->fecha_vuelo_salida }}</p>
+                            <p class="card-text">Hora Vuelo Salida: {{ $booking->hora_vuelo_salida }}</p>-->
+                            <button class="btn btn-primary" onclick="setEditBooking({{ $booking->id_reserva }})">Editar</button>
+                            <form action="{{ route('traveler.bookings.destroy', $booking->id_reserva) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
         <!-- Calendario -->
         <div class="col-8 bg-white border rounded-2 py-3 me-1 my-3" id="calendar"></div>

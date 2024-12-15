@@ -4,7 +4,7 @@
         <a class="navbar-brand" href="{{ route('admin.dashboard') }}" title="Inicio">
             <img src="{{ asset('images/icons/logo_duo_admin.png') }}" alt="Logo Isla Transfers duotone azul" width="60" height="60">
         </a>
-        <a href="#" class="text-dark fw-bold fs-6 text-decoration-none">{{ Auth::guard('admins')->user()->usuario ?? 'No identificado' }}</a>
+        <a href="#" class="text-muted fw-bold fs-6 text-decoration-none">{{ Auth::guard('admins')->user()->usuario ?? 'No identificado' }}</a>
         <!-- Menú -->
         <hr class="text-white w-100">
         <!-- Dashboard -->
