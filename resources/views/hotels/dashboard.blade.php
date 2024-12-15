@@ -96,7 +96,7 @@
         </div>
     </div>
 </div>
-@include('hotels.partials.create')
+@include('hotels.bookings.partials.create')
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {{ $chart->script() }}

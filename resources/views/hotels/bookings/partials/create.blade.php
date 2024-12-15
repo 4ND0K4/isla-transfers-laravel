@@ -1,8 +1,8 @@
 <div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-info-subtle">
-                <h2 class="modal-title text-center">Añade una nueva reserva</h2>
+            <div class="modal-header">
+                <h2 class="modal-title text-center">Nueva reserva</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -78,8 +78,8 @@
                     </div>
 
                     <!-- Botones -->
-                    <div class="text-center my-3">
-                        <button type="submit" id="createBookingButton" class="btn btn-secondary fw-bold text-white">Crear</button>
+                    <div class="modal-footer">
+                        <button type="submit" id="createBookingButton" class="btn btn-success fw-bold text-white">Crear</button>
                         <div id="loadingSpinner" style="display: none;">
                             <div class="spinner-border text-secondary" role="status">
                                 <span class="visually-hidden">Loading...</span>

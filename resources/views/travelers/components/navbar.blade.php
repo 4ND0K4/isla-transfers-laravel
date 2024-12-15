@@ -8,9 +8,11 @@
         <!-- Navegación y botones -->
         <ul class="nav nav-pills justify-content-end">
             <li class="nav-item text-center">
-                 <button class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-warning disabled">
-                {{ htmlspecialchars($_SESSION['travelerName'] ?? $traveler->nombre) }}
-            </button>
+                 <a class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-warning disabled">
+                    <span class="text-dark fw-light">¡ Hola </span>
+                    {{ htmlspecialchars($_SESSION['travelerName'] ?? $traveler->nombre) }}
+                    <span class="text-dark fw-light">!</span>
+            </a>
         </li>
             <!-- Botón abrir modal perfil -->
             <li class="nav-item text-center">

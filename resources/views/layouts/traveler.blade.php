@@ -18,22 +18,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
      <!-- Icons FontAwesome -->
      <script src="https://kit.fontawesome.com/d80be3bccb.js" crossorigin="anonymous"></script>
+     <!-- Estilos -->
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    <!-- Calendario -->
     @include ('travelers.components.calendar')
-
 </head>
 <body  id="traveler">
 
     @include('travelers.components.navbar')
 
-    <main class="container-fluid px-0"></main>
+    <main class="container-fluid px-0">
         @yield('content') <!-- Aquí se inyectará el contenido de las vistas -->
     </main>
 
-    @include('travelers.partials.edit')
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
-    @vite(['resources/css/app.scss', 'resources/js/app.js'])
 </body>
 </html>

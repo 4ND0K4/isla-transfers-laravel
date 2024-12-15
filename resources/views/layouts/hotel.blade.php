@@ -22,49 +22,8 @@
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
 </head>
 <body id="hotel">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand caveat-brush-regular text-warning fs-2 ps-5" href="#">
-                <img src="{{ asset('images/icons/logo_app.png') }}" alt="Ícono" width="60" height="60">
-                Isla Transfers
-            </a>
-            <div class="ms-3">
-                <a href="{{ route('hotel.bookings.index') }}" class="btn btn-outline-secondary fw-bold">
-                    Transfers
-                </a>
-                <a href="{{ route('hotel.commissions.index') }}" class="btn btn-outline-secondary fw-bold ms-2">
-                    Comisiones
-                </a>
-                <a href="{{ route('hotel.trips.index') }}" class="btn btn-outline-secondary fw-bold ms-2">
-                    Excursiones
-                </a>
-            </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <!-- ...existing code... -->
-                </ul>
-                <ul class="navbar-nav">
-                    @if(Auth::guard('hotels')->check())
-                        <li>
-                            <span class="text-center fs-5">Bienvenido, {{ Auth::guard('hotels')->user()->usuario }}</span>
-                        </li>
-                    @endif
-                    <!-- ...existing code... -->
-                    <li class="nav-item">
-                        <form id="logout-form" action="{{ route('hotel.logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                        <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Cerrar sesión
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <!-- NAVBAR -->
+    @include('hotels.components.navbar')
 
     @yield('content') <!-- Aquí se inyectará el contenido de las vistas -->
 

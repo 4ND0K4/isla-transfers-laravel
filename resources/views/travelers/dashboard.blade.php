@@ -1,44 +1,27 @@
 @extends('layouts.traveler')
 
 @section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-3 bg-light border rounded-2 py-3 me-1 my-3">
-            <!-- Título -->
-            <h1 class="text-center pt-3 fw-light text-success fs-4">¡Hola, {{ htmlspecialchars($_SESSION['travelerName'] ?? $traveler->nombre) }}!</h1>
+
+    <div class="container justify-content-center align-items-center">
+        <div class="col-xl-12 text-center">
             <!-- Subtítulo -->
-            <h2 class="text-center text-secondary fw-bold pt-3 fs-6">Gestiona tus transfers.</h2>
+            <h2 class="text-secondary fw-light pt-3 fs-3">Gestiona tus transfers</h2>
             <!-- Botón de crear reserva -->
-            <div class="col text-center fw-bold py-3">
+            <div class="fw-bold py-3">
                 <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
                     <i class="bi bi-journal-plus display-5"></i>
                 </button>
             </div>
-            <!-- Listado de reservas -->
-            <div class="list-group">
-                @foreach($bookings as $booking)
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Reserva #{{ $booking->id_reserva }}</h5>
-                            <!--<p class="card-text">Destino: {{ $booking->id_destino }}</p>
-                            <p class="card-text">Fecha Entrada: {{ $booking->fecha_entrada }}</p>
-                            <p class="card-text">Hora Entrada: {{ $booking->hora_entrada }}</p>
-                            <p class="card-text">Fecha Vuelo Salida: {{ $booking->fecha_vuelo_salida }}</p>
-                            <p class="card-text">Hora Vuelo Salida: {{ $booking->hora_vuelo_salida }}</p>-->
-                            <button class="btn btn-primary" onclick="setEditBooking({{ $booking->id_reserva }})">Editar</button>
-                            <form action="{{ route('traveler.bookings.destroy', $booking->id_reserva) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+
         </div>
         <!-- Calendario -->
-        <div class="col-8 bg-white border rounded-2 py-3 me-1 my-3" id="calendar"></div>
-</div>
+        <div class="col-xl-8 text-center bg-white border rounded-2 p-5 my-5">
+            <div
+                id="calendar"
+                class=" bg-white border rounded-2 py-3 me-1 my-3">
+            </div>
+        </div>
+    </div>
 
     @include ('travelers.partials.create')
     @include('travelers.partials.edit')
