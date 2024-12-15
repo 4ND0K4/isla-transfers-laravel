@@ -63,7 +63,12 @@
             },
             events: function(fetchInfo, successCallback, failureCallback) {
                 fetch("{{ route('traveler.calendar.events') }}")
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(events => {
                         // Agregar eventos al calendario
                         successCallback(events);
@@ -138,7 +143,7 @@
                         <strong>Localizador:</strong> ${info.event.extendedProps.localizador}
                     </p>
                     <div class="mt-3">
-                            <button onclick="editarReserva(${info.event.id})" class="btn btn-warning">Editar</button>
+                            <button onclick="abrirModalEditar(${info.event.id})" class="btn btn-warning">Editar</button>
                             <button onclick="eliminarReserva('${info.event.id}')" class="btn btn-danger">Eliminar</button>
                         </div>
 
@@ -190,6 +195,8 @@
 
         calendar.render();
     });
+
+
 
 
     function eliminarReserva(id) {

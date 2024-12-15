@@ -254,9 +254,9 @@ class BookingController extends Controller
             if (Auth::guard('admins')->check()) {
                 return redirect()->route('admin.bookings.index')->with('success', 'Reserva actualizada correctamente.');
             } elseif (Auth::guard('travelers')->check()) {
-                return redirect()->route('traveler.bookings.index')->with('success', 'Reserva actualizada correctamente.');
+                return redirect()->route('traveler.dashboard')->with('success', 'Reserva actualizada correctamente.');
             } else {
-                return redirect()->route('hotel.bookings.index')->with('success', 'Reserva actualizada correctamente.');
+                return redirect()->route('hotel.dashboard')->with('success', 'Reserva actualizada correctamente.');
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Error de validación al actualizar la reserva:', $e->errors());
@@ -295,12 +295,18 @@ class BookingController extends Controller
     public function getCalendarEvents(Request $request)
     {
         try {
-            $adminUser = auth()->guard('admins')->user();
+            $user = Auth::guard('admins')->user() ?? Auth::guard('travelers')->user();
 
-            if ($adminUser) {
-                Log::info('Usuario autenticado como admin:', ['email' => $adminUser->email]);
-                // Si es admin, obtener todas las reservas
-                $bookings = Booking::all();
+            if ($user) {
+                if (Auth::guard('admins')->check()) {
+                    Log::info('Usuario autenticado como admin:', ['email' => $user->email]);
+                    // Si es admin, obtener todas las reservas
+                    $bookings = Booking::all();
+                } elseif (Auth::guard('travelers')->check()) {
+                    Log::info('Usuario autenticado como traveler:', ['email' => $user->email]);
+                    // Si es traveler, obtener solo sus reservas
+                    $bookings = Booking::where('email_cliente', $user->email)->get();
+                }
             } else {
                 Log::warning('Usuario no autenticado o no válido.');
                 // Si no hay usuario autenticado, devolver error
@@ -322,6 +328,7 @@ class BookingController extends Controller
                     'start' => $start,
                     'extendedProps' => [
                         'id_hotel' => $booking->id_hotel,
+                        'id_destino' => $booking->id_destino,
                         'localizador' => $booking->localizador,
                         'id_tipo_reserva' => $booking->id_tipo_reserva,
                         'email_cliente' => $booking->email_cliente,
@@ -346,6 +353,19 @@ class BookingController extends Controller
             return response()->json(['error' => 'No se pudieron cargar los eventos'], 500);
         }
     }
+
+
+    public function show($id)
+    {
+        try {
+            $booking = Booking::findOrFail($id);
+            return response()->json($booking);
+        } catch (\Exception $e) {
+            Log::error('Error fetching booking data:', ['exception' => $e->getMessage()]);
+            return response()->json(['error' => 'No se pudo obtener la reserva'], 500);
+        }
+    }
+
 
     // Implementa el servicio de recoger rl total de reservas por zona
     public function reservasPorZona()
@@ -373,6 +393,9 @@ class BookingController extends Controller
     }
 
     // Gráfico basado en la función reservasPorZona en el mes en curso
+
+
+
 
 
     public function dashboard(Request $request)
@@ -450,7 +473,6 @@ class BookingController extends Controller
         // Retornar los gráficos a la vista
         return view('admin.dashboard', compact('chartZonasPie', 'chartHotelesBar'));
     }
-
 
 
 }

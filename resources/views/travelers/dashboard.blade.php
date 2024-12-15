@@ -9,7 +9,7 @@
             <!-- Botón de crear reserva -->
             <div class="fw-bold py-3">
                 <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                    <i class="bi bi-journal-plus display-5"></i>
+                    <i class="fa-solid fa-calendar-plus display-5"></i>
                 </button>
             </div>
 
@@ -72,57 +72,65 @@
             }
         }
 
-        function setEditBooking(idReserva) {
-            const booking = JSON.parse(button.getAttribute('data-booking'));
-            console.log("Reserva seleccionada:", booking);
+        function abrirModalEditar(id) {
+            fetch(`/traveler/bookings/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Configurar los campos del modal
+                    document.getElementById('editIdReserva').value = data.id_reserva || '';
+                    document.getElementById('editLocalizador').value = data.localizador || '';
+                    document.getElementById('editIdTipoReserva').value = data.id_tipo_reserva || '';
+                    document.getElementById('editEmailCliente').value = data.email_cliente || '';
+                    document.getElementById('editNumViajeros').value = data.num_viajeros || '';
+                    document.getElementById('editIdDestino').value = data.id_destino || '';
+                    document.getElementById('editIdVehiculo').value = data.id_vehiculo || '';
 
-            // Actualizar la acción del formulario
-            const form = document.getElementById('editBookingForm');
-            form.action = `/traveler/bookings/${booking.id_reserva}`; // Actualiza la ruta con el id_reserva correcto
+                    // Set the form action URL
+                    document.getElementById('editBookingForm').action = `/traveler/bookings/${id}`;
 
-            // Configurar los campos del modal
-            document.getElementById('editIdReserva').value = booking.id_reserva || '';
-            document.getElementById('editLocalizador').value = booking.localizador || '';
-            document.getElementById('editIdTipoReserva').value = booking.id_tipo_reserva || '';
-            document.getElementById('editEmailCliente').value = booking.email_cliente || '';
-            document.getElementById('editNumViajeros').value = booking.num_viajeros || '';
-            document.getElementById('editIdDestino').value = booking.id_destino || '';
-            document.getElementById('editIdVehiculo').value = booking.id_vehiculo || '';
+                    // Mostrar campos específicos
+                    mostrarCampos('edit');
 
+                    if (data.id_tipo_reserva == 1) {
+                        document.getElementById('editFechaEntrada').value = data.fecha_entrada || '';
+                        document.getElementById('editHoraEntrada').value = data.hora_entrada || '';
+                        document.getElementById('editNumeroVueloEntrada').value = data.numero_vuelo_entrada || '';
+                        document.getElementById('editOrigenVueloEntrada').value = data.origen_vuelo_entrada || '';
+                    } else if (data.id_tipo_reserva == 2) {
+                        document.getElementById('editFechaVueloSalida').value = data.fecha_vuelo_salida || '';
+                        document.getElementById('editHoraVueloSalida').value = data.hora_vuelo_salida || '';
+                    }
 
-            // Mostrar campos específicos
-            mostrarCampos('edit');
+                    // Cerrar el modal de SweetAlert2
+                    Swal.close();
 
-            if (booking.id_tipo_reserva == 1) {
-                document.getElementById('editFechaEntrada').value = booking.fecha_entrada || '';
-                document.getElementById('editHoraEntrada').value = booking.hora_entrada || '';
-                document.getElementById('editNumeroVueloEntrada').value = booking.numero_vuelo_entrada || '';
-                document.getElementById('editOrigenVueloEntrada').value = booking.origen_vuelo_entrada || '';
-            } else if (booking.id_tipo_reserva == 2) {
-                document.getElementById('editFechaVueloSalida').value = booking.fecha_vuelo_salida || '';
-                document.getElementById('editHoraVueloSalida').value = booking.hora_vuelo_salida || '';
-            }
-
-            // Mostrar el modal
-            const modal = new bootstrap.Modal(document.getElementById('editBookingModal'));
-            modal.show();
+                    // Mostrar el modal
+                    const modal = new bootstrap.Modal(document.getElementById('editBookingModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Error fetching booking data:', error);
+                });
         }
 
         function abrirModalActualizar(traveler) {
-        document.querySelector('#updateIdTravelerInput').value = traveler.id_viajero;
-        document.querySelector('#updateEmailInput').value = traveler.email || '';
-        document.querySelector('#updateNameInput').value = traveler.nombre || '';
-        document.querySelector('#updateSurname1Input').value = traveler.apellido1 || '';
-        document.querySelector('#updateSurname2Input').value = traveler.apellido2 || '';
-        document.querySelector('#updateAddressInput').value = traveler.direccion || '';
-        document.querySelector('#updateZipCodeInput').value = traveler.codigo_postal || '';
-        document.querySelector('#updateCityInput').value = traveler.ciudad || '';
-        document.querySelector('#updateCountryInput').value = traveler.pais || '';
+            document.querySelector('#updateIdTravelerInput').value = traveler.id_viajero;
+            document.querySelector('#updateEmailInput').value = traveler.email || '';
+            document.querySelector('#updateNameInput').value = traveler.nombre || '';
+            document.querySelector('#updateSurname1Input').value = traveler.apellido1 || '';
+            document.querySelector('#updateSurname2Input').value = traveler.apellido2 || '';
+            document.querySelector('#updateAddressInput').value = traveler.direccion || '';
+            document.querySelector('#updateZipCodeInput').value = traveler.codigo_postal || '';
+            document.querySelector('#updateCityInput').value = traveler.ciudad || '';
+            document.querySelector('#updateCountryInput').value = traveler.pais || '';
 
-        var modal = new bootstrap.Modal(document.getElementById('updateTravelerModal'));
-        modal.show();
-    }
-
-
+            var modal = new bootstrap.Modal(document.getElementById('updateTravelerModal'));
+            modal.show();
+        }
     </script>
 @endsection

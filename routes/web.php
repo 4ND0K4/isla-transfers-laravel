@@ -14,33 +14,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// *** RUTAS PARA VIAJEROS ***
-Route::prefix('traveler')->name('traveler.')->group(function () {
-    // Login y Registro
-    Route::get('/login', [TravelerController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [TravelerController::class, 'login']);
-    Route::post('/logout', [TravelerController::class, 'logout'])->name('logout');
-    Route::get('/register', [TravelerController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [TravelerController::class, 'register']);
-
-    // Rutas protegidas
-    Route::middleware('auth:travelers')->group(function () {
-        Route::get('/dashboard', [TravelerController::class, 'dashboard'])->name('dashboard');
-        Route::get('/profile/{id}', [TravelerController::class, 'show'])->name('profile');
-        Route::post('/profile/{id}', [TravelerController::class, 'update']);
-
-        // Reservas
-        Route::get('/bookings', [TravelerController::class, 'index'])->name('bookings.index');
-        Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
-        Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
-        Route::delete('/bookings/{id}', [BookingController::class, 'deleteBooking'])->name('bookings.destroy');
-
-        // Calendario
-        Route::get('/calendar/events', [TravelerController::class, 'getCalendarEvents'])->name('calendar.events');
-    });
-});
-Route::resource('travelers', TravelerController::class);
-
 // *** RUTAS PARA ADMINISTRADORES ***
 Route::prefix('admin')->name('admin.')->group(function () {
     // Login y Logout
@@ -74,6 +47,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [BookingController::class, 'dashboard'])->name('dashboard');
     });
 });
+
+// *** RUTAS PARA VIAJEROS ***
+Route::prefix('traveler')->name('traveler.')->group(function () {
+    // Login y Registro
+    Route::get('/login', [TravelerController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [TravelerController::class, 'login']);
+    Route::post('/logout', [TravelerController::class, 'logout'])->name('logout');
+    Route::get('/register', [TravelerController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [TravelerController::class, 'register']);
+
+    // Rutas protegidas
+    Route::middleware('auth:travelers')->group(function () {
+        Route::get('/dashboard', [TravelerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+        Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
+        Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
+        Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+        Route::get('/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('calendar.events');
+        Route::get('/profile/{id}', [TravelerController::class, 'show'])->name('profile');
+        Route::post('/profile/{id}', [TravelerController::class, 'update']);
+    });
+});
+
+Route::resource('travelers', TravelerController::class);
+
+
 
 // *** RUTAS PARA HOTELES ***
 // Rutas públicas de login para hoteles
@@ -122,10 +121,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admins'])->group(funct
 });
 
 Route::middleware(['auth:travelers'])->group(function () {
-    Route::get('/traveler/bookings', [TravelerController::class, 'index'])->name('traveler.bookings.index');
+    Route::get('/traveler/bookings', [BookingController::class, 'index'])->name('traveler.bookings.index'); // Update this line
+    Route::get('/traveler/bookings/{id}', [BookingController::class, 'show'])->name('traveler.bookings.show');
     Route::put('/traveler/bookings/{id}', [BookingController::class, 'update'])->name('traveler.bookings.update');
     Route::delete('/traveler/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('traveler.bookings.delete');
-    Route::get('/traveler/calendar-events', [TravelerController::class, 'getCalendarEvents'])->name('traveler.calendar.events');
+    Route::get('/traveler/calendar-events', [BookingController::class, 'getCalendarEvents'])->name('traveler.calendar.events');
     Route::delete('/traveler/bookings/{id}', [BookingController::class, 'destroy'])->name('traveler.bookings.destroy');
 });
 

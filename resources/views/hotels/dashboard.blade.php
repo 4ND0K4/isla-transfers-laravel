@@ -50,7 +50,7 @@
                             <h2 class="mb-0 fs-5">Últimas reservas realizadas</h2>
                             <div>
                                 <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                                    <i class="bi bi-plus-circle"></i> Nueva reserva
+                                    <i class="fa-solid fa-plus"></i>
                                 </button>
                             </div>
                         </div>
