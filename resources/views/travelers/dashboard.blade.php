@@ -25,7 +25,27 @@
 
     @include ('travelers.partials.create')
     @include('travelers.partials.edit')
+    @include('travelers.partials.delete')
     @include('travelers.partials.profile')
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning-subtle">
+                    <h2 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-light">
+                    ¿Estás seguro de que deseas eliminar esta reserva?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnEliminar" class="btn btn-danger" data-url="">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -116,6 +136,51 @@
                 .catch(error => {
                     console.error('Error fetching booking data:', error);
                 });
+        }
+
+        function eliminarReserva(id) {
+            const url = `/traveler/bookings/${id}`;
+            confirmarEliminacion(url);
+        }
+
+        function confirmarEliminacion(url) {
+            const btnEliminar = document.getElementById('btnEliminar');
+            btnEliminar.setAttribute('data-url', url);
+
+            btnEliminar.onclick = function () {
+                const urlToDelete = btnEliminar.getAttribute('data-url');
+                if (urlToDelete) {
+                    fetch(urlToDelete, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    }).then(data => {
+                        if (data.success) {
+                            Swal.fire('Eliminado', 'La reserva ha sido eliminada.', 'success');
+                            calendar.refetchEvents();
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    }).catch(error => {
+                        console.error('Error al eliminar la reserva:', error);
+                        Swal.fire('Error', 'Hubo un error al intentar eliminar la reserva.', 'error');
+                    });
+                }
+            };
+
+            // Cerrar el modal de SweetAlert2
+            Swal.close();
+
+            // Mostrar el modal de confirmación de eliminación
+            const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
+            modal.show();
         }
 
         function abrirModalActualizar(traveler) {

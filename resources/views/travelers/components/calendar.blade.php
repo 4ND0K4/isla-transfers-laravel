@@ -195,37 +195,4 @@
 
         calendar.render();
     });
-
-
-
-
-    function eliminarReserva(id) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esto",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/bookings/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          Swal.fire('Eliminado', 'La reserva ha sido eliminada.', 'success');
-                          calendar.refetchEvents();
-                      } else {
-                          Swal.fire('Error', data.message, 'error');
-                      }
-                  });
-            }
-        });
-    }
 </script>
