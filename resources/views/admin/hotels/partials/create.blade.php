@@ -47,17 +47,12 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </button>
-                <div id="loadingSpinner" style="display: none;">
-                    <div class="spinner-border text-secondary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
             </div>
         </form>
     </div>
 </div>
 <script>
-        document.getElementById('createHotelForm').addEventListener('submit', function() {
+    document.getElementById('createHotelForm').addEventListener('submit', function() {
         document.getElementById('createSubmitButton').disabled = true;
         document.getElementById('createLoadingSpinner').style.display = 'inline-block';
     });

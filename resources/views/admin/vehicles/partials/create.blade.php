@@ -35,12 +35,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success text-white">Crear</button>
-                <div id="loadingSpinnerCreate" style="display: none;">
-                    <div class="spinner-border text-secondary" role="status">
+                <button type="submit" class="btn btn-success text-white">
+                    Crear
+                    <div id="loadingSpinnerCreate" class="spinner-border spinner-border-sm text-light ms-2" role="status" style="display: none;">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                </div>
+                </button>
             </div>
         </form>
     </div>
@@ -53,7 +53,7 @@
         const loadingSpinnerCreate = document.getElementById('loadingSpinnerCreate');
 
         createVehicleForm.addEventListener('submit', function () {
-            loadingSpinnerCreate.style.display = 'block';
+            loadingSpinnerCreate.style.display = 'inline-block';
             createVehicleButton.disabled = true;
         });
     });

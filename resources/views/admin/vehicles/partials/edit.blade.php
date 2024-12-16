@@ -36,12 +36,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-warning text-white">Guardar Cambios</button>
-                <div id="loadingSpinnerEdit" style="display: none;">
-                    <div class="spinner-border text-secondary" role="status">
+                <button type="submit" class="btn btn-warning text-white">
+                    Guardar Cambios
+                    <div id="loadingSpinnerEdit" class="spinner-border spinner-border-sm text-light ms-2" role="status" style="display: none;">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                </div>
+                </button>
             </div>
         </form>
     </div>
@@ -54,7 +54,7 @@
         const loadingSpinnerEdit = document.getElementById('loadingSpinnerEdit');
 
         editVehicleForm.addEventListener('submit', function () {
-            loadingSpinnerEdit.style.display = 'block';
+            loadingSpinnerEdit.style.display = 'inline-block';
             editVehicleButton.disabled = true;
         });
     });

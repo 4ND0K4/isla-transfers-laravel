@@ -51,17 +51,12 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </button>
-                <div id="loadingSpinner" style="display: none;">
-                    <div class="spinner-border text-secondary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
             </div>
         </form>
     </div>
 </div>
 <script>
-        document.getElementById('editHotelForm').addEventListener('submit', function() {
+    document.getElementById('editHotelForm').addEventListener('submit', function() {
         document.getElementById('editSubmitButton').disabled = true;
         document.getElementById('editLoadingSpinner').style.display = 'inline-block';
     });

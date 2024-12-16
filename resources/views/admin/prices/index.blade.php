@@ -48,18 +48,16 @@
                     <input type="number" name="precio" id="precio" class="form-control" step="0.01" required>
                 </div>
             </div>
-            <button type="submit" class="btn btn-success mt-3">Crear Precio</button>
-            <div id="loadingSpinnerCreate" style="display: none;">
-                <div class="spinner-border text-secondary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
+            <button type="submit" class="btn btn-success mt-3">
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                Crear Precio
+            </button>
         </form>
     </div>
 
     <!-- Tabla de precios -->
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-light table-striped table-hover text-center">
             <thead>
                 <tr>
                     <th>Hotel</th>
@@ -102,10 +100,10 @@
     document.addEventListener('DOMContentLoaded', function () {
         const createPriceForm = document.querySelector('form[action="{{ route('admin.prices.store') }}"]');
         const createPriceButton = createPriceForm.querySelector('button[type="submit"]');
-        const loadingSpinnerCreate = document.getElementById('loadingSpinnerCreate');
 
         createPriceForm.addEventListener('submit', function () {
-            loadingSpinnerCreate.style.display = 'block';
+            const spinner = createPriceButton.querySelector('.spinner-border');
+            spinner.classList.remove('d-none');
             createPriceButton.disabled = true;
         });
 
