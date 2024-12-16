@@ -10,10 +10,7 @@
             <div class="col-md-4">
                 <div class="card shadow-lg">
                     <div class="card-header bg-white text-dark text-center border-0">
-                        <div class="">
-                            <i class="fa-sharp-duotone fa-solid fa-user"></i>
-                        </div>
-                        <span class="mb-0">¡Introduce tus credenciales para comenzar el trayecto!</span>
+                        <span class="fs-3 text-success mb-0">Cliente login</span>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('traveler.login') }}" method="POST">
@@ -38,28 +35,29 @@
                             </div>
                             <!-- Enlace para acceder a registro -->
                             <div class="d-grid gap-2 bg-success">
-                                <a href="#" class="btn btn-link text-white text-decoration-none bg-opacity-50">Registrarse</a>
+                                <a href="{{ route('traveler.register') }}" class="btn btn-link text-white text-decoration-none bg-opacity-50">Registrarse</a>
                             </div>
-                            <!-- Mensajes de error -->
-                            @if ($errors->any())
-                                <div class="alert alert-danger mt-3">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-                            <!-- Mensajes de éxito -->
-                            @if (session('success'))
-                                <div class="alert alert-success mt-3">
-                                    {{ session('success') }}
-                                </div>
-                            @endif
                         </form>
-                            <!-- Mensaje de éxito si se ha creado un cliente particular
-                            Aquí
-                            -->
+                    </div>
+                    <div class="card-footer border-0">
+                        <!-- Mensajes de error -->
+                        @if ($errors->any())
+                            <div id="error-messages" class="alert alert-danger mt-3 mb-0">
+                                <ul class="list-unstyled text-center mb-0">
+                                    @foreach ($errors->all() as $error)
+                                    <li><i class="fa-regular fa-id-card"></i> {{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <!-- Mensaje de éxito si se ha creado un cliente particular -->
+                        @if (session('success'))
+                            <div id="success-message" class="alert alert-success mt-3 mb-0">
+                                <ul class="list-unstyled text-center mb-0">
+                                    <li><i class="fa-solid fa-passport"></i> {{ session('success') }}</li>
+                                </ul>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

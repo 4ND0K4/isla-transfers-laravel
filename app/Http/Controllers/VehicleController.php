@@ -20,7 +20,7 @@ class VehicleController extends Controller
         $request->validate([
             'descripcion' => 'required|string|max:255',
             'email_conductor' => 'required|email|unique:transfer_vehiculo,email_conductor',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
         ]);
 
         Vehicle::create([

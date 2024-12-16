@@ -33,7 +33,7 @@
         <div class="row">
             <div class="col-xl-4 fixed-height d-flex flex-column justify-content-center align-items-center mt-5">
                 <h1 class="display-5 mt-4"> Isla Transfers</h1>
-                <h2 class="fs-5 pt-2 pb-4">Tu aplicación para gestionar transfers</h2>
+                <h2 class="fs-5 pt-2 pb-4">Reserva los mejores traslados en toda la isla</h2>
                 <a href="#" id="openModal" class="btn btn-warning text-dark fw-bold text-decoration-none fs-6 pe-3">
                     Iniciar sesión
                 </a>
@@ -63,7 +63,7 @@
           <div class="col-md-4">
             <i class="fa-solid fa-map fs-1 mb-3"></i>
             <h3>Toma un tour</h3>
-            <p>No te preocupes de nada más. Te acompañamos a que vivas una experiencia inolvidable.</p>
+            <p>Te acompañamos a que vivas una experiencia inolvidable.</p>
           </div>
         </div>
       </div>

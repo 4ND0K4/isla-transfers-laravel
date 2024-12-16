@@ -48,19 +48,12 @@
                     <div class="card-footer border-0">
                         <!-- Mensajes de error -->
                         @if ($errors->any())
-                            <div class="alert alert-danger mt-3">
-                                <ul class="mb-0">
+                            <div id="error-messages" class="alert alert-danger mt-3 mb-0">
+                                <ul class="list-unstyled text-center mb-0">
                                     @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
+                                        <li><i class="fa-regular fa-id-card"></i> {{ $error }}</li>
                                     @endforeach
                                 </ul>
-                            </div>
-                        @endif
-
-                        <!-- Mensajes de éxito -->
-                        @if (session('success'))
-                            <div class="alert alert-success mt-3">
-                                {{ session('success') }}
                             </div>
                         @endif
                     </div>
@@ -69,4 +62,5 @@
         </div>
     </div>
 </main>
+
 @endsection

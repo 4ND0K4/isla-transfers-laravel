@@ -67,12 +67,17 @@ class HotelController extends Controller
 
             $credentials = $request->only('usuario', 'password');
 
+            $hotel = Hotel::where('usuario', $request->usuario)->first();
+            if (!$hotel) {
+                return back()->withErrors(['usuario' => 'El usuario no es correcto.']);
+            }
+
             if (Auth::guard('hotels')->attempt($credentials)) {
                 $request->session()->regenerate();
                 return redirect()->intended(route('hotel.dashboard'))->with('success', 'Inicio de sesión exitoso.');
             }
 
-            return back()->withErrors(['usuario' => 'Credenciales incorrectas.']);
+            return back()->withErrors(['password' => 'La contraseña es incorrecta.']);
         }
 
         public function dashboard()
@@ -260,58 +265,6 @@ class HotelController extends Controller
         return view('admin.hotels.comisiones', compact('comisiones'));
     }
 
-    /*public function storeBooking(Request $request)
-    {
-        $request->validate([
-            'id_tipo_reserva' => 'required|in:1,2,idayvuelta',
-            'id_destino' => 'required|exists:transfer_hotel,id_hotel',
-            'email_cliente' => 'required|email|exists:transfer_viajeros,email',
-            'num_viajeros' => 'required|integer|min:1',
-            'fecha_entrada' => 'nullable|date|required_if:id_tipo_reserva,1,idayvuelta',
-            'hora_entrada' => 'nullable|required_if:id_tipo_reserva,1,idayvuelta',
-            'fecha_vuelo_salida' => 'nullable|date|required_if:id_tipo_reserva,2,idayvuelta',
-            'hora_vuelo_salida' => 'nullable|required_if:id_tipo_reserva,2,idayvuelta',
-            'numero_vuelo_entrada' => 'nullable|string',
-            'origen_vuelo_entrada' => 'nullable|string',
-            'id_vehiculo' => 'nullable|integer|exists:transfer_vehiculo,id_vehiculo',
-        ]);
-
-        $validated = $request->all();
-        $validated['id_hotel'] = $validated['id_destino'];
-        $validated['fecha_reserva'] = now();
-        $validated['fecha_modificacion'] = now();
-        $validated['tipo_creador_reserva'] = 3;
-
-        if ($validated['id_tipo_reserva'] === 'idayvuelta') {
-            // Create two bookings for round trip
-            Booking::create(array_merge($validated, [
-                'id_tipo_reserva' => 1,
-                'fecha_vuelo_salida' => '1970-01-01',
-                'hora_vuelo_salida' => '00:00:00',
-            ]));
-            Booking::create(array_merge($validated, [
-                'id_tipo_reserva' => 2,
-                'fecha_entrada' => '1970-01-01',
-                'hora_entrada' => '00:00:00',
-                'numero_vuelo_entrada' => '',
-                'origen_vuelo_entrada' => '',
-            ]));
-        } else {
-            // Create a single booking
-            if ($validated['id_tipo_reserva'] == 1) {
-                $validated['fecha_vuelo_salida'] = '1970-01-01';
-                $validated['hora_vuelo_salida'] = '00:00:00';
-            } elseif ($validated['id_tipo_reserva'] == 2) {
-                $validated['fecha_entrada'] = '1970-01-01';
-                $validated['hora_entrada'] = '00:00:00';
-                $validated['numero_vuelo_entrada'] = '';
-                $validated['origen_vuelo_entrada'] = '';
-            }
-            Booking::create($validated);
-        }
-
-        return redirect()->route('hotel.dashboard')->with('success', 'Reserva creada correctamente.');
-    }*/
 
     public function logout(Request $request)
     {

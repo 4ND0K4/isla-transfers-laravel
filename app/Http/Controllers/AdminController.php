@@ -21,8 +21,16 @@ class AdminController extends Controller
         // Validar que el usuario y la contraseña estén presentes
         $credentials = $request->validate([
             'usuario' => 'required|string',
-            'password' => 'required|string',
+            'password' => 'required|string|min:8',
         ]);
+
+        // Verificar si el usuario existe
+        $admin = Admin::where('usuario', $credentials['usuario'])->first();
+        if (!$admin) {
+            return back()->withErrors([
+                'usuario' => 'El usuario no existe.',
+            ]);
+        }
 
         // Intentar autenticación usando 'usuario'
         if (Auth::guard('admins')->attempt(['usuario' => $credentials['usuario'], 'password' => $credentials['password']])) {
@@ -30,9 +38,9 @@ class AdminController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        // Si fallan las credenciales
+        // Si la contraseña es incorrecta
         return back()->withErrors([
-            'usuario' => 'Credenciales incorrectas.',
+            'password' => 'La contraseña es incorrecta.',
         ]);
     }
 

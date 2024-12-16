@@ -10,10 +10,7 @@
             <div class="col-md-4">
                 <div class="card shadow-lg">
                     <div class="card-header bg-white text-dark text-center border-0">
-                        <div class="">
-                            <i class="bi bi-person-fill-gear fs-1"></i>
-                        </div>
-                        <span class="mb-0">¡Introduce tus credenciales para comenzar el trayecto!</span>
+                        <span class="text-warning fs-3 mb-0">Hotel login</span>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('hotel.login') }}" method="POST">
@@ -32,15 +29,7 @@
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-success text-white">Acceder</button>
                             </div>
-                            <!-- Mensaje de error al loguearte -->
-                            <div class="d-grid gap-2">
-                                <?php if (isset($_SESSION['login_error'])) : ?>
-                                    <div class="alert alert-danger" role="alert" id="loginError">
-                                        <?php echo $_SESSION['login_error']; ?>
-                                        <?php unset($_SESSION['login_error']); ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+
                         </form>
                         <!-- Separador -->
                         <div class="d-grid gap-2 w-75">
@@ -50,6 +39,18 @@
                         <div class="d-grid gap-2">
                             <button type="button" class="btn btn-warning text-white" data-bs-toggle="modal" data-bs-target="#">Formulario de Inscripción</button>
                         </div>
+                    </div>
+                    <div class="card-footer border-0">
+                        <!-- Mensajes de error -->
+                        @if ($errors->any())
+                        <div id="error-messages" class="alert alert-danger mt-3 mb-0">
+                            <ul class="list-unstyled text-center mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li><i class="fa-regular fa-id-card"></i> {{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

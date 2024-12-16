@@ -20,6 +20,7 @@
     <script src="https://kit.fontawesome.com/d80be3bccb.js" crossorigin="anonymous"></script>
     <!-- Enlaces Hojas Estilo -->
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    @vite(['resources/js/error.js'])
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -36,6 +37,7 @@
     <main class="container-fluid px-0">
         @yield('content')
     </main>
+
     <!-- Abrir modales en Bootstrap 5 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

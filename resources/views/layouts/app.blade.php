@@ -16,6 +16,7 @@
     <script src="https://kit.fontawesome.com/d80be3bccb.js" crossorigin="anonymous"></script>
 
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    @vite(['resources/js/error.js'])
     <script src="{{ asset('js/bundle.js') }}" defer></script>
 
 </head>
@@ -38,7 +39,7 @@
 
         @yield('content') <!-- Aquí se inyectará el contenido de las vistas -->
 
-        !-- Include the login modal component -->
+        <!-- Include the login modal component -->
         @include('components.login_modal')
 </body>
 </html>

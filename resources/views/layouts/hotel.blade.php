@@ -20,6 +20,7 @@
      <script src="https://kit.fontawesome.com/d80be3bccb.js" crossorigin="anonymous"></script>
     <!-- Enlaces Hojas Estilo -->
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    @vite(['resources/js/error.js'])
 </head>
 <body id="hotel">
     <!-- NAVBAR -->
