@@ -8,6 +8,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <div class="mb-3">
                     <label for="editIdZona" class="form-label">Zona</label>
                     <select class="form-select" name="id_zona" id="editIdZona" required>
@@ -23,7 +37,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="editUsuario" class="form-label">Usuario</label>
-                    <input type="text" class="form-control" name="usuario" id="editUsuario" readonly>
+                    <input type="text" class="form-control" name="usuario" id="editUsuario">
                 </div>
                 <div class="mb-3">
                     <label for="editPassword" class="form-label">Contraseña (solo si desea cambiarla)</label>
@@ -31,7 +45,12 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-warning text-white">Guardar Cambios</button>
+                <button type="submit" class="btn btn-warning text-white" id="editSubmitButton">
+                    Guardar Cambios
+                    <div id="editLoadingSpinner" class="spinner-border spinner-border-sm text-light ms-2" role="status" style="display: none;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
                 <div id="loadingSpinner" style="display: none;">
                     <div class="spinner-border text-secondary" role="status">
                         <span class="visually-hidden">Loading...</span>
@@ -41,3 +60,9 @@
         </form>
     </div>
 </div>
+<script>
+        document.getElementById('editHotelForm').addEventListener('submit', function() {
+        document.getElementById('editSubmitButton').disabled = true;
+        document.getElementById('editLoadingSpinner').style.display = 'inline-block';
+    });
+</script>

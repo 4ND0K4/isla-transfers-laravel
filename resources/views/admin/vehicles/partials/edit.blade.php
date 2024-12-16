@@ -8,6 +8,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger" id="error-messages">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="alert alert-success" id="success-message">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <div class="mb-3">
                     <label for="editDescripcion" class="form-label">Descripción</label>
                     <input type="text" class="form-control" name="descripcion" id="editDescripcion" required>
@@ -23,7 +37,7 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-warning text-white">Guardar Cambios</button>
-                <div id="loadingSpinner" style="display: none;">
+                <div id="loadingSpinnerEdit" style="display: none;">
                     <div class="spinner-border text-secondary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -32,3 +46,16 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editVehicleForm = document.querySelector('#editVehicleForm');
+        const editVehicleButton = document.querySelector('#editVehicleForm button[type="submit"]');
+        const loadingSpinnerEdit = document.getElementById('loadingSpinnerEdit');
+
+        editVehicleForm.addEventListener('submit', function () {
+            loadingSpinnerEdit.style.display = 'block';
+            editVehicleButton.disabled = true;
+        });
+    });
+</script>

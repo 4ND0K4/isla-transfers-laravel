@@ -38,14 +38,17 @@ class HotelController extends Controller
         } while (Hotel::where('usuario', $usuario)->exists());
 
         // Crear el hotel
-        Hotel::create([
-            'id_zona' => $request->id_zona,
-            'comision' => $request->comision,
-            'usuario' => $usuario,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return redirect()->route('admin.hotels.index')->with('success', 'Hotel creado correctamente.');
+        try {
+            Hotel::create([
+                'id_zona' => $request->id_zona,
+                'comision' => $request->comision,
+                'usuario' => $usuario,
+                'password' => Hash::make($request->password),
+            ]);
+            return redirect()->route('admin.hotels.index')->with('success', 'Hotel creado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.hotels.index')->withErrors('Error al crear el hotel.');
+        }
     }
 
      /**
@@ -185,23 +188,30 @@ class HotelController extends Controller
         $request->validate([
             'id_zona' => 'required|integer',
             'comision' => 'required|numeric',
+            'usuario' => 'required|string|unique:transfer_hotel,usuario,' . $hotel->id_hotel . ',id_hotel',
         ]);
 
-        $data = $request->only(['id_zona', 'comision']);
+        $data = $request->only(['id_zona', 'comision', 'usuario']);
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
 
-        $hotel->update($data);
-
-        return redirect()->route('admin.hotels.index')->with('success', 'Hotel actualizado correctamente.');
+        try {
+            $hotel->update($data);
+            return redirect()->route('admin.hotels.index')->with('success', 'Hotel actualizado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.hotels.index')->withErrors('Error al actualizar el hotel.');
+        }
     }
 
     public function destroy(Hotel $hotel)
     {
-        $hotel->delete();
-
-        return redirect()->route('admin.hotels.index')->with('success', 'Hotel eliminado correctamente.');
+        try {
+            $hotel->delete();
+            return redirect()->route('admin.hotels.index')->with('success', 'Hotel eliminado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.hotels.index')->withErrors('Error al eliminar el hotel.');
+        }
     }
 
 

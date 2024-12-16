@@ -3,11 +3,26 @@
 @section('title', 'Gestión de Reservas')
 
 @section('content')
-<div class="d-flex flex-column vh-100">
     <!-- Título -->
     <header class="text-secondary text-center p-4 fs-1">
         <h1 class="shadow-sm">Gestión de Reservas</h1>
     </header>
+    <!-- Mensajes de error y éxito -->
+    <div class="d-flex flex-column vh-100">
+        @if ($errors->any())
+            <div class="alert alert-danger" id="error-messages">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        @if (session('success'))
+            <div class="alert alert-success" id="success-message">
+                {{ session('success') }}
+            </div>
+        @endif
 
    <!-- Botón creación de reservas -->
     <div class="row align-items-center">
@@ -117,13 +132,15 @@
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 
-                                <form action="{{ route('admin.bookings.destroy', $booking->id_reserva) }}" method="POST" style="display: inline;">
+                                <form action="{{ route('admin.bookings.destroy', $booking->id_reserva) }}" method="POST" style="display: inline;" onsubmit="showSpinner(this)">
                                     @csrf
                                     @method('DELETE')
                                     <button
+                                    type="submit"
                                     class="btn btn-sm btn-outline-danger m-1"
                                     title="Eliminar reserva">
-                                        <i class="bi bi-trash-fill"></i>
+                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>
                             </td>
@@ -223,6 +240,10 @@
         modal.show();
     }
 
+    function showSpinner(form) {
+        const spinner = form.querySelector('.spinner-border');
+        spinner.classList.remove('d-none');
+    }
 </script>
 
 @endsection

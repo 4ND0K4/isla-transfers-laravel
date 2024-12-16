@@ -7,6 +7,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger" id="error-messages">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="alert alert-success" id="success-message">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <!-- Campos del formulario -->
                 <div class="form-floating mb-3">
                     <input type="date" name="fecha_excursion" class="form-control" id="createFecha" required>
@@ -55,7 +69,7 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success text-white">Crear</button>
-                <div id="loadingSpinner" style="display: none;">
+                <div id="loadingSpinnerCreate" style="display: none;">
                     <div class="spinner-border text-secondary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -64,3 +78,16 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const createTourForm = document.querySelector('#createTourModal form');
+        const createTourButton = document.querySelector('#createTourModal button[type="submit"]');
+        const loadingSpinnerCreate = document.getElementById('loadingSpinnerCreate');
+
+        createTourForm.addEventListener('submit', function () {
+            loadingSpinnerCreate.style.display = 'block';
+            createTourButton.disabled = true;
+        });
+    });
+</script>

@@ -8,6 +8,20 @@
         <h1 class="shadow-sm">Gestión de Hoteles</h1>
     </header>
     <div class="col text-start pb-2 px-4">
+        @if ($errors->any())
+            <div class="alert alert-danger" id="error-messages">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        @if (session('success'))
+            <div class="alert alert-success" id="success-message">
+                {{ session('success') }}
+            </div>
+        @endif
         <button class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#createHotelModal"><i class="bi bi-plus-circle"></i> Nuevo Hotel</button>
     </div>
     <!-- Tabla -->
@@ -53,15 +67,16 @@
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <!-- Botón eliminar -->
-                                <form action="{{ route('admin.hotels.destroy', $hotel) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button
-                                    type="submit"
-                                    class="btn btn-sm btn-outline-danger m-1"
-                                    title="Eliminar hotel">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
+                                <form action="{{ route('admin.hotels.destroy', $hotel) }}" method="POST" style="display: inline;" onsubmit="showSpinner(this)">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-danger m-1"
+                                        title="Eliminar hotel">
+                                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -85,38 +100,44 @@
     }
 
     function loadComisiones(hotelId) {
-    const tableBody = document.getElementById('comisionesTableBody');
-    tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Cargando...</td></tr>'; // Indicador de carga
+        const tableBody = document.getElementById('comisionesTableBody');
+        tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Cargando...</td></tr>'; // Indicador de carga
 
-    fetch(`/admin/hotels/${hotelId}/comisiones`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.length > 0) {
-                tableBody.innerHTML = ''; // Limpia el contenido previo
-                data.forEach(comision => {
-                    const row = `
-                        <tr>
-                            <td>${comision.year}</td>
-                            <td>${comision.month}</td>
-                            <td>${parseFloat(comision.total_comision).toFixed(2)}</td>
-                        </tr>
-                    `;
-                    tableBody.innerHTML += row;
-                });
-            } else {
-                tableBody.innerHTML = '<tr><td colspan="3" class="text-center">No hay comisiones disponibles.</td></tr>';
-            }
-        })
-        .catch(error => {
-            console.error('Error al cargar las comisiones:', error);
-            tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Error al cargar las comisiones.</td></tr>';
-        });
-}
+        fetch(`/admin/hotels/${hotelId}/comisiones`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.length > 0) {
+                    tableBody.innerHTML = ''; // Limpia el contenido previo
+                    data.forEach(comision => {
+                        const row = `
+                            <tr>
+                                <td>${comision.year}</td>
+                                <td>${comision.month}</td>
+                                <td>${parseFloat(comision.total_comision).toFixed(2)}</td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="3" class="text-center">No hay comisiones disponibles.</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar las comisiones:', error);
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Error al cargar las comisiones.</td></tr>';
+            });
+    }
 
+    function showSpinner(form) {
+        const button = form.querySelector('button[type="submit"]');
+        const spinner = button.querySelector('.spinner-border');
+        spinner.classList.remove('d-none');
+        button.disabled = true;
+    }
 </script>
 @endsection

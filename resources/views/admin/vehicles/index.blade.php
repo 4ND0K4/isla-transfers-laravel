@@ -9,6 +9,21 @@
     <header class="text-secondary text-center fs-1 p-4">
         <h1 class="shadow-sm">Gestión de  Vehículos</h1>
     </header>
+    <!-- Mensajes de error y éxito -->
+    @if ($errors->any())
+        <div class="alert alert-danger" id="error-messages">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (session('success'))
+        <div class="alert alert-success" id="success-message">
+            {{ session('success') }}
+        </div>
+    @endif
     <!-- Botón para crear un nuevo vehículo -->
     <div class="col text-start py-2 px-4">
         <button class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#createVehicleModal"><i class="bi bi-plus-circle"></i> Nuevo Vehículo</button>
@@ -42,13 +57,14 @@
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <!-- Botón eliminar -->
-                                <form action="{{ route('admin.vehicles.destroy', $vehicle) }}" method="POST" style="display: inline;">
+                                <form action="{{ route('admin.vehicles.destroy', $vehicle) }}" method="POST" style="display: inline;" onsubmit="showSpinner(this)">
                                     @csrf
                                     @method('DELETE')
                                     <button
                                         type="submit"
                                         class="btn btn-sm btn-outline-danger m-1"
                                         title="Eliminar vehículo">
+                                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>
@@ -71,6 +87,13 @@
         document.getElementById('editEmailConductor').value = vehicle.email_conductor;
         document.getElementById('editPassword').value = '';
         document.getElementById('editVehicleForm').action = '/admin/vehicles/' + vehicle.id_vehiculo;
+    }
+
+    function showSpinner(form) {
+        const button = form.querySelector('button[type="submit"]');
+        const spinner = button.querySelector('.spinner-border');
+        spinner.classList.remove('d-none');
+        button.disabled = true;
     }
 </script>
 @endsection

@@ -6,6 +6,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger" id="error-messages">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="alert alert-success" id="success-message">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <form action="{{ route('admin.bookings.store') }}" method="POST">
                     @csrf
                     <div class="container mt-4">
@@ -78,7 +92,7 @@
                     <!-- Botones -->
                     <div class="modal-footer">
                         <button type="submit" id="createBookingButton" class="btn btn-success text-white">Crear</button>
-                        <div id="loadingSpinner" style="display: none;">
+                        <div id="loadingSpinnerCreate" style="display: none;">
                             <div class="spinner-border text-secondary" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
@@ -89,3 +103,16 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addBookingForm = document.querySelector('#addBookingModal form');
+        const createBookingButton = document.getElementById('createBookingButton');
+        const loadingSpinnerCreate = document.getElementById('loadingSpinnerCreate');
+
+        addBookingForm.addEventListener('submit', function () {
+            loadingSpinnerCreate.style.display = 'block';
+            createBookingButton.disabled = true;
+        });
+    });
+</script>

@@ -8,6 +8,21 @@
     <header class="text-secondary text-center p-4 fs-1">
         <h1 class="shadow-sm">Gestión de Excursiones</h1>
     </header>
+    <!-- Mensajes de error y éxito -->
+    @if ($errors->any())
+        <div class="alert alert-danger" id="error-messages">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (session('success'))
+        <div class="alert alert-success" id="success-message">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="col text-start pb-2 px-4">
         <button class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#createTourModal">
             <i class="bi bi-plus-circle"></i> Nueva Excursión
@@ -62,10 +77,11 @@
                                     })">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
-                                <form action="{{ route('admin.tours.destroy', $tour) }}" method="POST" style="display: inline;">
+                                <form action="{{ route('admin.tours.destroy', $tour) }}" method="POST" style="display: inline;" onsubmit="showSpinner(this)">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger m-1" title="Eliminar excursión">
+                                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>
@@ -83,16 +99,22 @@
 
 <script>
     function setEditTour(tour) {
-    document.getElementById('editFecha').value = tour.fecha_excursion;
-    document.getElementById('editHoraEntrada').value = tour.hora_entrada_excursion;
-    document.getElementById('editHoraSalida').value = tour.hora_salida_excursion;
-    document.getElementById('editDescripcion').value = tour.descripcion;
-    document.getElementById('editNumExcursionistas').value = tour.num_excursionistas;
-    document.getElementById('editEmailCliente').value = tour.email_cliente;
-    document.getElementById('editHotel').value = tour.id_hotel;
-    document.getElementById('editVehiculo').value = tour.id_vehiculo || ''; // Asignar vacío si no hay vehículo
-    document.getElementById('editTourForm').action = `/admin/tours/${tour.id_excursion}`;
-}
+        document.getElementById('editFecha').value = tour.fecha_excursion;
+        document.getElementById('editHoraEntrada').value = tour.hora_entrada_excursion;
+        document.getElementById('editHoraSalida').value = tour.hora_salida_excursion;
+        document.getElementById('editDescripcion').value = tour.descripcion;
+        document.getElementById('editNumExcursionistas').value = tour.num_excursionistas;
+        document.getElementById('editEmailCliente').value = tour.email_cliente;
+        document.getElementById('editHotel').value = tour.id_hotel;
+        document.getElementById('editVehiculo').value = tour.id_vehiculo || ''; // Asignar vacío si no hay vehículo
+        document.getElementById('editTourForm').action = `/admin/tours/${tour.id_excursion}`;
+    }
 
+    function showSpinner(form) {
+        const button = form.querySelector('button[type="submit"]');
+        const spinner = button.querySelector('.spinner-border');
+        spinner.classList.remove('d-none');
+        button.disabled = true;
+    }
 </script>
 @endsection

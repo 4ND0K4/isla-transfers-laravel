@@ -6,6 +6,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger" id="error-messages">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('success'))
+                    <div class="alert alert-success" id="success-message">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <form id="editBookingForm" method="POST" action="">
                     @csrf
                     @method('PUT')
@@ -74,8 +88,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-warning text-white">Guardar Cambios</button>
-                        <div id="loadingSpinner" style="display: none;">
+                        <button type="submit" class="btn btn-warning text-white" id="editBookingButton">Guardar Cambios</button>
+                        <div id="loadingSpinnerEdit" style="display: none;">
                             <div class="spinner-border text-secondary" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
@@ -86,4 +100,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editBookingForm = document.querySelector('#editBookingForm');
+        const editBookingButton = document.getElementById('editBookingButton');
+        const loadingSpinnerEdit = document.getElementById('loadingSpinnerEdit');
+
+        editBookingForm.addEventListener('submit', function () {
+            loadingSpinnerEdit.style.display = 'block';
+            editBookingButton.disabled = true;
+        });
+    });
+</script>
 

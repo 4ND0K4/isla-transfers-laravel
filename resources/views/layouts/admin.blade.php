@@ -19,8 +19,7 @@
     <!-- Icons FontAwesome -->
     <script src="https://kit.fontawesome.com/d80be3bccb.js" crossorigin="anonymous"></script>
     <!-- Enlaces Hojas Estilo -->
-    @vite(['resources/css/app.scss', 'resources/js/app.js'])
-    @vite(['resources/js/error.js'])
+    @vite(['resources/css/app.scss', 'resources/js/app.js', 'resources/js/error.js'])
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
