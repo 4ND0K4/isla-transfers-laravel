@@ -41,7 +41,10 @@
                                 >
                             </div>
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-light">Iniciar Sesión</button>
+                                <button type="submit" class="btn btn-light" id="login-button">
+                                    Iniciar Sesión
+                                    <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -62,5 +65,11 @@
         </div>
     </div>
 </main>
+
+<script>
+    document.getElementById('login-button').addEventListener('click', function() {
+        document.getElementById('spinner').classList.remove('d-none');
+    });
+</script>
 
 @endsection

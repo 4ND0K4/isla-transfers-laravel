@@ -19,8 +19,7 @@
      <!-- Icons FontAwesome -->
      <script src="https://kit.fontawesome.com/d80be3bccb.js" crossorigin="anonymous"></script>
      <!-- Estilos -->
-    @vite(['resources/css/app.scss', 'resources/js/app.js'])
-    @vite(['resources/js/error.js'])
+    @vite(['resources/css/app.scss', 'resources/js/app.js', 'resources/js/error.js'])
     <!-- Calendario -->
     @include ('travelers.components.calendar')
 </head>

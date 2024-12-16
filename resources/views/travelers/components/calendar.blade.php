@@ -1,5 +1,5 @@
 <!-- Estilos para el header del FullCalendario. No funciona desde las hojas externas -->
- <style>
+<style>
     /* CSS Personalizado para la Barra de Herramientas */
     .fc .fc-prev-button,
     .fc .fc-next-button,
@@ -41,7 +41,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const calendarEl = document.getElementById('calendar');
 
-        const calendar = new FullCalendar.Calendar(calendarEl, {
+        window.calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             locale: "es", //idioma
             firstDay: 1, //Inicia en lunes

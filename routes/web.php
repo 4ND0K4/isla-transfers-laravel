@@ -87,6 +87,7 @@ Route::prefix('hotel')->middleware('auth:hotels')->group(function () {
     Route::get('/trips', [TourController::class, 'index'])->name('hotel.trips.index');
     Route::post('/logout', [HotelController::class, 'logout'])->name('hotel.logout');
     Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('hotel.bookings.update');
+    Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('hotel.bookings.destroy');
     Route::delete('hotel/bookings/{id}', [BookingController::class, 'destroy'])->name('hotel.bookings.destroy');
 });
 

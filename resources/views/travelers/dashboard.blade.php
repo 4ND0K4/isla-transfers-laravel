@@ -28,25 +28,6 @@
     @include('travelers.partials.delete')
     @include('travelers.partials.profile')
 
-    <!-- Modal de Confirmación de Eliminación -->
-    <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-warning-subtle">
-                    <h2 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body bg-light">
-                    ¿Estás seguro de que deseas eliminar esta reserva?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btnEliminar" class="btn btn-danger" data-url="">Eliminar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Configuración del formulario de creación de reservas
@@ -163,20 +144,49 @@
                         return response.json();
                     }).then(data => {
                         if (data.success) {
-                            Swal.fire('Eliminado', 'La reserva ha sido eliminada.', 'success');
-                            calendar.refetchEvents();
+                            // Mostrar mensaje de éxito
+                            const successMessage = document.getElementById('deleteSuccessMessage');
+                            if (successMessage) {
+                                successMessage.style.display = 'block';
+                                setTimeout(() => {
+                                    successMessage.style.display = 'none';
+                                }, 5000);
+                            }
+                            window.calendar.refetchEvents();
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('confirmarEliminacionModal'));
+                            modal.hide();
                         } else {
-                            Swal.fire('Error', data.message, 'error');
+                            // Mostrar mensaje de error
+                            const errorMessages = document.getElementById('deleteErrorMessages');
+                            if (errorMessages) {
+                                errorMessages.innerText = data.message;
+                                errorMessages.style.display = 'block';
+                                setTimeout(() => {
+                                    errorMessages.style.display = 'none';
+                                }, 5000);
+                            }
                         }
                     }).catch(error => {
                         console.error('Error al eliminar la reserva:', error);
-                        Swal.fire('Error', 'Hubo un error al intentar eliminar la reserva.', 'error');
+                        // Mostrar mensaje de error
+                        const errorMessages = document.getElementById('deleteErrorMessages');
+                        if (errorMessages) {
+                            errorMessages.innerText = 'Hubo un error al intentar eliminar la reserva.';
+                            errorMessages.style.display = 'block';
+                            setTimeout(() => {
+                                errorMessages.style.display = 'none';
+                            }, 5000);
+                        }
+                    }).finally(() => {
+                        // Ocultar spinner y habilitar botón
+                        const spinner = document.getElementById('deleteLoadingSpinner');
+                        if (spinner) {
+                            spinner.style.display = 'none';
+                        }
+                        btnEliminar.disabled = false;
                     });
                 }
             };
-
-            // Cerrar el modal de SweetAlert2
-            Swal.close();
 
             // Mostrar el modal de confirmación de eliminación
             const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));

@@ -254,24 +254,18 @@ class BookingController extends Controller
     public function destroy($id)
     {
         try {
-            // Buscar la reserva por ID
             $booking = Booking::findOrFail($id);
 
-            // Restricción para travelers y hotels
-            $tipoCreadorReserva = $this->getTipoCreadorReserva();
-            if ($tipoCreadorReserva == 2 || $tipoCreadorReserva == 3) {
-                $fechaReserva = Carbon::parse($booking->fecha_entrada ?? $booking->fecha_vuelo_salida);
-                if ($fechaReserva->diffInDays(Carbon::now()) < 2) {
-                    return redirect()->back()->withErrors(['error' => 'Los travelers no pueden eliminar reservas con menos de 2 días de antelación.']);
-                }
+            // Check if the user is authorized to delete the booking
+            if (Auth::guard('admins')->check() || Auth::guard('travelers')->check() || Auth::guard('hotels')->check()) {
+                $booking->delete();
+                return response()->json(['success' => true]);
+            } else {
+                return response()->json(['error' => 'No autorizado'], 403);
             }
-
-            // Intentar eliminar la reserva
-            $booking->delete();
-
-            return redirect()->route('admin.bookings.index')->with('success', 'Reserva eliminada correctamente.');
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Hubo un error al intentar eliminar la reserva.']);
+            Log::error('Error al eliminar la reserva: ' . $e->getMessage());
+            return response()->json(['error' => 'Hubo un error al intentar eliminar la reserva.'], 500);
         }
     }
 

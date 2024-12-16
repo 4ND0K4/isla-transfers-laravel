@@ -28,11 +28,11 @@
                     <label for="editFecha">Fecha</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="time" name="hora_entrada_excursion" class="form-control" id="editHoraEntrada" required>
+                    <input type="time" step="1" name="hora_entrada_excursion" class="form-control" id="editHoraEntrada" required>
                     <label for="editHoraEntrada">Hora ida</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="time" name="hora_salida_excursion" class="form-control" id="editHoraSalida" required>
+                    <input type="time" step="1" name="hora_salida_excursion" class="form-control" id="editHoraSalida" required>
                     <label for="editHoraSalida">Hora vuelta</label>
                 </div>
                 <div class="form-floating mb-3">

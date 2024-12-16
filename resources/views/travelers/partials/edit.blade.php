@@ -73,11 +73,24 @@
                             </div>
                         </div>
                     </div>
+                    <div id="editErrorMessages" class="alert alert-danger" style="display: none;"></div>
+                    <div id="editSuccessMessage" class="alert alert-success" style="display: none;"></div>
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-secondary fw-bold text-white">Modificar</button>
+                        <button type="submit" class="btn btn-secondary fw-bold text-white">
+                            Modificar
+                            <div id="editLoadingSpinner" class="spinner-border spinner-border-sm text-light ms-2" role="status" style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('editBookingForm').addEventListener('submit', function () {
+        document.getElementById('editLoadingSpinner').style.display = 'inline-block';
+        this.querySelector('button[type="submit"]').disabled = true;
+    });
+</script>

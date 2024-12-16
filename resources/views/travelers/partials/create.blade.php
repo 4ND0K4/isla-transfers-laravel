@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('traveler.bookings.store') }}" method="POST">
+                <form id="addBookingForm" action="{{ route('traveler.bookings.store') }}" method="POST">
                     @csrf
                     <div class="container mt-4">
                         <input type="hidden" name="email_cliente" value="{{ Auth::user()->email }}">
@@ -72,17 +72,27 @@
                         </div>
                     </div>
 
+                    <div id="createErrorMessages" class="alert alert-danger" style="display: none;"></div>
+                    <div id="createSuccessMessage" class="alert alert-success" style="display: none;"></div>
+
                     <!-- Botones -->
                     <div class="text-center my-3">
-                        <button type="submit" id="createBookingButton" class="btn btn-secondary fw-bold text-white">Crear</button>
-                        <div id="loadingSpinner" style="display: none;">
-                            <div class="spinner-border text-secondary" role="status">
+                        <button type="submit" id="createBookingButton" class="btn btn-secondary fw-bold text-white">
+                            Crear
+                            <div id="loadingSpinner" class="spinner-border spinner-border-sm text-light ms-2" role="status" style="display: none;">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                        </div>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('addBookingForm').addEventListener('submit', function () {
+        document.getElementById('loadingSpinner').style.display = 'inline-block';
+        this.querySelector('button[type="submit"]').disabled = true;
+    });
+</script>

@@ -12,6 +12,9 @@
 
                     <input type="hidden" name="id_traveler" id="updateIdTravelerInput" value="{{ $traveler->id_viajero }}">
 
+                    <div id="profileErrorMessages" class="alert alert-danger" style="display: none;"></div>
+                    <div id="profileSuccessMessage" class="alert alert-success" style="display: none;"></div>
+
                     <!-- Email -->
                     <div class="mb-3">
                         <label class="form-label text-warning" for="updateEmailInput">Email</label>
@@ -68,10 +71,22 @@
 
                     <!-- Botones de envío -->
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-warning fw-bold text-white">Modificar</button>
+                        <button type="submit" class="btn btn-warning fw-bold text-white">
+                            Modificar
+                            <div id="profileLoadingSpinner" class="spinner-border spinner-border-sm text-light ms-2" role="status" style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.querySelector('#updateTravelerModal form').addEventListener('submit', function () {
+        document.getElementById('profileLoadingSpinner').style.display = 'inline-block';
+        this.querySelector('button[type="submit"]').disabled = true;
+    });
+</script>
