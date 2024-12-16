@@ -161,9 +161,9 @@ class BookingController extends Controller
             if ($tipoCreadorReserva == 1) {
                 return redirect()->route('admin.bookings.index')->with('success', 'Reserva creada correctamente.');
             } elseif ($tipoCreadorReserva == 2) {
-                return redirect()->route('traveler.dashboard')->with('success', 'Reserva creada correctamente.');
+                return redirect()->route('traveler.bookings.index')->with('success', 'Reserva creada correctamente.');
             } else {
-                return redirect()->route('hotel.dashboard')->with('success', 'Reserva creada correctamente.');
+                return redirect()->route('hotel.bookings.index')->with('success', 'Reserva creada correctamente.');
             }
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Hubo un error al crear la reserva.']);
@@ -241,7 +241,7 @@ class BookingController extends Controller
             } elseif (Auth::guard('travelers')->check()) {
                 return redirect()->route('traveler.dashboard')->with('success', 'Reserva actualizada correctamente.');
             } else {
-                return redirect()->route('hotel.dashboard')->with('success', 'Reserva actualizada correctamente.');
+                return redirect()->route('hotel.bookings.index')->with('success', 'Reserva actualizada correctamente.');
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors());
@@ -250,22 +250,34 @@ class BookingController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
         try {
+            // Buscar la reserva por ID
             $booking = Booking::findOrFail($id);
 
-            // Check if the user is authorized to delete the booking
-            if (Auth::guard('admins')->check() || Auth::guard('travelers')->check() || Auth::guard('hotels')->check()) {
-                $booking->delete();
-                return response()->json(['success' => true]);
+            // Restricción para travelers y hotels
+            $tipoCreadorReserva = $this->getTipoCreadorReserva();
+            if ($tipoCreadorReserva == 2 || $tipoCreadorReserva == 3) {
+                $fechaReserva = Carbon::parse($booking->fecha_entrada ?? $booking->fecha_vuelo_salida);
+                if ($fechaReserva->diffInDays(Carbon::now()) < 2) {
+                    return redirect()->back()->withErrors(['error' => 'Los travelers no pueden eliminar reservas con menos de 2 días de antelación.']);
+                }
+            }
+
+            // Intentar eliminar la reserva
+            $booking->delete();
+
+            // Redirigir según el tipo de creador de reserva
+            if ($tipoCreadorReserva == 1) {
+                return redirect()->route('admin.bookings.index')->with('success', 'Reserva eliminada correctamente.');
+            } elseif ($tipoCreadorReserva == 2) {
+                return redirect()->route('traveler.bookings.index')->with('success', 'Reserva eliminada correctamente.');
             } else {
-                return response()->json(['error' => 'No autorizado'], 403);
+                return redirect()->route('hotel.bookings.index')->with('success', 'Reserva eliminada correctamente.');
             }
         } catch (\Exception $e) {
-            Log::error('Error al eliminar la reserva: ' . $e->getMessage());
-            return response()->json(['error' => 'Hubo un error al intentar eliminar la reserva.'], 500);
+            return redirect()->back()->withErrors(['error' => 'Hubo un error al intentar eliminar la reserva.']);
         }
     }
 

@@ -111,6 +111,9 @@
                 } else if (info.event.extendedProps.tipo_creador_reserva === 2) {
                     info.el.style.backgroundColor = '#ffc107'; // Color para reservas creadas por el traveler (por ejemplo, gris claro)
                     info.el.style.color = '#ffffff';
+                } else if (info.event.extendedProps.tipo_creador_reserva === 3) {
+                    info.el.style.backgroundColor = '#28a745'; // Color para reservas creadas por el tipo 3 (verde)
+                    info.el.style.color = '#ffffff';
                 }
             },
             //Estilo de las cards (con sweetAlert2)

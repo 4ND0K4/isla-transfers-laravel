@@ -17,7 +17,8 @@ class TourController extends Controller
         if (Auth::guard('hotels')->check()) {
             $hotel = Auth::guard('hotels')->user(); // Obtener el hotel autenticado
             $tours = Tour::with('vehicle')->where('id_hotel', $hotel->id_hotel)->get(); // Obtener tours del hotel
-            return view('hotels.trips.index', compact('tours'));
+            $hotels = Hotel::all(); // Obtener todos los hoteles
+            return view('hotels.trips.index', compact('tours', 'hotels'));
         } else {
             $tours = Tour::with('hotel', 'vehicle')->get(); // Relacionamos con hotel y vehículo
             $hotels = Hotel::all();
@@ -35,16 +36,24 @@ class TourController extends Controller
             'descripcion' => 'required|string|max:255',
             'num_excursionistas' => 'required|integer',
             'email_cliente' => 'required|email|exists:transfer_viajeros,email',
-            'id_hotel' => 'required|exists:transfer_hotel,id_hotel',
             'id_vehiculo' => 'nullable|exists:transfer_vehiculo,id_vehiculo',
         ]);
 
+        if (Auth::guard('hotels')->check()) {
+            $hotel = Auth::guard('hotels')->user(); // Obtener el hotel autenticado
+            $validatedData['id_hotel'] = $hotel->id_hotel; // Asignar el id_hotel del hotel autenticado
+        } else {
+            $validatedData['id_hotel'] = $request->input('id_hotel'); // Obtener el id_hotel del request
+        }
+
         Tour::create($validatedData);
 
-        return redirect()->route('admin.tours.index')->with('success', 'Excursión creada correctamente.');
+        if (Auth::guard('hotels')->check()) {
+            return redirect()->route('hotel.trips.index')->with('success', 'Excursión creada correctamente.');
+        } else {
+            return redirect()->route('admin.tours.index')->with('success', 'Excursión creada correctamente.');
+        }
     }
-
-
 
     public function update(Request $request, Tour $tour)
     {
@@ -60,10 +69,19 @@ class TourController extends Controller
                 'descripcion' => 'required|string|max:255',
                 'num_excursionistas' => 'required|integer',
                 'email_cliente' => 'required|email|exists:transfer_viajeros,email',
-                'id_hotel' => 'required|exists:transfer_hotel,id_hotel',
                 'id_vehiculo' => 'nullable|exists:transfer_vehiculo,id_vehiculo',
             ]);
 
+            if (Auth::guard('hotels')->check()) {
+                $hotel = Auth::guard('hotels')->user(); // Obtener el hotel autenticado
+
+                // Verificar que el tour pertenece al hotel autenticado
+                if ($tour->id_hotel !== $hotel->id_hotel) {
+                    return redirect()->route('hotel.trips.index')->with('error', 'No tiene permiso para modificar esta excursión.');
+                }
+            } else {
+                $validatedData['id_hotel'] = $request->input('id_hotel'); // Obtener el id_hotel del request
+            }
 
             // Registrar los datos validados
             Log::info('Datos validados para la actualización', $validatedData);
@@ -75,7 +93,11 @@ class TourController extends Controller
             $tour->update($validatedData);
             Log::info('Tour actualizado correctamente', ['tour_id' => $tour->id_excursion]);
 
-            return redirect()->route('admin.tours.index')->with('success', 'Excursión actualizada correctamente.');
+            if (Auth::guard('hotels')->check()) {
+                return redirect()->route('hotel.trips.index')->with('success', 'Excursión actualizada correctamente.');
+            } else {
+                return redirect()->route('admin.tours.index')->with('success', 'Excursión actualizada correctamente.');
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Captura los errores de validación
             Log::error('Errores de validación', [
@@ -93,8 +115,6 @@ class TourController extends Controller
             return redirect()->back()->with('error', 'Error al actualizar la excursión. Intente nuevamente.');
         }
     }
-
-
 
     public function destroy(Tour $tour)
     {

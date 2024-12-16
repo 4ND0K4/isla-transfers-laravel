@@ -74,15 +74,28 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-warning text-white">Guardar Cambios</button>
-                        <div id="loadingSpinner" style="display: none;">
-                            <div class="spinner-border text-secondary" role="status">
+                        <button type="submit" class="btn btn-warning text-white">
+                            Guardar Cambios
+                            <div id="loadingSpinnerEdit" class="spinner-border spinner-border-sm text-light ms-2" role="status" style="display: none;">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                        </div>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Configuración del formulario de edición de reservas
+        const editBookingForm = document.querySelector('#editBookingModal form');
+        const loadingSpinnerEdit = document.getElementById('loadingSpinnerEdit');
+
+        // Mostrar spinner y desactivar el botón al enviar el formulario
+        editBookingForm.addEventListener('submit', function () {
+            loadingSpinnerEdit.style.display = 'inline-block';
+        });
+    });
+</script>

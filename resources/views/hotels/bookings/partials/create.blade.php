@@ -78,16 +78,29 @@
                     </div>
 
                     <!-- Botones -->
-                    <div class="modal-footer">
-                        <button type="submit" id="createBookingButton" class="btn btn-success fw-bold text-white">Crear</button>
-                        <div id="loadingSpinner" style="display: none;">
-                            <div class="spinner-border text-secondary" role="status">
+                    <div class="modal-footer"></div>
+                        <button type="submit" id="createBookingButton" class="btn btn-success fw-bold text-white">
+                            Crear
+                            <div id="loadingSpinnerCreate" class="spinner-border spinner-border-sm text-light ms-2" role="status" style="display: none;">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                        </div>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Configuración del formulario de creación de reservas
+        const addBookingForm = document.querySelector('#addBookingModal form');
+        const loadingSpinnerCreate = document.getElementById('loadingSpinnerCreate');
+
+        // Mostrar spinner y desactivar el botón al enviar el formulario
+        addBookingForm.addEventListener('submit', function () {
+            loadingSpinnerCreate.style.display = 'inline-block';
+        });
+    });
+</script>

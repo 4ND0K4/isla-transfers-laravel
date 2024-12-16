@@ -15,7 +15,7 @@
                 </div>
                 <div>
                     <!-- Tabla de Comisiones -->
-                    <h2 class="fs-5">Último trimestre</h2>
+                    <h2 class="mt-5 fs-5"></h2>
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -48,11 +48,6 @@
                     <div class="bg-white border rounded-2 p-3 shadow">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h2 class="mb-0 fs-5">Últimas reservas realizadas</h2>
-                            <div>
-                                <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </div>
                         </div>
                         <table class="table table-bordered table-striped">
                             <thead>
@@ -96,54 +91,11 @@
         </div>
     </div>
 </div>
-@include('hotels.bookings.partials.create')
+<!-- Tabla de Excursiones -->
+
+
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {{ $chart->script() }}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Configuración del formulario de creación de reservas
-    const addBookingForm = document.querySelector('#addBookingModal form');
-    const createBookingButton = document.getElementById('createBookingButton');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-
-    // Mostrar spinner y desactivar el botón al enviar el formulario
-    addBookingForm.addEventListener('submit', function () {
-        loadingSpinner.style.display = 'block';
-        createBookingButton.disabled = true;
-    });
-
-    // Mostrar campos según el tipo de reserva en el formulario de creación
-    document.getElementById("addIdTipoReserva").addEventListener('change', function () {
-        mostrarCampos('add');
-    });
-
-    // Inicializar el modal de creación con valores predeterminados
-    document.getElementById("addBookingModal").addEventListener('shown.bs.modal', function () {
-        document.getElementById("addIdTipoReserva").value = "idayvuelta";
-        mostrarCampos('add');
-    });
-});
-
-// Función para mostrar u ocultar los campos específicos de cada tipo de reserva
-function mostrarCampos(modalType) {
-    let tipoReserva, aeropuertoHotelFields, hotelAeropuertoFields;
-
-    if (modalType === 'add') {
-        tipoReserva = document.getElementById('addIdTipoReserva').value;
-        aeropuertoHotelFields = document.getElementById('aeropuerto-hotel-fields-add');
-        hotelAeropuertoFields = document.getElementById('hotel-aeropuerto-fields-add');
-    } else if (modalType === 'edit') {
-        tipoReserva = document.getElementById('editIdTipoReserva').value;
-        aeropuertoHotelFields = document.getElementById('aeropuerto-hotel-fields-edit');
-        hotelAeropuertoFields = document.getElementById('hotel-aeropuerto-fields-edit');
-    }
-
-    if (aeropuertoHotelFields && hotelAeropuertoFields) {
-        aeropuertoHotelFields.style.display = (tipoReserva === "1" || tipoReserva === "idayvuelta") ? "block" : "none";
-        hotelAeropuertoFields.style.display = (tipoReserva === "2" || tipoReserva === "idayvuelta") ? "block" : "none";
-    }
-}
-</script>
 @endsection
 

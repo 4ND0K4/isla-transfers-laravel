@@ -8,11 +8,29 @@
     <header class="text-secondary text-center p-4 fs-1">
         <h1 class="shadow-sm">Gestión de Reservas</h1>
     </header>
+ <!-- Mensajes de error y éxito -->
+ <div class="d-flex flex-column vh-100">
+    @if ($errors->any())
+        <div class="alert alert-danger" id="error-messages">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (session('success'))
+        <div class="alert alert-success" id="success-message">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <!-- Botón creación de reservas -->
     <div class="row align-items-center">
         <div class="col text-start pb-2 px-4">
-            <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal"><i class="bi bi-plus-circle"></i> Nueva reserva</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                <i class="fa-solid fa-plus"></i>
+            </button>
         </div>
 
         <!-- Filtros -->
@@ -102,12 +120,13 @@
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 
-                                <form action="{{ route('hotel.bookings.destroy', $booking->id_reserva) }}" method="POST" style="display: inline;">
+                                <form action="{{ route('hotel.bookings.destroy', $booking->id_reserva) }}" method="POST" style="display: inline;" onsubmit="showSpinner(this)">
                                     @csrf
                                     @method('DELETE')
                                     <button
-                                    class="btn btn-sm btn-outline-danger m-1"
-                                    title="Eliminar reserva">
+                                        class="btn btn-sm btn-outline-danger m-1"
+                                        title="Eliminar reserva">
+                                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>
@@ -208,6 +227,10 @@
         modal.show();
     }
 
+    function showSpinner(form) {
+        const spinner = form.querySelector('.spinner-border');
+        spinner.classList.remove('d-none');
+    }
 </script>
 
 @endsection
