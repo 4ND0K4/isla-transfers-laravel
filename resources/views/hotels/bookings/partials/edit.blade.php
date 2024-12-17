@@ -37,7 +37,7 @@
 
                          <!-- Id Vehículo -->
                          <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_vehiculo" id="editIdVehiculo" placeholder="Número de vehiculo">
+                            <input type="number" class="form-control" name="id_vehiculo" id="editIdVehiculo" placeholder="Número de vehiculo" readonly>
                             <label for="editIdVehiculo">Vehiculo</label>
                         </div>
 

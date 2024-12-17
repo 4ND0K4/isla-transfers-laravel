@@ -59,6 +59,14 @@
                                 </ul>
                             </div>
                         @endif
+                         <!-- Mensaje de éxito si se ha creado un cliente particular -->
+                         @if (session('success'))
+                         <div id="success-message" class="alert alert-success mt-3 mb-0">
+                             <ul class="list-unstyled text-center mb-0">
+                                 <li> {{ session('success') }} </li>
+                             </ul>
+                         </div>
+                     @endif
                     </div>
                 </div>
             </div>

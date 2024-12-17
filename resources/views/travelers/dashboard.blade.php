@@ -2,26 +2,24 @@
 
 @section('content')
 
-    <div class="container justify-content-center align-items-center">
-        <div class="col-xl-12 text-center">
-            <!-- Subtítulo -->
-            <h2 class="text-secondary fw-light pt-3 fs-3">Gestiona tus transfers</h2>
-            <!-- Botón de crear reserva -->
-            <div class="fw-bold py-3">
-                <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                    <i class="fa-solid fa-calendar-plus display-5"></i>
-                </button>
-            </div>
+<div class="container d-flex justify-content-center align-items-center flex-column">
+    <div class="col-xl-12 text-center">
+        <!-- Subtítulo -->
+        <h2 class="text-secondary fw-light pt-3 fs-3">Gestiona tus transfers</h2>
 
-        </div>
-        <!-- Calendario -->
-        <div class="col-xl-8 text-center bg-white border rounded-2 p-5 my-5">
-            <div
-                id="calendar"
-                class=" bg-white border rounded-2 py-3 me-1 my-3">
-            </div>
+        <!-- Botón de crear reserva -->
+        <div class="fw-bold pt-3">
+            <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                <i class="fa-solid fa-calendar-plus display-5"></i>
+            </button>
         </div>
     </div>
+
+    <!-- Calendario -->
+    <div class="col-xl-8 col-lg-10 col-md-12 text-center m-3">
+        <div id="calendar" class="bg-white border rounded-2 p-3"></div>
+    </div>
+</div>
 
     @include ('travelers.partials.create')
     @include('travelers.partials.edit')
@@ -121,76 +119,49 @@
 
         function eliminarReserva(id) {
             const url = `/traveler/bookings/${id}`;
-            confirmarEliminacion(url);
-        }
-
-        function confirmarEliminacion(url) {
-            const btnEliminar = document.getElementById('btnEliminar');
-            btnEliminar.setAttribute('data-url', url);
-
-            btnEliminar.onclick = function () {
-                const urlToDelete = btnEliminar.getAttribute('data-url');
-                if (urlToDelete) {
-                    fetch(urlToDelete, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
-                    }).then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    }).then(data => {
-                        if (data.success) {
-                            // Mostrar mensaje de éxito
-                            const successMessage = document.getElementById('deleteSuccessMessage');
-                            if (successMessage) {
-                                successMessage.style.display = 'block';
-                                setTimeout(() => {
-                                    successMessage.style.display = 'none';
-                                }, 5000);
-                            }
-                            window.calendar.refetchEvents();
-                            const modal = bootstrap.Modal.getInstance(document.getElementById('confirmarEliminacionModal'));
-                            modal.hide();
-                        } else {
-                            // Mostrar mensaje de error
-                            const errorMessages = document.getElementById('deleteErrorMessages');
-                            if (errorMessages) {
-                                errorMessages.innerText = data.message;
-                                errorMessages.style.display = 'block';
-                                setTimeout(() => {
-                                    errorMessages.style.display = 'none';
-                                }, 5000);
-                            }
-                        }
-                    }).catch(error => {
-                        console.error('Error al eliminar la reserva:', error);
-                        // Mostrar mensaje de error
-                        const errorMessages = document.getElementById('deleteErrorMessages');
-                        if (errorMessages) {
-                            errorMessages.innerText = 'Hubo un error al intentar eliminar la reserva.';
-                            errorMessages.style.display = 'block';
-                            setTimeout(() => {
-                                errorMessages.style.display = 'none';
-                            }, 5000);
-                        }
-                    }).finally(() => {
-                        // Ocultar spinner y habilitar botón
-                        const spinner = document.getElementById('deleteLoadingSpinner');
-                        if (spinner) {
-                            spinner.style.display = 'none';
-                        }
-                        btnEliminar.disabled = false;
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                if (data.success) {
+                    // Mostrar mensaje de éxito
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Reserva eliminada',
+                        text: 'La reserva ha sido eliminada correctamente.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    window.calendar.refetchEvents();
+                } else {
+                    // Mostrar mensaje de error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message,
+                        timer: 2000,
+                        showConfirmButton: false
                     });
                 }
-            };
-
-            // Mostrar el modal de confirmación de eliminación
-            const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
-            modal.show();
+            }).catch(error => {
+                console.error('Error al eliminar la reserva:', error);
+                // Mostrar mensaje de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un error al intentar eliminar la reserva.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            });
         }
 
         function abrirModalActualizar(traveler) {

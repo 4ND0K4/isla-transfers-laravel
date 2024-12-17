@@ -161,7 +161,7 @@ class BookingController extends Controller
             if ($tipoCreadorReserva == 1) {
                 return redirect()->route('admin.bookings.index')->with('success', 'Reserva creada correctamente.');
             } elseif ($tipoCreadorReserva == 2) {
-                return redirect()->route('traveler.bookings.index')->with('success', 'Reserva creada correctamente.');
+                return redirect()->route('traveler.dashboard')->with('success', 'Reserva creada correctamente.');
             } else {
                 return redirect()->route('hotel.bookings.index')->with('success', 'Reserva creada correctamente.');
             }

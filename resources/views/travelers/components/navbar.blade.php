@@ -4,7 +4,22 @@
             <img src="{{ asset('images/icons/logo_app.png') }}" alt="Ícono" width="75" height="60">
             Isla Transfers
         </a>
-
+        <ul>
+        @if ($errors->any())
+            <div class="alert alert-danger" id="error-messages">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            @if (session('success'))
+                <div class="alert alert-success" id="success-message">
+                    {{ session('success') }}
+                </div>
+            @endif
+        </ul>
         <!-- Navegación y botones -->
         <ul class="nav nav-pills justify-content-end">
             <li class="nav-item text-center">

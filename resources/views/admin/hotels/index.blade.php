@@ -41,8 +41,23 @@
                 <tbody>
                     @foreach($hotels as $hotel)
                         <tr>
-                            <td>{{ $hotel->id_hotel }}</td>
-                            <td>{{ $hotel->id_zona }}</td>
+                            <td>
+                                {{
+                                    $hotel->id_hotel == 1 ? 'Paraíso Escondido Retreat' :
+                                    ($hotel->id_hotel == 2 ? 'Corazón Isleño Inn' :
+                                    ($hotel->id_hotel == 3 ? 'Oasis Resort' :
+                                    ($hotel->id_hotel == 4 ? 'El Faro Suites' :
+                                    ($hotel->id_hotel == 5 ? 'Costa Salvaje Eco Lodge' :
+                                    ($hotel->id_hotel == 6 ? 'Arenas Doradas Resort' : 'Hotel desconocido')))))
+                                }}
+                            </td>
+                            <td>
+                                {{
+                                    $hotel->id_zona  == 1 ? 'Sur' :
+                                    ($hotel->id_zona == 2 ? 'Norte' :
+                                    ($hotel->id_zona == 3 ? 'Metropolitana' : 'Zona desconocida'))
+                                }}
+                            </td>
                             <td>{{ $hotel->comision }}</td>
                             <td>{{ $hotel->usuario }}</td>
                             <td>

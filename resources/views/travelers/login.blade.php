@@ -27,7 +27,10 @@
                             </div>
                             <!-- Botón -->
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-warning">Acceder</button>
+                                <button type="submit" class="btn btn-warning" id="login-button">
+                                    Acceder
+                                    <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
                             <!-- separador -->
                             <div class="d-grid gap-2">
@@ -64,5 +67,11 @@
         </div>
     </div>
 </main>
+
+<script>
+    document.getElementById('login-button').addEventListener('click', function() {
+        document.getElementById('spinner').classList.remove('d-none');
+    });
+</script>
 @endsection
 

@@ -29,7 +29,7 @@ class HotelController extends Controller
         $request->validate([
             'id_zona' => 'required|integer',
             'comision' => 'required|numeric',
-            'password' => 'required|string',
+            'password' => 'required|min:8|string',
         ]);
 
         // Generar un usuario único
@@ -50,6 +50,38 @@ class HotelController extends Controller
             return redirect()->route('admin.hotels.index')->withErrors('Error al crear el hotel.');
         }
     }
+
+    public function update(Request $request, Hotel $hotel)
+    {
+        $request->validate([
+            'id_zona' => 'required|integer',
+            'comision' => 'required|numeric',
+            'usuario' => 'required|string|unique:transfer_hotel,usuario,' . $hotel->id_hotel . ',id_hotel',
+        ]);
+
+        $data = $request->only(['id_zona', 'comision', 'usuario']);
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        try {
+            $hotel->update($data);
+            return redirect()->route('admin.hotels.index')->with('success', 'Hotel actualizado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.hotels.index')->withErrors('Error al actualizar el hotel.');
+        }
+    }
+
+    public function destroy(Hotel $hotel)
+    {
+        try {
+            $hotel->delete();
+            return redirect()->route('admin.hotels.index')->with('success', 'Hotel eliminado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.hotels.index')->withErrors('Error al eliminar el hotel.');
+        }
+    }
+
 
      /**
      * Manejar login de hotel.
@@ -82,6 +114,17 @@ class HotelController extends Controller
 
             return back()->withErrors(['password' => 'La contraseña es incorrecta.']);
         }
+
+         public function logout(Request $request)
+    {
+        Auth::guard('hotels')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect()->route('hotel.login')->with('success', 'Sesión cerrada correctamente.');
+    }
 
         public function dashboard()
         {
@@ -183,36 +226,6 @@ class HotelController extends Controller
             return view('hotels.commissions.index', compact('comisiones', 'hotel'));
         }
 
-    public function update(Request $request, Hotel $hotel)
-    {
-        $request->validate([
-            'id_zona' => 'required|integer',
-            'comision' => 'required|numeric',
-            'usuario' => 'required|string|unique:transfer_hotel,usuario,' . $hotel->id_hotel . ',id_hotel',
-        ]);
-
-        $data = $request->only(['id_zona', 'comision', 'usuario']);
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
-
-        try {
-            $hotel->update($data);
-            return redirect()->route('admin.hotels.index')->with('success', 'Hotel actualizado correctamente.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.hotels.index')->withErrors('Error al actualizar el hotel.');
-        }
-    }
-
-    public function destroy(Hotel $hotel)
-    {
-        try {
-            $hotel->delete();
-            return redirect()->route('admin.hotels.index')->with('success', 'Hotel eliminado correctamente.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.hotels.index')->withErrors('Error al eliminar el hotel.');
-        }
-    }
 
 
     //Para un solo hotel desde el panel de administración
@@ -276,13 +289,6 @@ class HotelController extends Controller
     }
 
 
-    public function logout(Request $request)
-    {
-        Auth::guard('hotels')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
 
-        return redirect()->route('hotel.login');
-    }
 
 }

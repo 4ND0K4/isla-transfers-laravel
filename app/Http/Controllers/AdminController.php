@@ -57,7 +57,7 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
 
         // Redirige al login de administradores
-        return redirect()->route('admin.login');
+        return redirect()->route('admin.login')->with('success', 'Sesión cerrada correctamente.');
     }
 
 

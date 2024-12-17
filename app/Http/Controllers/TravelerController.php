@@ -65,13 +65,19 @@ class TravelerController extends Controller
             'password' => 'required',
         ]);
 
+        $traveler = Traveler::where('email', $request->email)->first();
+        if (!$traveler) {
+            return back()->withErrors(['email' => 'El email no es correcto.']);
+        }
+
         $credentials = $request->only('email', 'password'); // Credenciales en minúscula
 
         if (Auth::guard('travelers')->attempt($credentials)) {
+            $request->session()->regenerate();
             return redirect()->route('traveler.dashboard')->with('success', 'Inicio de sesión exitoso.');
         }
 
-        return back()->withErrors(['email' => 'Credenciales incorrectas.']);
+        return back()->withErrors(['password' => 'La contraseña es incorrecta.']);
     }
 
     /**
@@ -134,12 +140,27 @@ class TravelerController extends Controller
     /**
      * Cerrar sesión del viajero.
      */
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::guard('travelers')->logout();
-        Auth::guard('travelers')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
 
         return redirect()->route('traveler.login')->with('success', 'Sesión cerrada correctamente.');
+    }
+
+    public function deleteBooking($id)
+    {
+        try {
+            $booking = Booking::findOrFail($id);
+            $booking->delete();
+
+            return response()->json(['success' => true, 'message' => 'Reserva eliminada correctamente.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Hubo un error al intentar eliminar la reserva.']);
+        }
     }
 
 }

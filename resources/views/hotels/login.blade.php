@@ -13,6 +13,7 @@
                         <span class="text-warning fs-3 mb-0">Hotel login</span>
                     </div>
                     <div class="card-body">
+
                         <form action="{{ route('hotel.login') }}" method="POST">
                             @csrf
                             <!-- Campo de usuario -->
@@ -27,9 +28,11 @@
                             </div>
                             <!-- Botón -->
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-success text-white">Acceder</button>
+                                <button type="submit" class="btn btn-success text-white" id="login-button">
+                                    Acceder
+                                    <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                </button>
                             </div>
-
                         </form>
                         <!-- Separador -->
                         <div class="d-grid gap-2 w-75">
@@ -51,10 +54,23 @@
                             </ul>
                         </div>
                         @endif
+                         <!-- Mensaje de éxito  -->
+                         @if (session('success'))
+                         <div id="success-message" class="alert alert-success mt-3 mb-0">
+                             <ul class="list-unstyled text-center mb-0">
+                                 <li> {{ session('success') }}</li>
+                             </ul>
+                         </div>
+                     @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </main>
+<script>
+    document.getElementById('login-button').addEventListener('click', function() {
+        document.getElementById('spinner').classList.remove('d-none');
+    });
+</script>
 @endsection

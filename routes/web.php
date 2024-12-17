@@ -120,7 +120,6 @@ Route::middleware(['auth:travelers'])->group(function () {
     Route::put('/traveler/bookings/{id}', [BookingController::class, 'update'])->name('traveler.bookings.update');
     Route::delete('/traveler/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('traveler.bookings.delete');
     Route::get('/traveler/calendar-events', [BookingController::class, 'getCalendarEvents'])->name('traveler.calendar.events');
-    Route::delete('/traveler/bookings/{id}', [BookingController::class, 'destroy'])->name('traveler.bookings.destroy');
 });
 
 
