@@ -9,9 +9,16 @@ use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 use Illuminate\Support\Facades\Log;
+use App\Services\EmailService;
 
 class BookingController extends Controller
 {
+    protected $emailService;
+
+    public function __construct(EmailService $emailService)
+    {
+        $this->emailService = $emailService;
+    }
 
     private function validateBookingData(Request $request)
     {
@@ -75,7 +82,6 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-
         $tipoCreadorReserva = $this->getTipoCreadorReserva();
         if (is_null($tipoCreadorReserva)) {
             return redirect()->back()->withErrors(['error' => 'Usuario no autenticado.']);
@@ -83,15 +89,16 @@ class BookingController extends Controller
 
         // Restricción para travelers y hotels
         if ($tipoCreadorReserva == 2 || $tipoCreadorReserva == 3) {
+            $today = Carbon::now();
             if ($request->input('id_tipo_reserva') == 1) {
                 $fechaEntrada = Carbon::parse($request->input('fecha_entrada'));
-                if ($fechaEntrada->diffInDays(Carbon::now()) < 2) {
-                    return redirect()->back()->withErrors(['error' => 'Los travelers no pueden crear reservas con menos de 2 días de antelación.']);
+                if ($fechaEntrada->isPast() || $fechaEntrada->diffInDays($today) < 2) {
+                    return redirect()->back()->withErrors(['error' => 'Los clientes no pueden crear reservas en fechas pasadas o con menos de 2 días de antelación.']);
                 }
             } elseif ($request->input('id_tipo_reserva') == 2) {
                 $fechaVueloSalida = Carbon::parse($request->input('fecha_vuelo_salida'));
-                if ($fechaVueloSalida->diffInDays(Carbon::now()) < 2) {
-                    return redirect()->back()->withErrors(['error' => 'Los travelers no pueden crear reservas con menos de 2 días de antelación.']);
+                if ($fechaVueloSalida->isPast() || $fechaVueloSalida->diffInDays($today) < 2) {
+                    return redirect()->back()->withErrors(['error' => 'Los clientes no pueden crear reservas en fechas pasadas o con menos de 2 días de antelación.']);
                 }
             }
         }
@@ -157,6 +164,10 @@ class BookingController extends Controller
                 $booking = Booking::create($baseData);
             }
 
+            if ($booking) {
+                $this->emailService->enviarEmailConLocalizador($validated['email_cliente'], $booking->localizador, $booking->toArray());
+            }
+
             // Redirigir según el tipo de creador de reserva
             if ($tipoCreadorReserva == 1) {
                 return redirect()->route('admin.bookings.index')->with('success', 'Reserva creada correctamente.');
@@ -193,19 +204,24 @@ class BookingController extends Controller
                 'id_vehiculo' => 'nullable|integer|exists:transfer_vehiculo,id_vehiculo',
             ]);
 
-
             // Restricción para travelers y hotels
             $tipoCreadorReserva = $this->getTipoCreadorReserva();
+            if (is_null($tipoCreadorReserva)) {
+                return redirect()->back()->withErrors(['error' => 'Usuario no autenticado.']);
+            }
+
+
             if ($tipoCreadorReserva == 2 || $tipoCreadorReserva == 3) {
+                $today = Carbon::now();
                 if ($validated['id_tipo_reserva'] == 1) {
                     $fechaEntrada = Carbon::parse($validated['fecha_entrada']);
-                    if ($fechaEntrada->diffInDays(Carbon::now()) < 2) {
-                        return redirect()->back()->withErrors(['error' => 'Los travelers no pueden actualizar reservas con menos de 2 días de antelación.']);
+                    if ($fechaEntrada->isPast() || $fechaEntrada->diffInDays($today) < 2) {
+                        return redirect()->back()->withErrors(['error' => 'Los clientes no pueden actualizar reservas en fechas pasadas o con menos de 2 días de antelación.']);
                     }
                 } elseif ($validated['id_tipo_reserva'] == 2) {
                     $fechaVueloSalida = Carbon::parse($validated['fecha_vuelo_salida']);
-                    if ($fechaVueloSalida->diffInDays(Carbon::now()) < 2) {
-                        return redirect()->back()->withErrors(['error' => 'Los travelers no pueden actualizar reservas con menos de 2 días de antelación.']);
+                    if ($fechaVueloSalida->isPast() || $fechaVueloSalida->diffInDays($today) < 2) {
+                        return redirect()->back()->withErrors(['error' => 'Los clientes no pueden actualizar reservas en fechas pasadas o con menos de 2 días de antelación.']);
                     }
                 }
             }
@@ -260,8 +276,8 @@ class BookingController extends Controller
             $tipoCreadorReserva = $this->getTipoCreadorReserva();
             if ($tipoCreadorReserva == 2 || $tipoCreadorReserva == 3) {
                 $fechaReserva = Carbon::parse($booking->fecha_entrada ?? $booking->fecha_vuelo_salida);
-                if ($fechaReserva->diffInDays(Carbon::now()) < 2) {
-                    return redirect()->back()->withErrors(['error' => 'Los travelers no pueden eliminar reservas con menos de 2 días de antelación.']);
+                if ($fechaReserva->isPast() || $fechaReserva->diffInDays(Carbon::now()) < 2) {
+                    return redirect()->back()->withErrors(['error' => 'Los travelers no pueden eliminar reservas en fechas pasadas o con menos de 2 días de antelación.']);
                 }
             }
 

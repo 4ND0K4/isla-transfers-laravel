@@ -155,6 +155,14 @@ class TravelerController extends Controller
     {
         try {
             $booking = Booking::findOrFail($id);
+
+            // Restricción para travelers
+            $tipoCreadorReserva = 2; // Traveler
+            $fechaReserva = Carbon::parse($booking->fecha_entrada ?? $booking->fecha_vuelo_salida);
+            if ($fechaReserva->isPast() || $fechaReserva->diffInDays(Carbon::now()) < 2) {
+                return response()->json(['success' => false, 'message' => 'Los travelers no pueden eliminar reservas en fechas pasadas o con menos de 2 días de antelación.']);
+            }
+
             $booking->delete();
 
             return response()->json(['success' => true, 'message' => 'Reserva eliminada correctamente.']);
