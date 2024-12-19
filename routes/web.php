@@ -56,7 +56,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Ruta para obtener el precio basado en hotel y vehículo
 Route::get('/precio/{id_hotel}/{id_vehiculo}', [PriceController::class, 'obtenerPrecio'])->name('precio.obtener');
 // Ruta para obtener comisiones por hoteles
-Route::get('/admin/hotels/comisiones', [HotelController::class, 'comisionesPorHoteles'])->name('admin.hotels.comisiones');
+//Route::get('/admin/hotels/comisiones', [HotelController::class, 'comisionesPorHoteles'])->name('admin.hotels.comisiones');
 // Ruta para obtener reservas por zona
 Route::get('/reservas/zonas', [BookingController::class, 'reservasPorZona']);
 
