@@ -23,45 +23,43 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Rutas protegidas
     Route::middleware('auth:admins')->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        // Dashboard
+        Route::get('/dashboard', [BookingController::class, 'dashboard'])->name('dashboard');
+
         // Reservas
         Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
         Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
         Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
         Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+
         // Calendario
         Route::get('/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('calendar.events');
+
         // Hoteles
         Route::resource('hotels', HotelController::class)->except(['show', 'create', 'edit']);
+
         // Vehículos
         Route::resource('vehicles', VehicleController::class)->except(['show', 'create', 'edit']);
+
         // Tours
         Route::resource('tours', TourController::class)->except(['show', 'create', 'edit']);
-        // Dashboard
-        Route::get('/dashboard', [BookingController::class, 'dashboard'])->name('dashboard');
-    });
-});
 
-Route::prefix('admin')->name('admin.')->middleware(['auth:admins'])->group(function () {
-    Route::get('/prices', [PriceController::class, 'index'])->name('prices.index');
-    Route::post('/prices', [PriceController::class, 'store'])->name('prices.store');
-    Route::delete('/prices/{price}', [PriceController::class, 'destroy'])->name('prices.destroy');
+        // Precios
+        Route::get('/prices', [PriceController::class, 'index'])->name('prices.index');
+        Route::post('/prices', [PriceController::class, 'store'])->name('prices.store');
+        Route::delete('/prices/{price}', [PriceController::class, 'destroy'])->name('prices.destroy');
+
+        // Comisiones Mensuales
+        Route::get('/hotels/{hotelId}/comisiones', [HotelController::class, 'comisionesMensuales'])->name('admin.hotels.comisiones');
+    });
 });
 // Ruta para obtener el precio basado en hotel y vehículo
 Route::get('/precio/{id_hotel}/{id_vehiculo}', [PriceController::class, 'obtenerPrecio'])->name('precio.obtener');
+// Ruta para obtener comisiones por hoteles
 Route::get('/admin/hotels/comisiones', [HotelController::class, 'comisionesPorHoteles'])->name('admin.hotels.comisiones');
-Route::get('/admin/hotels/{hotelId}/comisiones', [HotelController::class, 'comisionesMensuales'])->name('admin.hotels.comisiones');
-Route::middleware(['auth:admins'])->group(function () {
-    Route::get('/admin/hotels/{hotelId}/comisiones', [HotelController::class, 'comisionesMensuales'])->name('admin.hotels.comisiones');
-    Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
-    Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
-});
-Route::get('/admin/dashboard', [BookingController::class, 'dashboard'])->name('admin.dashboard');
+// Ruta para obtener reservas por zona
 Route::get('/reservas/zonas', [BookingController::class, 'reservasPorZona']);
 
-
-
-// Rutas adicionales
 
 // *** RUTAS PARA VIAJEROS ***
 Route::prefix('traveler')->name('traveler.')->group(function () {
@@ -75,25 +73,19 @@ Route::prefix('traveler')->name('traveler.')->group(function () {
     // Rutas protegidas
     Route::middleware('auth:travelers')->group(function () {
         Route::get('/dashboard', [TravelerController::class, 'dashboard'])->name('dashboard');
-        Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
-        Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
-        Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
-        Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
         Route::get('/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('calendar.events');
         Route::get('/profile/{id}', [TravelerController::class, 'show'])->name('profile');
         Route::post('/profile/{id}', [TravelerController::class, 'update']);
+        Route::get('/traveler/bookings', [BookingController::class, 'index'])->name('traveler.bookings.index');
+        Route::get('/traveler/bookings/{id}', [BookingController::class, 'show'])->name('traveler.bookings.show');
+        Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
+        Route::put('/traveler/bookings/{id}', [BookingController::class, 'update'])->name('traveler.bookings.update');
+        Route::delete('/traveler/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('traveler.bookings.delete');
+        //Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
     });
 });
 
 Route::resource('travelers', TravelerController::class);
-
-Route::middleware(['auth:travelers'])->group(function () {
-    Route::get('/traveler/bookings', [BookingController::class, 'index'])->name('traveler.bookings.index');
-    Route::get('/traveler/bookings/{id}', [BookingController::class, 'show'])->name('traveler.bookings.show');
-    Route::put('/traveler/bookings/{id}', [BookingController::class, 'update'])->name('traveler.bookings.update');
-    Route::delete('/traveler/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('traveler.bookings.delete');
-    Route::get('/traveler/calendar-events', [BookingController::class, 'getCalendarEvents'])->name('traveler.calendar.events');
-});
 
 
 // *** RUTAS PARA HOTELES ***
@@ -113,7 +105,7 @@ Route::prefix('hotel')->name('hotel.')->group(function () {
         Route::get('/commissions', [HotelController::class, 'listCommissions'])->name('commissions.index');
         Route::get('/trips', [TourController::class, 'index'])->name('trips.index');
         Route::post('/trips', [TourController::class, 'store'])->name('tours.store');
-        Route::post('/trips/{tour}', [TourController::class, 'update'])->name('tours.update'); // Change PUT to POST
+        Route::post('/trips/{tour}', [TourController::class, 'update'])->name('tours.update');
         Route::delete('/trips/{tour}', [TourController::class, 'destroy'])->name('tours.destroy');
     });
 });

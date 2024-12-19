@@ -68,13 +68,14 @@
                                         email_cliente: '{{ $tour->email_cliente }}',
                                         id_hotel: {{ $tour->id_hotel }},
                                         id_vehiculo: {{ $tour->id_vehiculo ?? 'null' }}
-                                    })">
+                                    })"
+                                    disabled>
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <form action="{{ route('hotel.tours.destroy', $tour) }}" method="POST" style="display: inline;" onsubmit="showSpinner(this)">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger m-1" title="Eliminar excursión">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger m-1" title="Eliminar excursión" disabled>
                                         <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
