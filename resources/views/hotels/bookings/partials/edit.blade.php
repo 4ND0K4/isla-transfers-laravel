@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editBookingForm" method="POST" action="">
+                <form id="editBookingForm" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="container mt-4">
