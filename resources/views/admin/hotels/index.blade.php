@@ -111,7 +111,7 @@
         document.getElementById('editIdZona').value = hotel.id_zona;
         document.getElementById('editComision').value = hotel.comision;
         document.getElementById('editUsuario').value = hotel.usuario;
-        document.getElementById('editHotelForm').action = '/admin/hotels/' + hotel.id_hotel;
+        document.getElementById('editHotelForm').action = `{{ url('admin/hotels') }}/${hotel.id_hotel}`;
     }
 
     function loadComisiones(hotelId) {

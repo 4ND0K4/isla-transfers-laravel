@@ -1,6 +1,6 @@
 <div class="modal fade" id="editVehicleModal" tabindex="-1" aria-labelledby="editVehicleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form id="editVehicleForm" method="POST" class="modal-content">
+        <form id="editVehicleForm" method="POST" class="modal-content" action="">
             @csrf
             @method('PUT')
             <div class="modal-header">
@@ -8,20 +8,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger" id="error-messages">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                @if (session('success'))
-                    <div class="alert alert-success" id="success-message">
-                        {{ session('success') }}
-                    </div>
-                @endif
+                <input type="hidden" name="id" id="editId" action="">
                 <div class="mb-3">
                     <label for="editDescripcion" class="form-label">Descripción</label>
                     <input type="text" class="form-control" name="descripcion" id="editDescripcion" required>

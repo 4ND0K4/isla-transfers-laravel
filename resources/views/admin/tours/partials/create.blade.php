@@ -2,25 +2,12 @@
     <div class="modal-dialog">
         <form action="{{ route('admin.tours.store') }}" method="POST" class="modal-content">
             @csrf
+            <input type="hidden" name="id_excursion" id="createIdExcursion">
             <div class="modal-header">
                 <h5 class="modal-title">Nueva Excursión</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger" id="error-messages">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                @if (session('success'))
-                    <div class="alert alert-success" id="success-message">
-                        {{ session('success') }}
-                    </div>
-                @endif
                 <!-- Campos del formulario -->
                 <div class="form-floating mb-3">
                     <input type="date" name="fecha_excursion" class="form-control" id="createFecha" required>
@@ -91,3 +78,4 @@
         });
     });
 </script>
+

@@ -98,7 +98,18 @@
 @include('admin.tours.partials.edit')
 
 <script>
+     document.addEventListener('DOMContentLoaded', function () {
+        const editTourForm = document.querySelector('#editTourForm');
+        const editTourButton = document.querySelector('#editTourForm button[type="submit"]');
+        const loadingSpinnerEdit = document.getElementById('loadingSpinnerEdit');
+
+        editTourForm.addEventListener('submit', function () {
+            loadingSpinnerEdit.style.display = 'inline-block';
+            editTourButton.disabled = true;
+        });
+    });
     function setEditTour(tour) {
+        document.getElementById('editIdExcursion').value = tour.id_excursion;
         document.getElementById('editFecha').value = tour.fecha_excursion;
         document.getElementById('editHoraEntrada').value = tour.hora_entrada_excursion;
         document.getElementById('editHoraSalida').value = tour.hora_salida_excursion;
@@ -107,7 +118,8 @@
         document.getElementById('editEmailCliente').value = tour.email_cliente;
         document.getElementById('editHotel').value = tour.id_hotel;
         document.getElementById('editVehiculo').value = tour.id_vehiculo || ''; // Asignar vacío si no hay vehículo
-        document.getElementById('editTourForm').action = `/admin/tours/${tour.id_excursion}`;
+        document.getElementById('editTourForm').action = `{{ url('admin/tours') }}/${tour.id_excursion}`;
+
     }
 
     function showSpinner(form) {

@@ -86,7 +86,7 @@
         document.getElementById('editDescripcion').value = vehicle.descripcion;
         document.getElementById('editEmailConductor').value = vehicle.email_conductor;
         document.getElementById('editPassword').value = '';
-        document.getElementById('editVehicleForm').action = '/admin/vehicles/' + vehicle.id_vehiculo;
+        document.getElementById('editVehicleForm').action = `{{ url('admin/vehicles') }}/${vehicle.id_vehiculo}`;
     }
 
     function showSpinner(form) {

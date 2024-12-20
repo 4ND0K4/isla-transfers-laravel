@@ -2,26 +2,13 @@
     <div class="modal-dialog">
         <form id="editTourForm" method="POST" class="modal-content">
             @csrf
-            @method('PUT') <!-- Indica que el formulario realiza una solicitud PUT -->
+            @method('PUT')
+            <input type="hidden" name="id_excursion" id="editIdExcursion" action="">
             <div class="modal-header">
                 <h5 class="modal-title" id="editTourModalLabel">Editar Excursión</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger" id="error-messages">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                @if (session('success'))
-                    <div class="alert alert-success" id="success-message">
-                        {{ session('success') }}
-                    </div>
-                @endif
                 <!-- Campos del formulario -->
                 <div class="form-floating mb-3">
                     <input type="date" name="fecha_excursion" class="form-control" id="editFecha" required>
