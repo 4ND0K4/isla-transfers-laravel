@@ -6,20 +6,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @if ($errors->any())
-                    <div class="alert alert-danger" id="error-messages">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                @if (session('success'))
-                    <div class="alert alert-success" id="success-message">
-                        {{ session('success') }}
-                    </div>
-                @endif
                 <form action="{{ route('admin.bookings.store') }}" method="POST">
                     @csrf
                     <div class="container mt-4">

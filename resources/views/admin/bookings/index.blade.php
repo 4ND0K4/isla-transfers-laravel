@@ -210,7 +210,7 @@
 
         // Actualizar la acción del formulario
         const form = document.getElementById('editBookingForm');
-        form.action = `/admin/bookings/${booking.id_reserva}`; // Actualiza la ruta con el id_reserva correcto
+        form.action = `{{ url('admin/bookings') }}/${booking.id_reserva}`;
 
         // Configurar los campos del modal
         document.getElementById('editIdReserva').value = booking.id_reserva || '';

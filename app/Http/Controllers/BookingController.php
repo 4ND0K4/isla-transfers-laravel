@@ -266,6 +266,26 @@ class BookingController extends Controller
         }
     }
 
+    public function edit($id)
+    {
+        try {
+            $booking = Booking::findOrFail($id);
+            $tipoCreadorReserva = $this->getTipoCreadorReserva();
+
+            if ($tipoCreadorReserva == 1) {
+                return view('admin.bookings.edit', compact('booking'));
+            } elseif ($tipoCreadorReserva == 2) {
+                return view('travelers.bookings.edit', compact('booking'));
+            } elseif ($tipoCreadorReserva == 3) {
+                return view('hotels.bookings.edit', compact('booking'));
+            } else {
+                return redirect()->back()->withErrors(['error' => 'Usuario no autenticado.']);
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'No se pudo obtener la reserva.']);
+        }
+    }
+
     public function destroy($id)
     {
         try {
@@ -355,10 +375,13 @@ class BookingController extends Controller
     public function show($id)
     {
         try {
+            Log::info('Fetching booking with ID: ' . $id);
             $booking = Booking::findOrFail($id);
+            Log::info('Booking found: ', ['id' => $id, 'booking' => $booking]);
             return response()->json($booking);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'No se pudo obtener la reserva'], 500);
+            Log::error('Error fetching booking: ', ['id' => $id, 'error' => $e->getMessage()]);
+            return response()->json(['error' => 'No se pudo obtener la reserva'], 404);
         }
     }
 
@@ -467,3 +490,4 @@ class BookingController extends Controller
 
 
 }
+

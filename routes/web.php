@@ -8,6 +8,17 @@ use App\Http\Controllers\HotelController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\PriceController;
+use Illuminate\Support\Facades\Log;
+
+Route::get('/log-test', function () {
+    Log::error('Este es un error de prueba.');
+    return 'Error registrado en los logs.';
+});
+
+Route::get('/test', function () {
+    return 'Ruta de prueba funcionando';
+});
+
 
 // Ruta principal
 Route::get('/', function () {
@@ -25,24 +36,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth:admins')->group(function () {
         // Dashboard
         Route::get('/dashboard', [BookingController::class, 'dashboard'])->name('dashboard');
-
         // Reservas
-        Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
-        Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
-        Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('bookings.update');
-        Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+        Route::resource('bookings', BookingController::class)->except(['show', 'create']);
 
         // Calendario
         Route::get('/calendar/events', [BookingController::class, 'getCalendarEvents'])->name('calendar.events');
 
         // Hoteles
-        Route::resource('hotels', HotelController::class)->except(['show', 'create', 'edit']);
+        Route::resource('hotels', HotelController::class)->except(['show', 'create']);
 
         // Vehículos
-        Route::resource('vehicles', VehicleController::class)->except(['show', 'create', 'edit']);
+        Route::resource('vehicles', VehicleController::class)->except(['show', 'create']);
 
         // Tours
-        Route::resource('tours', TourController::class)->except(['show', 'create', 'edit']);
+        Route::resource('tours', TourController::class)->except(['show', 'create']);
+        Route::get('/tours/{id}/edit', [TourController::class, 'edit'])->name('tours.edit');
 
         // Precios
         Route::get('/prices', [PriceController::class, 'index'])->name('prices.index');
@@ -55,8 +63,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 // Ruta para obtener el precio basado en hotel y vehículo
 Route::get('/precio/{id_hotel}/{id_vehiculo}', [PriceController::class, 'obtenerPrecio'])->name('precio.obtener');
-// Ruta para obtener comisiones por hoteles
-//Route::get('/admin/hotels/comisiones', [HotelController::class, 'comisionesPorHoteles'])->name('admin.hotels.comisiones');
 // Ruta para obtener reservas por zona
 Route::get('/reservas/zonas', [BookingController::class, 'reservasPorZona']);
 
