@@ -118,7 +118,7 @@
         const tableBody = document.getElementById('comisionesTableBody');
         tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Cargando...</td></tr>'; // Indicador de carga
 
-        fetch(`/admin/hotels/${hotelId}/comisiones`)
+        fetch(`{{ url('admin/hotels') }}/${hotelId}/comisiones`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error en la respuesta del servidor.');
