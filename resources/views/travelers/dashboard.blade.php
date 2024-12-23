@@ -71,15 +71,21 @@
             }
         }
 
-        function abrirModalEditar(id) {
-            fetch(`/traveler/bookings/${id}`)
+        // Define las funciones en el contexto global
+        window.abrirModalEditar = function(id) {
+            fetch(`{{ url('traveler/bookings') }}/${id}`)
                 .then(response => {
                     if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error('Booking not found');
+                        }
                         throw new Error('Network response was not ok');
                     }
                     return response.json();
                 })
                 .then(data => {
+                    console.log('Booking data:', data); // Log the response data for debugging
+
                     // Configurar los campos del modal
                     document.getElementById('editIdReserva').value = data.id_reserva || '';
                     document.getElementById('editLocalizador').value = data.localizador || '';
@@ -90,7 +96,7 @@
                     document.getElementById('editIdVehiculo').value = data.id_vehiculo || '';
 
                     // Set the form action URL
-                    document.getElementById('editBookingForm').action = `/traveler/bookings/${id}`;
+                    document.getElementById('editBookingForm').action = `{{ url('traveler/bookings') }}/${data.id_reserva}`;
 
                     // Mostrar campos específicos
                     mostrarCampos('edit');
@@ -114,53 +120,72 @@
                 })
                 .catch(error => {
                     console.error('Error fetching booking data:', error);
-                });
-        }
-
-        function eliminarReserva(id) {
-            const url = `/traveler/bookings/${id}`;
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            }).then(data => {
-                if (data.success) {
-                    // Mostrar mensaje de éxito
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Reserva eliminada',
-                        text: 'La reserva ha sido eliminada correctamente.',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    window.calendar.refetchEvents();
-                } else {
-                    // Mostrar mensaje de error
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: data.message,
+                        text: error.message === 'Booking not found' ? 'La reserva no fue encontrada.' : error.message,
                         timer: 2000,
                         showConfirmButton: false
                     });
-                }
-            }).catch(error => {
-                console.error('Error al eliminar la reserva:', error);
-                // Mostrar mensaje de error
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo un error al intentar eliminar la reserva.',
-                    timer: 2000,
-                    showConfirmButton: false
                 });
+        }
+
+        window.eliminarReserva = function(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`{{ url('traveler/bookings') }}/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    }).then(data => {
+                        if (data.success) {
+                            // Mostrar mensaje de éxito
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Reserva eliminada',
+                                text: 'La reserva ha sido eliminada correctamente.',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            window.calendar.refetchEvents();
+                        } else {
+                            // Mostrar mensaje de error
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        }
+                    }).catch(error => {
+                        console.error('Error al eliminar la reserva:', error);
+                        // Mostrar mensaje de error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un error al intentar eliminar la reserva.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    });
+                }
             });
         }
 

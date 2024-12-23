@@ -84,10 +84,10 @@ Route::prefix('traveler')->name('traveler.')->group(function () {
         Route::post('/profile/{id}', [TravelerController::class, 'update']);
         Route::get('/traveler/bookings', [BookingController::class, 'index'])->name('traveler.bookings.index');
         Route::get('/traveler/bookings/{id}', [BookingController::class, 'show'])->name('traveler.bookings.show');
+        Route::get('/bookings/{id}', [BookingController::class, 'show'])->name('traveler.bookings.show');
         Route::post('/bookings/store', [BookingController::class, 'store'])->name('bookings.store');
-        Route::put('/traveler/bookings/{id}', [BookingController::class, 'update'])->name('traveler.bookings.update');
-        Route::delete('/traveler/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('traveler.bookings.delete');
-        //Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+        Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('traveler.bookings.update');
+        Route::delete('/bookings/{id}', [TravelerController::class, 'deleteBooking'])->name('traveler.bookings.delete');
     });
 });
 
